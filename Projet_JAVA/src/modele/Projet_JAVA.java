@@ -3,26 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
-
-package affichage;
-
-import java.awt.*;
-import javax.swing.*;
-import java.awt.event.*;
+package modele;
 
 /**
  *
- * @author titig
+ * @author Gautier PLANTE
  */
-public class Affichage {
+public class Projet_JAVA {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Fenetre myWindow = new Fenetre();
+        // TODO code application logic here
     }
     
 }
