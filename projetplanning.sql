@@ -9,8 +9,11 @@
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
+SET @@global.time_zone = '+00:00';
+
+SET @@session.time_zone = '+00:00';
 START TRANSACTION;
-SET time_zone = "+00:00";
+
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
