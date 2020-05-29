@@ -12,6 +12,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import vue.Fenetre;
+import vue.Login;
 
 /**
  *
@@ -46,7 +47,8 @@ public class Testsql {
         System.out.println ("ID: "+ rs.getString(1)+ " Email " + rs.getString(2));
     }
     conn.close(); 
-    Fenetre myWindow = new Fenetre();
+    Login monLogin = new Login();
+    //Fenetre myWindow = new Fenetre();
     }
     
 }
