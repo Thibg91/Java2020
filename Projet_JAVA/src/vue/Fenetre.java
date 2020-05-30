@@ -165,8 +165,8 @@ public final class Fenetre extends JFrame {
       liste=conn.Affich("Select Nom from cours ");
          for(int i=0;i<1;i++)
        {
-           cours.addItem(liste.get(i));
-    cours.addItem(liste.get(i+1));
+       cours.addItem(liste.get(i));
+      cours.addItem(liste.get(i+1));
       cours.addItem(liste.get(i+2));
       cours.addItem(liste.get(i+3));
       

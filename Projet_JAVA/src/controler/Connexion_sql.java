@@ -24,7 +24,7 @@ public class Connexion_sql {
           private Statement stmt;
    private ResultSet rset;
    private ResultSetMetaData rsetMeta;
-	public  Connection getInstance() throws SQLException, ClassNotFoundException{
+	public static Connection getInstance() throws SQLException, ClassNotFoundException{
 		    // chargement driver "com.mysql.jdbc.Driver"
         
        Class.forName("com.mysql.jdbc.Driver");
@@ -36,25 +36,14 @@ public class Connexion_sql {
         //création d'une connexion JDBC à la base 
         connect = DriverManager.getConnection(urlDatabase, "root","");
 
-        // création d'un ordre SQL (statement)
-        stmt = connect.createStatement();
+    
 		return connect;	
 	}
         public ArrayList Affich(String requete) throws ClassNotFoundException, SQLException
         {
-             
-
-       Class.forName("com.mysql.jdbc.Driver");
-
-        // url de connexion "jdbc:mysql://localhost:3305/usernameECE"
-        String urlDatabase = "jdbc:mysql://localhost:3306/" + "projetplanning";
-       // String urlDatabase = "jdbc:mysql://localhost:3308/jps?characterEncoding=latin1";
-
-        //création d'une connexion JDBC à la base 
-        connect = DriverManager.getConnection(urlDatabase, "root","");
-
-        // création d'un ordre SQL (statement)
-        stmt = connect.createStatement();
+          connect=getInstance();   
+      stmt = connect.createStatement();
+      
 		
         // création d'un ordre SQL (statement)
        rset = stmt.executeQuery(requete);
