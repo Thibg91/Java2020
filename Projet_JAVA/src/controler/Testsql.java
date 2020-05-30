@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import modele.Etudiant;
 import vue.Fenetre;
 
 /**
@@ -24,7 +25,7 @@ public class Testsql {
      */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         
-   Connection conn;
+   /*Connection conn;
    Statement stmt;
    ResultSet rset;
    ResultSetMetaData rsetMeta;
@@ -45,7 +46,11 @@ public class Testsql {
     while(rs.next()) {
         System.out.println ("ID: "+ rs.getString(1)+ " Email " + rs.getString(2));
     }
-    conn.close(); 
+    conn.close(); */
+   int id = 2;
+    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
+    Etudiant etu = student.find(id);
+    //System.out.println(etu);
     Fenetre myWindow = new Fenetre();
     }
     

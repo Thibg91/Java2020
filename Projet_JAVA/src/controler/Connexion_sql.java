@@ -13,12 +13,14 @@ import java.sql.SQLException;
  */
 public class Connexion_sql {
 
-	private static String url = "jdbc:postgresql://localhost:5432/Societe";
+	private static String url;
 	private static String user = "root";
 	private static String passwd = "";
 	private static Connection connect;
 
-	public static Connection getInstance(){
+	public static Connection getInstance() throws ClassNotFoundException{
+            Class.forName("com.mysql.jdbc.Driver");
+            Connexion_sql.url = "jdbc:mysql://localhost:3306/projetplanning?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
 		if(connect == null){
 			try {
 				connect = DriverManager.getConnection(url, user, passwd);
