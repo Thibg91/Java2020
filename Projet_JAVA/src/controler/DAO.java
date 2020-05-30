@@ -11,13 +11,13 @@ import java.sql.Connection;
  */
 public abstract class DAO<T> {
     
-    public Connection connexion = null;
+    protected Connection connexion = null;
     
-     public DAO(){
-        this.connexion = Connexion_sql.getInstance();
-    }
+    public DAO(Connection conn){
+    this.connexion = conn;
+  }
 
-    public abstract T find(long id);
+    public abstract T find(int id);
 	
     public abstract T create(T obj);
 

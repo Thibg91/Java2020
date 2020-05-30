@@ -17,14 +17,13 @@ import java.util.ArrayList;
  */
 public class Connexion_sql {
 
-	private static String url = "jdbc:postgresql://localhost:5432/Societe";
+	private static String url;
 	private static String user = "root";
 	private static String passwd = "";
 	private static Connection connect;
           private Statement stmt;
    private ResultSet rset;
    private ResultSetMetaData rsetMeta;
-
 	public  Connection getInstance() throws SQLException, ClassNotFoundException{
 		    // chargement driver "com.mysql.jdbc.Driver"
         

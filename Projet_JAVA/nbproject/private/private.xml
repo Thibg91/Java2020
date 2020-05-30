@@ -3,14 +3,25 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Luka%20Carneiro/Documents/GitHub/Java2020/Projet_JAVA/src/vue/Grille.java</file>
-            <file>file:/C:/Users/Luka%20Carneiro/Documents/GitHub/Java2020/Projet_JAVA/src/controler/test.java</file>
-            <file>file:/C:/Users/Luka%20Carneiro/Documents/GitHub/Java2020/Projet_JAVA/src/controler/DAOEtudiant.java</file>
-            <file>file:/C:/Users/Luka%20Carneiro/Documents/GitHub/Java2020/Projet_JAVA/src/vue/Fenetre.java</file>
-            <file>file:/C:/Users/Luka%20Carneiro/Documents/GitHub/Java2020/Projet_JAVA/src/modele/Utilisateur.java</file>
-            <file>file:/C:/Users/Luka%20Carneiro/Documents/GitHub/Java2020/Projet_JAVA/src/controler/Connexion_sql.java</file>
-            <file>file:/C:/Users/Luka%20Carneiro/Documents/GitHub/Java2020/Projet_JAVA/src/modele/controle.java</file>
-            <file>file:/C:/Users/Luka%20Carneiro/Documents/GitHub/Java2020/Projet_JAVA/src/controler/DAO.java</file>
+
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/Testsql.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/vue/Fenetre.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAOPromotion.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAOEtudiant.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/vue/MonModel.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAOEnseignant.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAOCours.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAOSite.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/vue/ComposantTable.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAOGroupe.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAOSeance.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAOSalle.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/modele/Groupe.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/Connexion_sql.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAOType.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/controler/DAO.java</file>
+            <file>file:/C:/wamp64/www/Projet_Java/Java2020/Projet_JAVA/src/modele/Etudiant.java</file>
+
         </group>
     </open-files>
 </project-private>
