@@ -75,7 +75,7 @@ public final class Fenetre extends JFrame {
     firstPanel.add(new JButton ("T'y es en mode lacoste tn le boss"));
     firstPanel.add(new JButton ("moi oui "));
     
-  
+ 
     JTextPane contenu = new JTextPane();
     contenu.setBackground(Color.magenta);
     contenu.setEditable(false);
@@ -85,7 +85,7 @@ public final class Fenetre extends JFrame {
     JTextPane Voidcontenu = new JTextPane();
     Voidcontenu.setEditable(false);
     Voidcontenu.setText("");
-    Voidcontenu.setBounds( 51, 51, 200, 70 );
+    Voidcontenu.setBounds( 51, 51, 200, 70);
     
     
     
@@ -95,6 +95,7 @@ public final class Fenetre extends JFrame {
     JTextPane firstColumn = new JTextPane();
     firstColumn.setBackground(Color.lightGray);
     firstColumn.setEditable(false);
+    
     firstColumn.setText("\r\n \r\n \r\n \r\n" + "8h30-10h00" + "\r\n \r\n \r\n \r\n \r\n \r\n" +"10h15-11h45" + "\r\n \r\n \r\n \r\n \r\n \r\n" +"12h00-13h30" + "\r\n \r\n \r\n \r\n \r\n \r\n" +"13h45-15h15" + "\r\n \r\n \r\n \r\n \r\n \r\n \r\n" +"15h30-17h00" + "\r\n \r\n \r\n \r\n \r\n \r\n" +"17h15-18h45" + "\r\n \r\n \r\n \r\n \r\n \r\n" +"19h30-21h00");
     firstColumn.setBounds( 0, 0, 80, 1000 );
     firstColumnPane.setLayout(null);
