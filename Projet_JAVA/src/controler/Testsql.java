@@ -48,7 +48,8 @@ public class Testsql {
     }
     conn.close(); 
     Login monLogin = new Login();
-    //Fenetre myWindow = new Fenetre();
+    monLogin.setVisible(false);
+    Fenetre myWindow = new Fenetre();
     }
     
 }
