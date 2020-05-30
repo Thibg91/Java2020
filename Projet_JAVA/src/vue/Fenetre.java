@@ -7,9 +7,12 @@ package vue;
 
 
 
+import controler.Connexion_sql;
 import java.awt.*;
 
 import java.awt.event.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 
@@ -20,13 +23,41 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author titig
  */
-public class Fenetre extends JFrame {
+public final class Fenetre extends JFrame {
     
     private JTable monTableau;
+    private Connexion_sql conn= new Connexion_sql();
+
     private JButton testButton = new JButton("je suis un bouton de test");
-    
-    public Fenetre() {
+   
+    public Fenetre() throws ClassNotFoundException, SQLException {
+        
     // déclaration de la fenetre
+     String prof="";
+     String id_cours="";
+     String nomcours="";
+     ArrayList<String> liste; 
+     liste=conn.Affich("Select Nom from utilisateurs Where ID=16");
+         for(int i=0;i<liste.size();i++)
+       {
+           
+          prof = liste.get(i);
+           
+       }
+         liste=conn.Affich("Select Id_cours from enseignant Where ID_utilisateurs=16");
+           for(int i=0;i<liste.size();i++)
+       {
+           
+          id_cours = liste.get(i);
+           
+       }
+                    liste=conn.Affich("Select Nom  from cours Where ID="+ id_cours);
+           for(int i=0;i<liste.size();i++)
+       {
+           
+          nomcours = liste.get(i);
+           
+       }
     this.setSize(1500, 1000);
     this.setTitle("Mon Calendrier");
     this.setLocationRelativeTo(null);
@@ -34,11 +65,10 @@ public class Fenetre extends JFrame {
     
    
     
-    String matiere = "VHDL";
-    String prof = "Lopes";
+    //String matiere = "VHDL";
     String groupe = "ING3 Gr9";
     String salle = "Salle P416";
-    String recap = matiere + "\r\n"+ prof + "\r\n"+ groupe + "\r\n"+ salle + "\r\n" ;
+    String recap = nomcours + "\r\n"+ prof + "\r\n"+ groupe + "\r\n"+ salle + "\r\n" ;
     
     JPanel firstPanel = new JPanel();
     //firstPanel.setBackground(Color.blue);
@@ -129,13 +159,20 @@ public class Fenetre extends JFrame {
    //Partie filtre
    
     JPanel SecondPanel = new JPanel();
-    SecondPanel.setBackground(Color.lightGray);
     JComboBox cours = new JComboBox();
-    cours.addItem("maths");
-    cours.addItem("physique");
-    cours.addItem("traitement du signal");
-    cours.addItem("Java");
-    cours.addItem("Droit du travail");
+    SecondPanel.setBackground(Color.lightGray);
+      liste=conn.Affich("Select Nom from cours ");
+         for(int i=0;i<1;i++)
+       {
+           cours.addItem(liste.get(i));
+    cours.addItem(liste.get(i+1));
+      cours.addItem(liste.get(i+2));
+      cours.addItem(liste.get(i+3));
+      
+           
+       }
+  
+    
     JLabel coursLabel = new JLabel("Cours : ");
     SecondPanel.add(coursLabel);
     SecondPanel.add(cours);
@@ -172,8 +209,13 @@ public class Fenetre extends JFrame {
    
     //Cacher la fenetre ou pas : bool 
     this.setVisible(true); 
-   
+
     }    
+ 
+
+  
+ 
+
     
    
 
