@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import modele.Etudiant;
 import vue.Fenetre;
+import vue.Login;
 
 /**
  *
@@ -52,6 +53,8 @@ public class Testsql {
     Etudiant etu = student.find(id);
     //System.out.println(etu);
     Fenetre myWindow = new Fenetre();
+    Login monLogin = new Login();
+
     }
     
 }
