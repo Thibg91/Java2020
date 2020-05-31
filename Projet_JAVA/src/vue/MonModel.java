@@ -11,7 +11,7 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author titig
  */
- //Classe définissant mon modele
+ //Classe définissant mon modele de tableau, c'est du contenu d'open classroom ,il n'y a rien a modifier ici normalement
     class MonModel extends AbstractTableModel{
         final private Object[][] monContenu;
         final private String[] titre;
