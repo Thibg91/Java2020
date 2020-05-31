@@ -33,16 +33,28 @@ public class DAOEtudiant extends DAO<Etudiant>{
     @Override
     public Etudiant find(int id_student){
         Etudiant student = null;
+        int id = 0, numero = 0, groupe = 0, droit = 0;
+        String nom = null, prenom = null, email = null;
         try {
             Statement stmt = connexion.createStatement();
             ResultSet rs=stmt.executeQuery("select * from utilisateurs WHERE ID="+id_student);
             while(rs.next()) {
-                System.out.println ("ID: "+ rs.getString(1)+ " Email " + rs.getString(2));
-             }
+                id = rs.getInt("ID");
+                email = rs.getString("Email");
+                nom = rs.getString("Nom");
+                prenom = rs.getString("Prenom");  
+                droit = rs.getInt("Droit");
+            }
+            ResultSet res=stmt.executeQuery("select * from etudiant WHERE Id_utilisateurs="+id_student);
+            while(res.next()){
+                numero = res.getInt("Numero");
+                groupe = res.getInt("Id_groupe");
+            }
+            student = new Etudiant(id, email, nom, prenom, droit, numero, groupe);
             //se connecter a la base sql
             //faire une requete sql ici avec l'id de l'etudiant
             //recuperer les donnees
-            //creer un nouvel objet etudiant avec les donnees
+            //creer un nouvel objet etudiant avec les donnees    
         } catch (SQLException ex) {
             Logger.getLogger(DAOEtudiant.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -61,8 +73,17 @@ public class DAOEtudiant extends DAO<Etudiant>{
     @Override
     public void delete(Etudiant student){
         //se connecter a la base sql
-        //faire une requete sql ici avec l'id de l'etudiant
-        //supprimer l'etudiant de la base de données
+        try {
+            Statement stmt = connexion.createStatement();
+            //Supprimer l'etudiant de la table utilisateur
+            ResultSet rs=stmt.executeQuery("DELETE from utilisateurs WHERE ID="+student.getID());
+            //Supprimer l'etudiant de la table etudaint
+            ResultSet res=stmt.executeQuery("DELETE from etudiant WHERE Id_utilisateurs="+student.getID());
+            System.out.println("Etudiant a été supprimé");
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(DAOEtudiant.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

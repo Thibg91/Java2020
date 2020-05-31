@@ -30,7 +30,7 @@ public class Connexion_sql {
        Class.forName("com.mysql.jdbc.Driver");
 
         // url de connexion "jdbc:mysql://localhost:3305/usernameECE"
-        String urlDatabase = "jdbc:mysql://localhost:3306/" + "projetplanning";
+        String urlDatabase = "jdbc:mysql://localhost:3306/projetplanning?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
        // String urlDatabase = "jdbc:mysql://localhost:3308/jps?characterEncoding=latin1";
 
         //création d'une connexion JDBC à la base 

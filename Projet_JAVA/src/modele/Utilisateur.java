@@ -62,6 +62,6 @@ public class Utilisateur {
     }
     
     public int getDroit(){
-        return this.getDroit();
+        return this.droit_user;
     }
 }

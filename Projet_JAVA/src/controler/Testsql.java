@@ -48,14 +48,16 @@ public class Testsql {
         System.out.println ("ID: "+ rs.getString(1)+ " Email " + rs.getString(2));
     }
     conn.close(); */
-   int id = 2;
+    int id = 4;
     DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
     Etudiant etu = student.find(id);
-    //System.out.println(etu);
+    System.out.println(etu.getDroit());
+   /* 
     Login monLogin = new Login();
     monLogin.setVisible(false);
     Fenetre myWindow = new Fenetre();
-
+    myWindow.setVisible(false);
+    */
     }
     
 }

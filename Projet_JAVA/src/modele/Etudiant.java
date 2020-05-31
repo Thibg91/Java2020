@@ -12,9 +12,9 @@ package modele;
 public class Etudiant extends Utilisateur {
     
     private int numero;
-    private Groupe groupe;
+    private int groupe;
     
-    public Etudiant(int id, String email, String nom, String prenom, int droit, int numero, Groupe groupe){
+    public Etudiant(int id, String email, String nom, String prenom, int droit, int numero, int groupe){
         super(id, email, nom, prenom, droit);
         this.numero = numero;
         this.groupe = groupe;
