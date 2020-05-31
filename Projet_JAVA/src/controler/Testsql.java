@@ -53,7 +53,7 @@ public class Testsql {
     /* 
     Etudiant etu = student.find(id);
     System.out.println(etu.getDroit());
-   
+    
     Login monLogin = new Login();
     monLogin.setVisible(false);
 */
