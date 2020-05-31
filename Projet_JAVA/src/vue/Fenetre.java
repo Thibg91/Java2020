@@ -28,12 +28,19 @@ import javax.swing.text.StyledDocument;
  */
 
 //classe principale de l'affichage ( il faut que je module ce programme en différentes fonctions)
-public final class Fenetre extends JFrame {
+public final class Fenetre extends JFrame implements ActionListener{
     //déclaration du tableau
     private JTable monTableau;
+    private JTable monRecap;
     private Connexion_sql conn= new Connexion_sql();
-
-    private BoutonInt testButton = new BoutonInt("je suis un bouton de test");
+    private BoutonInt bouton1 = new BoutonInt("Semaine 1");
+    private BoutonInt bouton2 = new BoutonInt("Semaine 2");
+    private BoutonInt bouton3 = new BoutonInt("Semaine 3");
+    private BoutonInt bouton4 = new BoutonInt("Semaine 4");
+    private JPanel FenetreCalendrier = new JPanel();
+    private JPanel FenetreRecap = new JPanel();
+    private JPanel FenetreMaj = new JPanel();
+    private JPanel FenetreReporting = new JPanel();
    
     
     //constructeur de la classe
@@ -99,9 +106,6 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     Voidcontenu.setText("");
     Voidcontenu.setBounds( 51, 51, 200, 70);
     
-    
-    
-    
     //Ici c'est juste la colonne qui affiche les heures du tableau
     JPanel firstColumnPane = new JPanel();
     JTextPane firstColumn = new JTextPane();
@@ -117,41 +121,15 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     // Ici on a les boutons de bas de page qui vont permettre de passer d'une semaine a une autre
     JPanel changePage = new JPanel();
     changePage.setBackground(Color.lightGray);
-    BoutonInt bouton1 = new BoutonInt("Semaine 1");
-    BoutonInt bouton2 = new BoutonInt("Semaine 2");
-    BoutonInt bouton3 = new BoutonInt("Semaine 3");
-    BoutonInt bouton4 = new BoutonInt("Semaine 4");
     changePage.add(bouton1);
     changePage.add(bouton2);
     changePage.add(bouton3);
     changePage.add(bouton4);
     
-    
-//partie Tableau
-    
-    //le tableau est rempli de JTextPane vide
-     Object[][] test_line = {
-        {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
-        {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
-        {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
-         {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
-         {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
-         {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
-         {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu}   
-    };  
+   //test de case avec des données
+    // monTableau.settest_line[1][3] = contenu;
      
-    //test de case avec des données
-      test_line[1][3] = contenu;
-     
-    //1ere ligne du tableau avec les différents jours
-    String[] test_column = {"Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"};
-   
-   //modele de tableau permettant de définir la forme du tableau, par exemple on a changé la taille des cases 
-   MonModel model = new MonModel(test_line,test_column);
-   this.monTableau = new JTable(model); 
-   this.monTableau.setRowHeight(100);
-   this.monTableau.setDefaultRenderer(JTextPane.class, new ComposantTable());
-   
+     this.initTable();
    
    //Partie filtre : c'est la partie sur la droite de la page qui va contenir tout les filtres utiles sur notre tableau
    
@@ -175,38 +153,75 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     
     
     //partie Layout 
-    this.setLayout(new BorderLayout());
+    FenetreCalendrier.setLayout(new BorderLayout());
     
     
     //Contenu du centre
-    this.getContentPane().add(conteneurTab, BorderLayout.CENTER);
+    FenetreCalendrier.add(conteneurTab, BorderLayout.CENTER);
     
     //Contenu du haut
-    this.getContentPane().add(new BoutonInt("Barre de navigation"),BorderLayout.NORTH);
+    FenetreCalendrier.add(new BoutonInt("Barre de navigation"),BorderLayout.NORTH);
     
     //contenu du bas 
-    this.getContentPane().add(changePage,BorderLayout.SOUTH);
+    FenetreCalendrier.add(changePage,BorderLayout.SOUTH);
     
     //contenu de gauche
-    this.getContentPane().add(firstColumnPane,BorderLayout.WEST);
+   FenetreCalendrier.add(firstColumnPane,BorderLayout.WEST);
     
     //contenu de Droite 
-    this.getContentPane().add(SecondPanel,BorderLayout.EAST);
+    FenetreCalendrier.add(SecondPanel,BorderLayout.EAST);
     
-   
+    this.setContentPane(FenetreCalendrier);
     
-    Login monLogin = new Login();
-    monLogin.setVisible(true);
+   // Login monLogin = new Login();
+    //monLogin.setVisible(true);
     
     //Cacher la fenetre ou pas : bool 
-    this.setVisible(false); 
+    this.setVisible(true); 
 
     }    
  
 
-  
+  public void actionPerformed(ActionEvent arg0){
+        if(arg0.getSource() == bouton1 )
+        {
+           //setVislible(true);
+        }
+    }
  
-
+public void initTable()
+{
+     //ici on déclare le meme type de composant mais il est vide, on va initialiser le tableau en le remplissant de Voidcontenu
+    JTextPane Voidcontenu = new JTextPane();
+    Voidcontenu.setEditable(false);
+    Voidcontenu.setText("");
+    Voidcontenu.setBounds( 51, 51, 200, 70);
+    
+   //partie Tableau
+    
+    
+     Object[][] test_line = {
+        {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
+        {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
+        {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
+         {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
+         {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
+         {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu},
+         {Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu,Voidcontenu}   
+    };  
+     
+     
+    //1ere ligne du tableau avec les différents jours
+    String[] test_column = {"Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"};
+   
+   //modele de tableau permettant de définir la forme du tableau, par exemple on a changé la taille des cases 
+   MonModel model = new MonModel(test_line,test_column);
+   this.monTableau = new JTable(model); 
+   this.monTableau.setRowHeight(100);
+   this.monTableau.setDefaultRenderer(JTextPane.class, new ComposantTable());
+   
+   this.monRecap = new JTable(model);
+}
     
    
 
