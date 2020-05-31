@@ -52,6 +52,7 @@ public class Testsql {
     DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
     Etudiant etu = student.find(id);
     System.out.println(etu.getDroit());
+ //   Fenetre f=new Fenetre();
    /* 
     Login monLogin = new Login();
     monLogin.setVisible(false);
