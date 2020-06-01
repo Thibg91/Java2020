@@ -5,6 +5,10 @@
  */
 package modele;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDateTime;
+
 /**
  *
  * @author Gautier PLANTE
@@ -12,15 +16,14 @@ package modele;
 public class Seance {
     private int id_seance;
     private int semaine;
-    private int date;
-    private int heure_debut;
-    private int heure_fin;
+    private Date date;
+    private Time heure_debut;
+    private Time heure_fin;
     private String etat;
-    private Cours cours;
-    private Type_Cours type;
-    private Enseignant prof;
+    private int cours;
+    private int type;
     
-    public void Seance(int id, int week, int date, int debut, int fin, String etat, Cours cours, Type_Cours type, Enseignant prof){
+    public Seance(int id, int week,Date date, Time debut, Time fin, String etat, int cours, int type){
         this.id_seance = id;
         this.semaine = week;
         this.date = date;
@@ -29,7 +32,6 @@ public class Seance {
         this.etat = etat;
         this.cours = cours;
         this.type = type;
-        this.prof = prof;
     }
     
     public void setId(int id){
@@ -40,15 +42,11 @@ public class Seance {
         this.semaine = semaine;
     }
     
-    public void setDate(int date){
-        this.date = date;
-    }
-    
-    public void setDebut(int debut){
+    public void setDebut(Time debut){
         this.heure_debut = debut;
     }
     
-    public void setFin(int fin){
+    public void setFin(Time fin){
         this.heure_fin = fin;
     }
     
@@ -56,11 +54,11 @@ public class Seance {
         this.etat = etat;
     }
     
-    public void setCours(Cours cours){
+    public void setCours(int cours){
         this.cours = cours;
     }
     
-    public void setType(Type_Cours type){
+    public void setType(int type){
         this.type = type;
     }
     
@@ -72,15 +70,11 @@ public class Seance {
         return this.semaine;
     }
     
-    public int getDate(){
-        return this.date;
-    }
-    
-    public int getDebut(){
+    public Time getDebut(){
         return this.heure_debut;
     }
     
-    public int getFin(){
+    public Time getFin(){
         return this.heure_fin;
     }
     
@@ -88,12 +82,20 @@ public class Seance {
         return this.etat;
     }
     
-    public Cours getCours(){
+    public int getCours(){
         return this.cours;
     }
     
-    public Type_Cours getType(){
+    public int getType(){
         return this.type;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
     
 }

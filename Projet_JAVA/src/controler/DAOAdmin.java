@@ -11,63 +11,63 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import modele.Type_Cours;
+import modele.Admin;
 
 /**
  *
  * @author Gautier PLANTE
  */
-public class DAOType extends DAO<Type_Cours>{
+public class DAOAdmin extends DAO<Admin>{
 
-    public DAOType(Connection conn) {
+    public DAOAdmin(Connection conn) {
         super(conn);
     }
 
     @Override
-    public Type_Cours find(int id_type) {
-        Type_Cours type = null;
-        int id = 0;
-        String nom = null;
+    public Admin find(int id_admin) {
+        Admin boss = null;
+        int id = 0, droit = 0;
+        String nom = null, prenom = null, email = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from salle WHERE ID="+id_type);
+            ResultSet rs=stmt.executeQuery("select * from utilisateurs WHERE ID="+id_admin);
             while(rs.next()) {
                 id = rs.getInt("ID");
+                email = rs.getString("Email");
                 nom = rs.getString("Nom");
+                prenom = rs.getString("Prenom");  
+                droit = rs.getInt("Droit");
             }
-            type = new Type_Cours(id, nom);
+            boss = new Admin(id, email, nom, prenom, droit);
             //se connecter a la base sql
             //faire une requete sql ici avec l'id de l'etudiant
             //recuperer les donnees
             //creer un nouvel objet etudiant avec les donnees    
         } catch (SQLException ex) {
-            Logger.getLogger(DAOType.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DAOAdmin.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return type;
+        return boss;
     }
 
     @Override
-    public Type_Cours create(Type_Cours obj) {
+    public Admin create(Admin obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Type_Cours update(Type_Cours obj) {
+    public Admin update(Admin obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(Type_Cours obj) {
+    public void delete(Admin obj) {
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer l'etudiant de la table utilisateur
-            ResultSet rs=stmt.executeQuery("DELETE from type_cours WHERE ID="+obj.getId());
-            //Supprimer l'etudiant de la table etudaint
-            ResultSet res=stmt.executeQuery("DELETE from seance WHERE ID_Typ="+obj.getId());
-            System.out.println("Le type a été supprimé");
+            ResultSet rs=stmt.executeQuery("DELETE from utilisateurs WHERE ID="+obj.getID());
         }
         catch (SQLException ex) {
-            Logger.getLogger(DAOType.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DAOAdmin.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

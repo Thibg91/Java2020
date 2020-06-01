@@ -21,10 +21,12 @@ import javax.swing.table.AbstractTableModel;
             this.titre = titre;
         }
         
+        @Override
         public String getColumnName(int col){
         return this.titre[col];
         }
                 
+        @Override
         public int getColumnCount()
         {
         return this.titre.length;
@@ -35,12 +37,13 @@ import javax.swing.table.AbstractTableModel;
            return this.monContenu.length;
        }
        
+        @Override
        public Object getValueAt(int row, int col){
            return this.monContenu[row][col];
        }
        
+        @Override
        public void setValueAt (Object value, int row, int col){
-           if(!this.getColumnName(col).equals("Age")&& !this.getColumnName(col).equals("Suppression"))
                this.monContenu[row][col] = value;
        }
        
@@ -49,6 +52,7 @@ import javax.swing.table.AbstractTableModel;
            return this.monContenu[0][col].getClass();
        }
        
+        @Override
        public boolean isCellEditable(int row, int col)
        {
            return true;

@@ -11,64 +11,63 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import modele.Type_Cours;
+import modele.Referent;
 
 /**
  *
  * @author Gautier PLANTE
  */
-public class DAOType extends DAO<Type_Cours>{
+public class DAOReferent extends DAO<Referent>{
 
-    public DAOType(Connection conn) {
+    public DAOReferent(Connection conn) {
         super(conn);
     }
 
     @Override
-    public Type_Cours find(int id_type) {
-        Type_Cours type = null;
-        int id = 0;
-        String nom = null;
+    public Referent find(int id_ref) {
+        Referent ref = null;
+        int id = 0, droit = 0;
+        String nom = null, prenom = null, email = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from salle WHERE ID="+id_type);
+            ResultSet rs=stmt.executeQuery("select * from utilisateurs WHERE ID="+id_ref);
             while(rs.next()) {
                 id = rs.getInt("ID");
+                email = rs.getString("Email");
                 nom = rs.getString("Nom");
+                prenom = rs.getString("Prenom");  
+                droit = rs.getInt("Droit");
             }
-            type = new Type_Cours(id, nom);
+            ref = new Referent(id, email, nom, prenom, droit);
             //se connecter a la base sql
             //faire une requete sql ici avec l'id de l'etudiant
             //recuperer les donnees
             //creer un nouvel objet etudiant avec les donnees    
         } catch (SQLException ex) {
-            Logger.getLogger(DAOType.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DAOReferent.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return type;
+        return ref;
     }
 
     @Override
-    public Type_Cours create(Type_Cours obj) {
+    public Referent create(Referent obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Type_Cours update(Type_Cours obj) {
+    public Referent update(Referent obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void delete(Type_Cours obj) {
+    public void delete(Referent obj) {
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer l'etudiant de la table utilisateur
-            ResultSet rs=stmt.executeQuery("DELETE from type_cours WHERE ID="+obj.getId());
-            //Supprimer l'etudiant de la table etudaint
-            ResultSet res=stmt.executeQuery("DELETE from seance WHERE ID_Typ="+obj.getId());
-            System.out.println("Le type a été supprimé");
+            ResultSet rs=stmt.executeQuery("DELETE from utilisateurs WHERE ID="+obj.getID());
         }
         catch (SQLException ex) {
-            Logger.getLogger(DAOType.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+            Logger.getLogger(DAOReferent.class.getName()).log(Level.SEVERE, null, ex);
+        }    }
     
 }

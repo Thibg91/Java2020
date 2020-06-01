@@ -13,9 +13,9 @@ public class Groupe {
     
     private int id_groupe;
     private String nom_groupe;
-    private Promotion promo;
+    private int promo;
     
-    public Groupe(int id, String nom, Promotion promo){
+    public Groupe(int id, String nom, int promo){
         this.id_groupe = id;
         this.promo = promo;
         this.nom_groupe = nom;
@@ -29,7 +29,7 @@ public class Groupe {
         this.nom_groupe = nom;
     }
     
-    public void setPromo(Promotion id){
+    public void setPromo(int id){
         this.promo = id;
     }
     
@@ -41,7 +41,7 @@ public class Groupe {
         return this.nom_groupe;
     }
     
-    public Promotion getPromo(){
+    public int getPromo(){
         return this.promo;
     }
 }

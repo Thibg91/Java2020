@@ -73,7 +73,8 @@ public class Login extends JFrame implements ActionListener{
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     public void actionPerformed(ActionEvent arg0){
-         int idd;
+
+        int idd;
         String Id = ContenuID.getText();
         String mdp=MDP.getText();
         System.out.println(Id);
@@ -104,6 +105,10 @@ public class Login extends JFrame implements ActionListener{
              
          }
          return verif;
+
+        System.out.println("J'ai cliqué sur le bouton valider");
+        this.setVisible(false);
+
     }
 
   
