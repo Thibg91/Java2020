@@ -8,6 +8,8 @@ package vue;
 
 
 import controler.Connexion_sql;
+import controler.DAO;
+import controler.DAOEtudiant;
 import java.awt.*;
 
 import java.awt.event.*;
@@ -18,6 +20,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import modele.Etudiant;
 
 
 
@@ -43,55 +46,58 @@ public final class Fenetre extends JFrame {
      String prof="";
      String id_cours="";
      String nomcours="";
+    String promo="";
      ArrayList<String> liste; 
-     liste=conn.Affich("Select Nom from utilisateurs Where ID=16");
-         for(int i=0;i<liste.size();i++)
-       {
-           
-          prof = liste.get(i);
-           
-       }
-         liste=conn.Affich("Select Id_cours from enseignant Where ID_utilisateurs=16");
-           for(int i=0;i<liste.size();i++)
-       {
-           
-          id_cours = liste.get(i);
-           
-       }
-                    liste=conn.Affich("Select Nom  from cours Where ID="+ id_cours);
-           for(int i=0;i<liste.size();i++)
-       {
-           
-          nomcours = liste.get(i);
-           
-       }
     //modification des propriétés de la fenetre principale (titre, taille, position et action de fermeture)
     this.setSize(1500, 1000);
     this.setTitle("Mon Calendrier");
     this.setLocationRelativeTo(null);
     this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     
-   
     //Test pour remplir une des cases du tableau, "recap" est le string dans lequel on écrit les informations qu'on souhaite afficher
     
     //String matiere = "VHDL";
-    String groupe = "ING3 Gr9";
+   
     String salle = "Salle P416";
-    String recap = nomcours + "\r\n"+ prof + "\r\n"+ groupe + "\r\n"+ salle + "\r\n" ;
-    
+    String recap = nomcours + "\n" + prof + "\n" + promo + "\n" + salle + "\r\n" ;
+    String idgr="";
+   
+    int cpt=0;
     //Panel dans lequel on place un JTextPane, en gros c'est la qu'on défini les cases de notre tableau donc la couleur la taille et surtout le text grace au setText(recap) avec "recap" le string vu plus haut
-    
-    JPanel firstPanel = new JPanel();
+      liste=conn.Affich("Select id_groupe from etudiant Where Id_utilisateurs=4");
+         for(int i=0;i<liste.size();i++)
+       {
+           
+          idgr = liste.get(i);
+           
+       }
+       
+         liste=conn.Affich("Select id_seance from seance_groupe Where id_groupe=" + idgr);
+       
+     
+         for(int i=0;i<liste.size();i++)
+         {
+             cpt++;
+            
+         }
+          JPanel firstPanel = new JPanel();
     JTextPane contenu = new JTextPane();
+         for(int i=0;i<=2;i++)
+         {
+            
     contenu.setBackground(Color.magenta);
+    contenu.setBounds( 12, 1210, 2200, 170 );
+    
+         }
     contenu.setEditable(false);
+         
     contenu.setText(recap);
     //c'est avec ca qu'on centre le texte dans une case
     StyledDocument doc = contenu.getStyledDocument();
     SimpleAttributeSet center = new SimpleAttributeSet();
     StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
 doc.setParagraphAttributes(0, doc.getLength(), center, false);
-    contenu.setBounds( 51, 51, 200, 70 );
+    
     
     //ici on déclare le meme type de composant mais il est vide, on va initialiser le tableau en le remplissant de Voidcontenu
     JTextPane Voidcontenu = new JTextPane();
@@ -195,11 +201,11 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     
    
     
-    Login monLogin = new Login();
-    monLogin.setVisible(true);
+   // Login monLogin = new Login();
+   // monLogin.setVisible(true);
     
     //Cacher la fenetre ou pas : bool 
-    this.setVisible(false); 
+    this.setVisible(true); 
 
     }    
  

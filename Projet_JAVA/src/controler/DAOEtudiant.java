@@ -85,5 +85,5 @@ public class DAOEtudiant extends DAO<Etudiant>{
             Logger.getLogger(DAOEtudiant.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+   
 }

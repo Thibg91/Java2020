@@ -25,34 +25,13 @@ public class Testsql {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        
-   /*Connection conn;
-   Statement stmt;
-   ResultSet rset;
-   ResultSetMetaData rsetMeta;
-          // chargement driver "com.mysql.jdbc.Driver"
-        Class.forName("com.mysql.jdbc.Driver");
-
-        // url de connexion "jdbc:mysql://localhost:3305/usernameECE"
-        String urlDatabase = "jdbc:mysql://localhost:3306/" + "projetplanning";
-       // String urlDatabase = "jdbc:mysql://localhost:3308/jps?characterEncoding=latin1";
-
-        //création d'une connexion JDBC à la base 
-        conn = DriverManager.getConnection(urlDatabase, "root", "");
-
-        // création d'un ordre SQL (statement)
-        stmt = conn.createStatement();
-        ResultSet rs=stmt.executeQuery("select * from utilisateurs"); 
-
-    while(rs.next()) {
-        System.out.println ("ID: "+ rs.getString(1)+ " Email " + rs.getString(2));
-    }
-    conn.close(); */
-    int id = 4;
-    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
-    Etudiant etu = student.find(id);
-    System.out.println(etu.getDroit());
- //   Fenetre f=new Fenetre();
+        Login check= new Login();
+    int id = check.Login();
+//    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
+//    Etudiant etu = student.find(id);
+  //  System.out.println(etu.getNom()+ " " + etu.getDroit());
+    
+    Fenetre f=new Fenetre();
    /* 
     Login monLogin = new Login();
     monLogin.setVisible(false);
