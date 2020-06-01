@@ -59,10 +59,10 @@ public final class Fenetre extends JFrame implements ActionListener{
     public Fenetre() throws ClassNotFoundException, SQLException {
         
     // déclaration de la fenetre
-     String prof="";
+     String prof="Coudray";
      String id_cours="";
-     String nomcours="";
-    String promo="";
+     String nomcours="Maths";
+    String promo="Ing3";
      ArrayList<String> liste; 
     //modification des propriétés de la fenetre principale (titre, taille, position et action de fermeture)
     this.setSize(1500, 1000);
@@ -80,7 +80,7 @@ public final class Fenetre extends JFrame implements ActionListener{
    
     int cpt=0;
     //Panel dans lequel on place un JTextPane, en gros c'est la qu'on défini les cases de notre tableau donc la couleur la taille et surtout le text grace au setText(recap) avec "recap" le string vu plus haut
-      liste=conn.Affich("Select id_groupe from etudiant Where Id_utilisateurs=4");
+      liste=conn.Affich("Select id_groupe from etudiant Where Id_utilisateurs=4"); //boucle pour savoir combien de cours a l'utilisateurs
          for(int i=0;i<liste.size();i++)
        {
            
@@ -93,7 +93,7 @@ public final class Fenetre extends JFrame implements ActionListener{
      
          for(int i=0;i<liste.size();i++)
          {
-             cpt++;
+             cpt++; // compteur pour savoir le nb de cours
             
          }
           JPanel firstPanel = new JPanel();
