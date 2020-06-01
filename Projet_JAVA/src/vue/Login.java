@@ -74,7 +74,7 @@ public class Login extends JFrame implements ActionListener{
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     public void actionPerformed(ActionEvent arg0){
          int idd;
-        String Id = ID.getText();
+        String Id = ContenuID.getText();
         String mdp=MDP.getText();
         System.out.println(Id);
        
