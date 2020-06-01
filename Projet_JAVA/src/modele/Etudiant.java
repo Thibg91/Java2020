@@ -27,5 +27,14 @@ public class Etudiant extends Utilisateur {
     public int getNumero(){
         return this.numero;
     }
+
+    public int getGroupe() {
+        return groupe;
+    }
+
+    public void setGroupe(int groupe) {
+        this.groupe = groupe;
+    }
+    
     
 }
