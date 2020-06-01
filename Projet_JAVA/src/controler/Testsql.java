@@ -11,7 +11,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import modele.Enseignant;
 import modele.Etudiant;
+import modele.Seance;
+import modele.Utilisateur;
 import vue.Fenetre;
 import vue.Login;
 
@@ -48,8 +51,7 @@ public class Testsql {
         System.out.println ("ID: "+ rs.getString(1)+ " Email " + rs.getString(2));
     }
     conn.close(); */
-    int id = 4;
-    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
+    
     /* 
     Etudiant etu = student.find(id);
     System.out.println(etu.getDroit());
@@ -57,9 +59,12 @@ public class Testsql {
     Login monLogin = new Login();
     monLogin.setVisible(false);
 */
-    Fenetre myWindow = new Fenetre();
-    myWindow.setVisible(true);
-    
+    //Fenetre myWindow = new Fenetre();
+    //myWindow.setVisible(true);
+    String email = "Papier@edu.ece.fr";
+    Traitement_Connexion test = new Traitement_Connexion(Connexion_sql.getInstance());
+    Utilisateur personne = test.traitement_co(email);
+    System.out.println("Droit: "+personne.getDroit()+" Nom:"+ personne.getNom());
     }
     
 }
