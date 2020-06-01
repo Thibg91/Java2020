@@ -85,14 +85,19 @@ public class Testsql {
 //    Affichage_Seance cours = new Affichage_Seance(Connexion_sql.getInstance());
 //    cours.affiche(personne.getGroupe());
 
-    Fenetre myWindow = new Fenetre();
-    myWindow.setVisible(true);
+   // Fenetre myWindow = new Fenetre();
+    //myWindow.setVisible(true);
     String email = "Papier@edu.ece.fr";
     Traitement_Connexion test = new Traitement_Connexion(Connexion_sql.getInstance());
     Etudiant personne = (Etudiant) test.traitement_co(email);
     System.out.println("Droit: "+personne.getDroit()+" Nom:"+ personne.getGroupe());
 
 
+        //Login monLogin = new Login();
+        //monLogin.Login();
+        
+    
+    
     }
     
 }
