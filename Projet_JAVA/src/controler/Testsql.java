@@ -34,7 +34,7 @@ public class Testsql {
 //    Etudiant etu = student.find(id);
   //  System.out.println(etu.getNom()+ " " + etu.getDroit());
     
- //  Fenetre f=new Fenetre();
+   Fenetre f=new Fenetre();
    /* 
 
    /*Connection conn;
@@ -83,8 +83,8 @@ public class Testsql {
 //
 //    Affichage_Seance cours = new Affichage_Seance(Connexion_sql.getInstance());
 //    cours.affiche(personne.getGroupe());
-Login ok= new Login();
-ok.Login();
+//Login ok= new Login();
+//ok.Login();
 
     }
     

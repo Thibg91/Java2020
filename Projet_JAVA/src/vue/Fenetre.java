@@ -100,10 +100,17 @@ public final class Fenetre extends JFrame implements ActionListener{
     JTextPane contenu = new JTextPane();
          for(int i=0;i<=2;i++)
          {
-            
-    contenu.setBackground(Color.magenta);
+            if(i==0)
+            {
+                  contenu.setBackground(Color.blue);
     contenu.setBounds( 12, 1210, 2200, 170 );
-    
+            }
+            if(i==1)
+            {
+                 contenu.setBackground(Color.magenta);
+    contenu.setBounds( 232, 121, 250, 170 );
+            }
+
          }
     contenu.setEditable(false);
          
@@ -119,7 +126,7 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     JTextPane Voidcontenu = new JTextPane();
     Voidcontenu.setEditable(false);
     Voidcontenu.setText("");
-    Voidcontenu.setBounds( 51, 51, 200, 70);
+    Voidcontenu.setBounds( 501, 501, 200, 70);
     
     //Ici c'est juste la colonne qui affiche les heures du tableau
     JPanel firstColumnPane = new JPanel();
@@ -168,13 +175,11 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     
     //juste un test 
     JComboBox professeur = new JComboBox();
-    liste=conn.Affich("Select Nom from cours ");
-         for(int i=0;i<1;i++)
+    liste=conn.Affich("Select Nom from utilisateurs where Droit = 3");
+         for(int i=0;i<liste.size();i++)
        {
       professeur.addItem(liste.get(i));
-      professeur.addItem(liste.get(i+1));
-      professeur.addItem(liste.get(i+2));
-      professeur.addItem(liste.get(i+3));
+    
        }
   
     JLabel profLabel = new JLabel("Professeur : ");
@@ -318,6 +323,7 @@ public void initCalendrier()
 //initialise le tableau de récap
 public void initRecap()
 {
+   
      Object[][] test_Recap = {
              {"Mathématique(Test)","15h30-17h","15 juin","Mme Coudray","1h30"},
              {"Mathématique(Test)","15h30-17h","15 juin","Mme Coudray","1h30"}
