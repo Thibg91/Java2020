@@ -8,11 +8,16 @@ import controler.Connexion_sql;
 import java.awt.*;
 
 import java.awt.event.*;
+import java.io.Console;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import java.sql.Connection;
 
 /**
  *
@@ -26,14 +31,16 @@ public class Login extends JFrame implements ActionListener{
     private JTextField chp_login = new JTextField();
     private JTextField chp_mdp = new JTextField();
     private BoutonInt valider = new BoutonInt("Valider");
-      private Connexion_sql conn= new Connexion_sql();
+     private Connection connexion = null;
  private JTextArea ID = new JTextArea("Identifiant : ");
   private  JTextArea MDP = new JTextArea("Mot de passe : ");
         ArrayList<String> liste; 
-   
+  private  Statement stmt;
+  private  ResultSet rset;
+   private boolean verif;
     
     //Constructeur basique
-    public int Login() throws ClassNotFoundException, SQLException{
+    public void Login() throws ClassNotFoundException, SQLException{
         this.setTitle(" Connexion");
         this.setSize(350,250);
          this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -68,48 +75,73 @@ public class Login extends JFrame implements ActionListener{
          //le conteneur principal de la fenetre est chp_co
          this.setContentPane(chp_co);
          this.setVisible(true);
-       
-        return 0;
+         System.out.println(chp_login.getText());
+      
+        
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
+    @Override
     public void actionPerformed(ActionEvent arg0){
-
-        int idd;
-        String Id = ContenuID.getText();
-        String mdp=MDP.getText();
-        System.out.println(Id);
        
+      verif=false;
+     
+        try {
+            verif=Recherche();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       System.out.println(verif);
+       
+    
        
     }
-    public boolean Recherche(String Id,String mdp) throws ClassNotFoundException, SQLException
+    public boolean Recherche() throws ClassNotFoundException, SQLException
     { String mdpbdd="";
-    boolean verif=false;
-        liste=conn.Affich("Select Password from utilisateurs Where ID= "+ Id);
-         for(int i=0;i<liste.size();i++)
-       {
-           
-          mdpbdd=liste.get(i);
-           System.out.println(mdpbdd);
-       }
-         if(mdp==mdpbdd)
+    boolean verif=true;
+    String email=chp_login.getText();
+    String mdpp=chp_mdp.getText();
+   
+     // création d'un ordre SQL (statement)
+  this.connexion= Connexion_sql.getInstance();
+        stmt = connexion.createStatement();
+        ResultSet rs=stmt.executeQuery("Select * from utilisateurs Where ID= "+ email); 
+        while(rs.next())
+        {
+            mdpbdd=rs.getString("Password");
+        }
+      
+        
+         if(mdpbdd.equals(mdpp))
          {
-             System.out.println("yes");
-             int Idd = Integer.parseInt(Id);
-               verif=true;
+           
+          
+            System.out.println("ok");
+            
+            
+             
+               return verif;
              
          }
          else
          {
-             System.out.println("no");
-         
+             
+              System.out.println(" no ok");
+         verif=false;
+        
              
          }
+         System.out.println(verif);
          return verif;
 
-        System.out.println("J'ai cliqué sur le bouton valider");
-        this.setVisible(false);
-
     }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+ 
 
   
 }

@@ -29,13 +29,12 @@ public class Testsql {
      */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
-        Login check= new Login();
-    int id = check.Login();
+        //Login check= new Login();
 //    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
 //    Etudiant etu = student.find(id);
   //  System.out.println(etu.getNom()+ " " + etu.getDroit());
     
-    Fenetre f=new Fenetre();
+ //  Fenetre f=new Fenetre();
    /* 
 
    /*Connection conn;
@@ -62,7 +61,7 @@ public class Testsql {
     conn.close(); */
 
    
-    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
+  //  DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
     
 
     
@@ -77,13 +76,16 @@ public class Testsql {
 */
     //Fenetre myWindow = new Fenetre();
     //myWindow.setVisible(true);
-    String email = "Papier@edu.ece.fr";
-    Traitement_Connexion test = new Traitement_Connexion(Connexion_sql.getInstance());
-    Etudiant personne = (Etudiant) test.traitement_co(email);
-    System.out.println("Droit: "+personne.getDroit()+" Nom:"+ personne.getGroupe());
+//    String email = "Papier@edu.ece.fr";
+//    Traitement_Connexion test = new Traitement_Connexion(Connexion_sql.getInstance());
+//    Etudiant personne = (Etudiant) test.traitement_co(email);
+//   
+//
+//    Affichage_Seance cours = new Affichage_Seance(Connexion_sql.getInstance());
+//    cours.affiche(personne.getGroupe());
+Login ok= new Login();
+ok.Login();
 
-    Affichage_Seance cours = new Affichage_Seance(Connexion_sql.getInstance());
-    cours.affiche(personne.getGroupe());
     }
     
 }
