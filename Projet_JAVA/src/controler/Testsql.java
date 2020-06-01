@@ -61,7 +61,7 @@ public class Testsql {
     }
     conn.close(); */
 
-    int id = 4;
+   
     DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
     
 
