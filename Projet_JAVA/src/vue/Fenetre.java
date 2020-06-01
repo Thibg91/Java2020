@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -153,7 +154,7 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
      
      this.initCalendrier();
      this.initRecap();
-   
+      
    //Partie filtre : c'est la partie sur la droite de la page qui va contenir tout les filtres utiles sur notre tableau
     JPanel rightLayout = new JPanel();
     rightLayout.setLayout(new GridLayout(7,1));
@@ -209,6 +210,8 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     
      Login monLogin = new Login();
     monLogin.setVisible(true);
+    
+    defineMaj();
     
     bouton1.addActionListener(this);
     bouton2.addActionListener(this);
@@ -421,6 +424,50 @@ public void initRecap()
     //Contenu du centre
     FenetreRecap.add(conteneurRec, BorderLayout.CENTER);
  }
- }
+ 
+public void defineMaj()
+{
+    JPanel filtreCours = new JPanel();
+    JPanel coursActif = new JPanel();
+    JPanel ModifCours = new JPanel();
+    BoutonInt modifierB = new BoutonInt("modifier");
+    BoutonInt AjouterB = new BoutonInt("Ajouter");
+    BoutonInt SupprimerB = new BoutonInt("Supprimer");
+    
+    Object[][] coursActifTab = {
+             {"Mathématique(Test)","15h30-17h","15 juin","Mme Coudray","1h30",modifierB,SupprimerB},
+             {"Mathématique(Test)","15h30-17h","15 juin","Mme Coudray","1h30",modifierB,SupprimerB}
+         };
+     
+     String[] coursActifTitle = {"Matière","Horaires", "Date","Professeur","durée","Modifier","Supprimer"};
+    
+    MonModel modelMaj = new MonModel(coursActifTab,coursActifTitle);
+      JTable coursMaj = new JTable(modelMaj);
+      coursMaj.setDefaultRenderer(BoutonInt.class, new ComposantTable());
+      coursMaj.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      TableColumn col1 = coursMaj.getColumnModel().getColumn(0);
+      col1.setPreferredWidth(200);
+      TableColumn col2 = coursMaj.getColumnModel().getColumn(1);
+      col2.setPreferredWidth(100);
+      TableColumn col4 = coursMaj.getColumnModel().getColumn(3);
+      col4.setPreferredWidth(100);
+      TableColumn col6 = coursMaj.getColumnModel().getColumn(5);
+      col6.setPreferredWidth(200);
+      TableColumn col7 = coursMaj.getColumnModel().getColumn(6);
+      col7.setPreferredWidth(200);
+      
+      JScrollPane conteneurMaj = new JScrollPane(coursMaj);
+      conteneurMaj.setPreferredSize(new Dimension(950,200));
+     
+      coursActif.add(conteneurMaj);
+    
+    FenetreMaj.setLayout(new GridLayout(3,1));
+    FenetreMaj.add(filtreCours);
+    FenetreMaj.add(coursActif);
+    FenetreMaj.add(ModifCours);
+    
+    
+}
+}
 
 

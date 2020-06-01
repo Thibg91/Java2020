@@ -51,7 +51,12 @@ public class Login extends JFrame implements ActionListener{
          this.setLocationRelativeTo(null);
          
          
-         
+
+         JTextArea ID = new JTextArea("Identifiant : ");
+         ID.setEditable(false);
+         JTextArea MDP = new JTextArea("Mot de passe : ");
+         MDP.setEditable(false);
+
          //déclaration de 3 JPanel pour positionner les différents champs de texte et le bouton
          JPanel ContenuID = new JPanel();
          JPanel ContenuMDP = new JPanel();

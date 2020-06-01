@@ -23,8 +23,9 @@ public class ComposantTable extends DefaultTableCellRenderer {
     {
         if(value instanceof JTextPane)
             return (JTextPane) value;
-        else
-            return this;
+        else if(value instanceof BoutonInt)
+            return (BoutonInt) value; 
+        else  return this;
     }
     
 }
