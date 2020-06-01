@@ -65,8 +65,8 @@ public class Testsql {
     Login monLogin = new Login();
     monLogin.setVisible(false);
 */
-    //Fenetre myWindow = new Fenetre();
-    //myWindow.setVisible(true);
+    Fenetre myWindow = new Fenetre();
+    myWindow.setVisible(true);
     String email = "Papier@edu.ece.fr";
     Traitement_Connexion test = new Traitement_Connexion(Connexion_sql.getInstance());
     Etudiant personne = (Etudiant) test.traitement_co(email);
