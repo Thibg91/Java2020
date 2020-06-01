@@ -4,9 +4,13 @@
  * and open the template in the editor.
  */
 package vue;
+import controler.Connexion_sql;
 import java.awt.*;
 
 import java.awt.event.*;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 
@@ -22,17 +26,21 @@ public class Login extends JFrame implements ActionListener{
     private JTextField chp_login = new JTextField();
     private JTextField chp_mdp = new JTextField();
     private BoutonInt valider = new BoutonInt("Valider");
+      private Connexion_sql conn= new Connexion_sql();
+ private JTextArea ID = new JTextArea("Identifiant : ");
+  private  JTextArea MDP = new JTextArea("Mot de passe : ");
+        ArrayList<String> liste; 
+   
     
     //Constructeur basique
-    public Login(){
+    public int Login() throws ClassNotFoundException, SQLException{
         this.setTitle(" Connexion");
         this.setSize(350,250);
          this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
          this.setLocationRelativeTo(null);
          
          
-         JTextArea ID = new JTextArea("Identifiant : ");
-         JTextArea MDP = new JTextArea("Mot de passe : ");
+         
          //déclaration de 3 JPanel pour positionner les différents champs de texte et le bouton
          JPanel ContenuID = new JPanel();
          JPanel ContenuMDP = new JPanel();
@@ -60,9 +68,48 @@ public class Login extends JFrame implements ActionListener{
          //le conteneur principal de la fenetre est chp_co
          this.setContentPane(chp_co);
          this.setVisible(true);
+       
+        return 0;
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     public void actionPerformed(ActionEvent arg0){
-        this.setVisible(false);
+
+        int idd;
+        String Id = ContenuID.getText();
+        String mdp=MDP.getText();
+        System.out.println(Id);
+       
+       
     }
+    public boolean Recherche(String Id,String mdp) throws ClassNotFoundException, SQLException
+    { String mdpbdd="";
+    boolean verif=false;
+        liste=conn.Affich("Select Password from utilisateurs Where ID= "+ Id);
+         for(int i=0;i<liste.size();i++)
+       {
+           
+          mdpbdd=liste.get(i);
+           System.out.println(mdpbdd);
+       }
+         if(mdp==mdpbdd)
+         {
+             System.out.println("yes");
+             int Idd = Integer.parseInt(Id);
+               verif=true;
+             
+         }
+         else
+         {
+             System.out.println("no");
+         
+             
+         }
+         return verif;
+
+        System.out.println("J'ai cliqué sur le bouton valider");
+        this.setVisible(false);
+
+    }
+
+  
 }

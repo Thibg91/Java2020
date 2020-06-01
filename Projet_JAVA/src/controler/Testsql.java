@@ -28,7 +28,16 @@ public class Testsql {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        
+
+        Login check= new Login();
+    int id = check.Login();
+//    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
+//    Etudiant etu = student.find(id);
+  //  System.out.println(etu.getNom()+ " " + etu.getDroit());
+    
+    Fenetre f=new Fenetre();
+   /* 
+
    /*Connection conn;
    Statement stmt;
    ResultSet rset;
@@ -51,11 +60,18 @@ public class Testsql {
         System.out.println ("ID: "+ rs.getString(1)+ " Email " + rs.getString(2));
     }
     conn.close(); */
+
+   
+    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
+    
+
     
     /* 
+
     Etudiant etu = student.find(id);
     System.out.println(etu.getDroit());
-    
+/*    
+
     Login monLogin = new Login();
     monLogin.setVisible(false);
 */
