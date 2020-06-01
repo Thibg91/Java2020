@@ -4,11 +4,24 @@
  * and open the template in the editor.
  */
 package vue;
+import controler.Affichage_Seance;
+import controler.Connexion_sql;
+import controler.Traitement_Connexion;
 import java.awt.*;
 
 import java.awt.event.*;
+import java.io.Console;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import java.sql.Connection;
+import modele.Etudiant;
+import modele.Utilisateur;
 
 /**
  *
@@ -22,19 +35,28 @@ public class Login extends JFrame implements ActionListener{
     private JTextField chp_login = new JTextField();
     private JTextField chp_mdp = new JTextField();
     private BoutonInt valider = new BoutonInt("Valider");
+     private Connection connexion = null;
+ private JTextArea ID = new JTextArea("Identifiant : ");
+  private  JTextArea MDP = new JTextArea("Mot de passe : ");
+        ArrayList<String> liste; 
+  private  Statement stmt;
+  private  ResultSet rset;
+   private boolean verif;
     
     //Constructeur basique
-    public Login(){
+    public void Login() throws ClassNotFoundException, SQLException{
         this.setTitle(" Connexion");
         this.setSize(350,250);
          this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
          this.setLocationRelativeTo(null);
          
          
+
          JTextArea ID = new JTextArea("Identifiant : ");
          ID.setEditable(false);
          JTextArea MDP = new JTextArea("Mot de passe : ");
          MDP.setEditable(false);
+
          //déclaration de 3 JPanel pour positionner les différents champs de texte et le bouton
          JPanel ContenuID = new JPanel();
          JPanel ContenuMDP = new JPanel();
@@ -62,10 +84,52 @@ public class Login extends JFrame implements ActionListener{
          //le conteneur principal de la fenetre est chp_co
          this.setContentPane(chp_co);
          this.setVisible(true);
+         System.out.println(chp_login.getText());
+      
+        
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
+    @Override
     public void actionPerformed(ActionEvent arg0){
-        System.out.println("J'ai cliqué sur le bouton valider");
-        this.setVisible(false);
+     
+        try {
+            Utilisateur Personne = Recherche();
+            System.out.println(Personne.getDroit());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        
     }
+    
+    public Utilisateur Recherche() throws ClassNotFoundException, SQLException
+    { 
+    Utilisateur personne = null;
+    String mdpbdd="";
+    String email=chp_login.getText();
+    String mdpp=chp_mdp.getText();
+   
+     // création d'un ordre SQL (statement)
+        this.connexion= Connexion_sql.getInstance();
+        stmt = connexion.createStatement();
+        ResultSet rs=stmt.executeQuery("Select * from utilisateurs Where Email= "+ "\"" +email +  "\""); 
+        while(rs.next())
+        {
+            mdpbdd=rs.getString("Password");
+        }
+
+         if(mdpbdd.equals(mdpp))
+         {          
+            Traitement_Connexion test = new Traitement_Connexion(this.connexion);
+            personne = test.traitement_co(email);            
+         }
+         else
+         {             
+            System.out.println(" no ok");          
+         }
+         return personne;
+
+    }
+  
 }

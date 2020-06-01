@@ -28,7 +28,15 @@ public class Testsql {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        
+
+        //Login check= new Login();
+//    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
+//    Etudiant etu = student.find(id);
+  //  System.out.println(etu.getNom()+ " " + etu.getDroit());
+    
+ //  Fenetre f=new Fenetre();
+   /* 
+
    /*Connection conn;
    Statement stmt;
    ResultSet rset;
@@ -52,8 +60,8 @@ public class Testsql {
     }
     conn.close(); */
 
-    int id = 4;
-    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
+   
+  //  DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
     
 
     
@@ -62,9 +70,11 @@ public class Testsql {
     Etudiant etu = student.find(id);
     System.out.println(etu.getDroit());
 /*    
+
     Login monLogin = new Login();
     monLogin.setVisible(false);
 */
+
     Fenetre myWindow = new Fenetre();
     myWindow.setVisible(true);
     String email = "Papier@edu.ece.fr";
@@ -72,8 +82,7 @@ public class Testsql {
     Etudiant personne = (Etudiant) test.traitement_co(email);
     System.out.println("Droit: "+personne.getDroit()+" Nom:"+ personne.getGroupe());
 
-    Affichage_Seance cours = new Affichage_Seance(Connexion_sql.getInstance());
-    cours.affiche(personne.getGroupe());
+
     }
     
 }
