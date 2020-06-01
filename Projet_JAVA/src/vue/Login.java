@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 package vue;
+import controler.Affichage_Seance;
 import controler.Connexion_sql;
+import controler.Traitement_Connexion;
 import java.awt.*;
 
 import java.awt.event.*;
@@ -18,6 +20,8 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.sql.Connection;
+import modele.Etudiant;
+import modele.Utilisateur;
 
 /**
  *
@@ -82,58 +86,44 @@ public class Login extends JFrame implements ActionListener{
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     @Override
     public void actionPerformed(ActionEvent arg0){
-       
-      verif=false;
      
         try {
-            verif=Recherche();
+            Utilisateur Personne = Recherche();
+            System.out.println(Personne.getDroit());
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       System.out.println(verif);
-       
-    
-       
+        } 
+        
     }
-    public boolean Recherche() throws ClassNotFoundException, SQLException
-    { String mdpbdd="";
-    boolean verif=true;
+    
+    public Utilisateur Recherche() throws ClassNotFoundException, SQLException
+    { 
+    Utilisateur personne = null;
+    String mdpbdd="";
     String email=chp_login.getText();
     String mdpp=chp_mdp.getText();
    
      // création d'un ordre SQL (statement)
-  this.connexion= Connexion_sql.getInstance();
+        this.connexion= Connexion_sql.getInstance();
         stmt = connexion.createStatement();
-        ResultSet rs=stmt.executeQuery("Select * from utilisateurs Where ID= "+ email); 
+        ResultSet rs=stmt.executeQuery("Select * from utilisateurs Where Email= "+ "\"" +email +  "\""); 
         while(rs.next())
         {
             mdpbdd=rs.getString("Password");
         }
-      
-        
+
          if(mdpbdd.equals(mdpp))
-         {
-           
-          
-            System.out.println("ok");
-            
-            
-             
-               return verif;
-             
+         {          
+            Traitement_Connexion test = new Traitement_Connexion(this.connexion);
+            personne = test.traitement_co(email);            
          }
          else
-         {
-             
-              System.out.println(" no ok");
-         verif=false;
-        
-             
+         {             
+            System.out.println(" no ok");          
          }
-         System.out.println(verif);
-         return verif;
+         return personne;
 
     }
   

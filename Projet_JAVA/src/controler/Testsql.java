@@ -83,8 +83,8 @@ public class Testsql {
 //
 //    Affichage_Seance cours = new Affichage_Seance(Connexion_sql.getInstance());
 //    cours.affiche(personne.getGroupe());
-Login ok= new Login();
-ok.Login();
+    Login ok= new Login();
+    ok.Login();
 
     }
     
