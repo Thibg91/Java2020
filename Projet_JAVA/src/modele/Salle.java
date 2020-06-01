@@ -13,9 +13,9 @@ public class Salle {
     private int id_salle;
     private String nom_site;
     private int capacite;
-    private Site site;
+    private int site;
     
-    public void Salle(int id, String nom, int capacite, Site site){
+    public Salle(int id, String nom, int capacite, int site){
         this.id_salle = id;
         this.nom_site = nom;
         this.capacite = capacite;
@@ -34,7 +34,7 @@ public class Salle {
         this.capacite = capacite;
     }
     
-    public void setSite(Site id){
+    public void setSite(int id){
         this.site = id;
     }
     
@@ -50,7 +50,7 @@ public class Salle {
         return this.capacite;
     }
     
-    public Site getSite(){
+    public int getSite(){
         return this.site;
     }
 }
