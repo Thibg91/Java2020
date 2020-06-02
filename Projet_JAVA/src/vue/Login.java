@@ -36,77 +36,77 @@ public class Login extends JFrame implements ActionListener{
     private JTextField chp_login = new JTextField();
     private JTextField chp_mdp = new JTextField();
     private BoutonInt valider = new BoutonInt("Valider");
-     private Connection connexion = null;
- private JTextArea ID = new JTextArea("Identifiant : ");
-  private  JTextArea MDP = new JTextArea("Mot de passe : ");
-        ArrayList<String> liste; 
-  private  Statement stmt;
-  private  ResultSet rset;
+    private Connection connexion = null;
+    private JTextArea ID = new JTextArea("Identifiant : ");
+    private JTextArea MDP = new JTextArea("Mot de passe : ");
+    private Statement stmt;
+    private ResultSet rset;
     private Recherchelog reche=null;
-    private  Utilisateur Personne=null;
-    private int IDd;
+    private Utilisateur Personne=null;
+    private String email = "";
 
     //Constructeur basique
-    public int Login() throws ClassNotFoundException, SQLException{
+    public Login() throws ClassNotFoundException, SQLException{
         this.setTitle(" Connexion");
         this.setSize(350,250);
-         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-         this.setLocationRelativeTo(null);
-         
-         
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setLocationRelativeTo(null);
 
-         JTextArea ID = new JTextArea("Identifiant : ");
-         ID.setEditable(false);
-         JTextArea MDP = new JTextArea("Mot de passe : ");
-         MDP.setEditable(false);
+        //JTextArea ID = new JTextArea("Identifiant : ");
+        ID.setEditable(false);
+        //JTextArea MDP = new JTextArea("Mot de passe : ");
+        MDP.setEditable(false);
 
-         //déclaration de 3 JPanel pour positionner les différents champs de texte et le bouton
-         JPanel ContenuID = new JPanel();
-         JPanel ContenuMDP = new JPanel();
-         JPanel ContenuB = new JPanel();
+        //déclaration de 3 JPanel pour positionner les différents champs de texte et le bouton
+        JPanel ContenuID = new JPanel();
+        JPanel ContenuMDP = new JPanel();
+        JPanel ContenuB = new JPanel();
          
-         ContenuB.setBounds(50, 50, 0, 0);
-         chp_login.setPreferredSize(new Dimension(160, 35));
-         chp_mdp.setPreferredSize(new Dimension(160, 35));
-         chp_co.setLayout(new GridLayout(4,1));
+        ContenuB.setBounds(50, 50, 0, 0);
+        chp_login.setPreferredSize(new Dimension(160, 35));
+        chp_mdp.setPreferredSize(new Dimension(160, 35));
+        chp_co.setLayout(new GridLayout(4,1));
          
-         //on ajoute les composants dans les différents panel
-         ContenuID.add(ID);
-         ContenuID.add(chp_login);
-         ContenuMDP.add(MDP);
-         ContenuMDP.add(chp_mdp);
-         ContenuB.add(valider);
-         //puis sur le JPanel principal
-         chp_co.add(ContenuID); 
-         chp_co.add(ContenuMDP); 
-         chp_co.add(ContenuB); 
+        //on ajoute les composants dans les différents panel
+        ContenuID.add(ID);
+        ContenuID.add(chp_login);
+        ContenuMDP.add(MDP);
+        ContenuMDP.add(chp_mdp);
+        ContenuB.add(valider);
+        //puis sur le JPanel principal
+        chp_co.add(ContenuID); 
+        chp_co.add(ContenuMDP); 
+        chp_co.add(ContenuB); 
          
-         //on demande au bouton d'intéragir quand on clique dessus ( pour l'instant ca ferme juste la fenetre de co
-         valider.addActionListener(this);
+        //on demande au bouton d'intéragir quand on clique dessus ( pour l'instant ca ferme juste la fenetre de co
+        valider.addActionListener(this);
          
-         //le conteneur principal de la fenetre est chp_co
-         this.setContentPane(chp_co);
-         this.setVisible(true);
-         System.out.println(chp_login.getText());
-      
-        return IDd;
+        //le conteneur principal de la fenetre est chp_co
+        this.setContentPane(chp_co);
+        this.setVisible(true);
+        System.out.println("gogo:"+chp_login.getText());
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
-    @Override
+    
     public void actionPerformed(ActionEvent arg0){
-    reche=new Recherchelog(connexion);
-     String email=chp_login.getText();
-     String mdp=chp_mdp.getText();
-     System.out.println(mdp);
+        reche=new Recherchelog(connexion);
+        String email=chp_login.getText();
+        String mdp=chp_mdp.getText();
+        //System.out.println(mdp);
         try {
-             Personne = reche.Recherche(email,mdp);
-            System.out.println(Personne.getDroit());
+            Personne = reche.Recherche(email,mdp);
+            this.email = Personne.getEmail();
+            System.out.println("entrée dans recherche");
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         } 
-        
     }
-  
-   
-  
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String mail) {
+        this.email = mail;
+    }
 }
