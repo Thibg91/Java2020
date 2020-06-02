@@ -6,6 +6,7 @@
 package vue;
 import controler.Affichage_Seance;
 import controler.Connexion_sql;
+import controler.Recherchelog;
 import controler.Traitement_Connexion;
 import java.awt.*;
 
@@ -42,7 +43,7 @@ public class Login extends JFrame implements ActionListener{
   private  Statement stmt;
   private  ResultSet rset;
    private boolean verif;
-    
+    private Recherchelog reche;
     //Constructeur basique
     public void Login() throws ClassNotFoundException, SQLException{
         this.setTitle(" Connexion");
@@ -91,45 +92,17 @@ public class Login extends JFrame implements ActionListener{
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     @Override
     public void actionPerformed(ActionEvent arg0){
-     
+     System.out.println(chp_login.getText());
+     System.out.println(chp_mdp.getText());
         try {
-            Utilisateur Personne = Recherche();
-            System.out.println(Personne.getDroit());
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
+            Utilisateur Personne = reche.Recherche(chp_login.getText(),chp_mdp.getText());
+            //System.out.println(Personne.getDroit());
+        } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         } 
         
     }
     
-    public Utilisateur Recherche() throws ClassNotFoundException, SQLException
-    { 
-    Utilisateur personne = null;
-    String mdpbdd="";
-    String email=chp_login.getText();
-    String mdpp=chp_mdp.getText();
    
-     // création d'un ordre SQL (statement)
-        this.connexion= Connexion_sql.getInstance();
-        stmt = connexion.createStatement();
-        ResultSet rs=stmt.executeQuery("Select * from utilisateurs Where Email= "+ "\"" +email +  "\""); 
-        while(rs.next())
-        {
-            mdpbdd=rs.getString("Password");
-        }
-
-         if(mdpbdd.equals(mdpp))
-         {          
-            Traitement_Connexion test = new Traitement_Connexion(this.connexion);
-            personne = test.traitement_co(email);            
-         }
-         else
-         {             
-            System.out.println(" no ok");          
-         }
-         return personne;
-
-    }
   
 }
