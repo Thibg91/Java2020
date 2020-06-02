@@ -85,6 +85,7 @@ public class Testsql {
 //    Affichage_Seance cours = new Affichage_Seance(Connexion_sql.getInstance());
 //    cours.affiche(personne.getGroupe());
 
+
   //  Fenetre myWindow = new Fenetre();
 //    myWindow.setVisible(true);
 //    String email = "Papier@edu.ece.fr";
@@ -95,6 +96,12 @@ Login log=new Login();
 log.Login();
 
 
+
+        //Login monLogin = new Login();
+        //monLogin.Login();
+        
+    
+    
     }
     
 }

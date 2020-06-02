@@ -42,6 +42,7 @@ public final class Fenetre extends JFrame implements ActionListener{
     private BoutonInt bouton2 = new BoutonInt("Semaine 2");
     private BoutonInt bouton3 = new BoutonInt("Semaine 3");
     private BoutonInt bouton4 = new BoutonInt("Semaine 4");
+    private BoutonInt modifierB = new BoutonInt("modifier");
     
     private JMenuBar Navigation = new JMenuBar();
     private BoutonInt boutonCal = new BoutonInt("Emploi du temps");
@@ -54,6 +55,7 @@ public final class Fenetre extends JFrame implements ActionListener{
     private JPanel FenetreMaj = new JPanel();
     private JPanel FenetreReporting = new JPanel();
    
+    private JPanel ModifCours = new JPanel();
     
     //constructeur de la classe
     public Fenetre() throws ClassNotFoundException, SQLException {
@@ -191,10 +193,14 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     rightLayout.add(profPanel);
     
     
+
   
     
      Login monLogin = new Login();
     monLogin.setVisible(true);
+
+    defineMaj();
+
     
     bouton1.addActionListener(this);
     bouton2.addActionListener(this);
@@ -210,7 +216,7 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     JScrollPane conteneurCal = new JScrollPane(monTableau);
     
 
-   // Login monLogin = new Login();
+    //Login monLogin = new Login();
    // monLogin.setVisible(true);
 
     //partie barre de navigation
@@ -270,6 +276,12 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
            this.setContentPane(FenetreReporting);
            this.setSize(1499, 1000);
            this.setSize(1500, 1000);
+        }
+        
+        if(arg0.getSource() == modifierB )
+        {
+           System.out.println("J'ai cliqué sur le bouton Modifier");
+           ModifCours.setVisible(true);
         }
     }
 
@@ -407,7 +419,143 @@ public void initRecap()
     //Contenu du centre
     FenetreRecap.add(conteneurRec, BorderLayout.CENTER);
  }
+
  }
+
+
+ 
+public void defineMaj()
+{
+    Font font1 = new Font("Arial",Font.BOLD,32);
+     Font font2 = new Font("Arial",Font.BOLD,18);
+    JPanel filtreCours = new JPanel();
+    filtreCours.setBackground(Color.white);
+    JPanel coursActif = new JPanel();
+    coursActif.setBackground(Color.LIGHT_GRAY);
+    ModifCours.setVisible(false);
+    ModifCours.setBackground(Color.white);
+    JPanel AjouterCours = new JPanel();
+    AjouterCours.setBackground(Color.LIGHT_GRAY);
+    AjouterCours.setLayout(new GridLayout(5,4));
+    BoutonInt AjouterB = new BoutonInt("Ajouter");
+    BoutonInt SupprimerB = new BoutonInt("Supprimer");
+    
+    Object[][] coursActifTab = {
+             {"Mathématique(Test)","15h30-17h","15 juin","Mme Coudray","1h30",modifierB,SupprimerB},
+             {"Mathématique(Test)","15h30-17h","15 juin","Mme Coudray","1h30",modifierB,SupprimerB}
+         };
+     
+     String[] coursActifTitle = {"Matière","Horaires", "Date","Professeur","durée","Modifier","Supprimer"};
+    
+    MonModel modelMaj = new MonModel(coursActifTab,coursActifTitle);
+      JTable coursMaj = new JTable(modelMaj);
+      coursMaj.getColumn("Modifier").setCellRenderer(new BoutonTableau());
+      coursMaj.getColumn("Supprimer").setCellRenderer(new BoutonTableau());
+      coursMaj.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+      TableColumn col1 = coursMaj.getColumnModel().getColumn(0);
+      col1.setPreferredWidth(200);
+      TableColumn col2 = coursMaj.getColumnModel().getColumn(1);
+      col2.setPreferredWidth(100);
+      TableColumn col4 = coursMaj.getColumnModel().getColumn(3);
+      col4.setPreferredWidth(100);
+      TableColumn col6 = coursMaj.getColumnModel().getColumn(5);
+      col6.setPreferredWidth(200);
+      TableColumn col7 = coursMaj.getColumnModel().getColumn(6);
+      col7.setPreferredWidth(200);
+      
+      JScrollPane conteneurMaj = new JScrollPane(coursMaj);
+      conteneurMaj.setPreferredSize(new Dimension(925,1000));
+     
+      coursActif.add(conteneurMaj);
+    
+      JLabel LabelAjout = new JLabel("Ajouter un cours");
+       LabelAjout.setFont(font1);
+      JLabel labelMatiere = new JLabel("Matière :");
+      labelMatiere.setFont(font2);
+      JLabel labelSemaine = new JLabel("Semaine :");
+      labelSemaine.setFont(font2);
+      JLabel labelDate = new JLabel("Date :");
+      labelDate.setFont(font2);
+      JLabel labelHeureD = new JLabel("Heure de début :");
+      labelHeureD.setFont(font2);
+      JLabel labelHeureF = new JLabel("Heure de fin :");
+      labelHeureF.setFont(font2);
+      JLabel labelEtat = new JLabel("Etat :");
+      labelEtat.setFont(font2);
+      JLabel labelType = new JLabel("Type :");
+      labelType.setFont(font2);
+      JLabel labelSalle = new JLabel("Salle :");
+      labelSalle.setFont(font2);
+      
+      JTextField TFMatiere = new JTextField();
+      JTextField TFSemaine = new JTextField();
+      JTextField TFDate = new JTextField();
+      JTextField TFHeureD = new JTextField();
+      JTextField TFHeureF = new JTextField();
+      JTextField TFEtat = new JTextField();
+      JTextField TFType = new JTextField();
+      JTextField TFSalle = new JTextField();
+     
+      AjouterCours.add(LabelAjout);
+      AjouterCours.add(new JLabel(""));
+      
+      AjouterCours.add(labelMatiere);
+      AjouterCours.add(TFMatiere);
+      
+      AjouterCours.add(labelSemaine);
+      AjouterCours.add(TFSemaine);
+      
+      AjouterCours.add(labelDate);
+      AjouterCours.add(TFDate);
+      
+      AjouterCours.add(labelHeureD);
+      AjouterCours.add(TFHeureD);
+      
+      AjouterCours.add(labelHeureF);
+      AjouterCours.add(TFHeureF);
+      
+      AjouterCours.add(labelEtat);
+      AjouterCours.add(TFEtat);
+      
+      AjouterCours.add(labelType);
+      AjouterCours.add(TFType);
+      
+      AjouterCours.add(labelSalle);
+      AjouterCours.add(TFSalle);
+      
+      AjouterCours.add(new JLabel(""));
+      AjouterCours.add(AjouterB);
+      
+    FenetreMaj.setLayout(new GridLayout(4,1));
+    FenetreMaj.add(filtreCours);
+    FenetreMaj.add(coursActif);
+    FenetreMaj.add(ModifCours);
+    FenetreMaj.add(AjouterCours);
+    
+    
+}
+
+public void modifierUnCours (){
+    Font font2 = new Font("Arial",Font.BOLD,18);
+    JLabel labelMatiere = new JLabel("Matière :");
+     labelMatiere.setFont(font2);
+     JTextField TFMatiere = new JTextField("(Test)Maths");
+   JLabel labelDate = new JLabel("Date :");
+     labelDate.setFont(font2);
+     JTextField TFDate = new JTextField("(Test)15 juin");
+   JLabel labelHoraireD = new JLabel("Début du cours :");
+     labelDate.setFont(font2);
+     JTextField TFHorD = new JTextField("(Test)12h00");
+   JLabel labelHoraireF = new JLabel("Fin du cours :");
+     labelDate.setFont(font2);
+     JTextField TFHorF = new JTextField("(Test)13h30");
+   JLabel labelDuree = new JLabel("Durée :");
+     labelDate.setFont(font2);
+     JTextField TFduree = new JTextField("(Test)1H30");
+}
+   
+
+}
 
 
 
