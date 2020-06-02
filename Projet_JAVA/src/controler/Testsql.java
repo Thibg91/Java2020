@@ -33,8 +33,8 @@ public class Testsql {
 //    DAO<Etudiant> student = new DAOEtudiant(Connexion_sql.getInstance());
 //    Etudiant etu = student.find(id);
   //  System.out.println(etu.getNom()+ " " + etu.getDroit());
-    
-  // Fenetre f=new Fenetre();
+  
+
    /* 
 
    /*Connection conn;
@@ -94,13 +94,9 @@ public class Testsql {
 //    System.out.println("Droit: "+personne.getDroit()+" Nom:"+ personne.getGroupe());
 //Login log=new Login();
 //log.Login();
+Fenetre f=new Fenetre(Connexion_sql.getInstance());
 
 
-
-        Login monLogin = new Login();
-       int ID= monLogin.Login();
-       System.out.println(ID);
-        
     
     
     }

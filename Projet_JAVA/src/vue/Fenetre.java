@@ -13,7 +13,10 @@ import controler.DAOEtudiant;
 import java.awt.*;
 
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -37,8 +40,8 @@ public final class Fenetre extends JFrame implements ActionListener{
     private Calendrier monTableau;
     private JTable monRecap;
     
-    private Connexion_sql conn= new Connexion_sql();
-    
+    private Connection conn= null;
+    private Connexion_sql connliste=new Connexion_sql();
     private BoutonInt bouton1 = new BoutonInt("Semaine 1");
     private BoutonInt bouton2 = new BoutonInt("Semaine 2");
     private BoutonInt bouton3 = new BoutonInt("Semaine 3");
@@ -58,9 +61,10 @@ public final class Fenetre extends JFrame implements ActionListener{
    
     private JPanel ModifCours = new JPanel();
     
+   
     //constructeur de la classe
-    public Fenetre() throws ClassNotFoundException, SQLException {
-        
+    public Fenetre(Connection conn) throws ClassNotFoundException, SQLException {
+        this.conn=conn;
     // déclaration de la fenetre
      String prof="Coudray";
      String id_cours="";
@@ -78,33 +82,16 @@ public final class Fenetre extends JFrame implements ActionListener{
     //String matiere = "VHDL";
    
     String salle = "Salle P416";
-    String recap = nomcours + "\n" + prof + "\n" + promo + "\n" + salle + "\r\n" ;
-    String idgr="";
    
-    int cpt=0;
-    //Panel dans lequel on place un JTextPane, en gros c'est la qu'on défini les cases de notre tableau donc la couleur la taille et surtout le text grace au setText(recap) avec "recap" le string vu plus haut
-      liste=conn.Affich("Select id_groupe from etudiant Where Id_utilisateurs=4"); //boucle pour savoir combien de cours a l'utilisateurs
-         for(int i=0;i<liste.size();i++)                     //vrai id a recup
-       {
-           
-          idgr = liste.get(i);
-           
-       }
-       
-         liste=conn.Affich("Select id_seance from seance_groupe Where id_groupe=" + idgr);
-       
-     
-        cpt=liste.size();
+   
+   
+   
           JPanel firstPanel = new JPanel();
     JTextPane contenu = new JTextPane();
-         for(int i=0;i<=cpt;i++)      //Ici on va créer les cases de cours
-         {
-    contenu.setBackground(Color.magenta);
-    contenu.setEditable(false);
-         }
+         
     contenu.setEditable(false);
          
-    contenu.setText(recap);
+ 
     //c'est avec ca qu'on centre le texte dans une case
     StyledDocument doc = contenu.getStyledDocument();
     SimpleAttributeSet center = new SimpleAttributeSet();
@@ -150,7 +137,7 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     JPanel coursPanel = new JPanel();
     JComboBox cours = new JComboBox();
     //coursPanel.setBackground(Color.lightGray);
-      liste=conn.Affich("Select Nom from cours ");
+      liste=connliste.Affich("Select Nom from cours ");
          for(int i=0;i<1;i++)
        {
       cours.addItem(liste.get(i));
@@ -165,7 +152,7 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     
     //juste un test 
     JComboBox professeur = new JComboBox();
-    liste=conn.Affich("Select Nom from utilisateurs where Droit = 3");
+    liste=connliste.Affich("Select Nom from utilisateurs where Droit = 3");
          for(int i=0;i<liste.size();i++)
        {
       professeur.addItem(liste.get(i));
@@ -182,7 +169,7 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
 //juste un test 
     JComboBox sallefiltre = new JComboBox();
     
-      liste=conn.Affich("Select Nom from cours ");
+      liste=connliste.Affich("Select Nom from cours ");
          for(int i=0;i<liste.size();i++)
        {
       sallefiltre.addItem(liste.get(i));
@@ -210,8 +197,60 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     boutonRec.addActionListener(this);
     boutonMaj.addActionListener(this);
     boutonRep.addActionListener(this);
+     Statement stmt = conn.createStatement();
+     int cpt=0;
+     int idgr=0;
+     int idprof=0;
+     String nomprof="";
+     String idseance="";
+     ResultSet rs=stmt.executeQuery("Select id_groupe from etudiant Where Id_utilisateurs=8");
+ 
+        while(rs.next()){
+           
+          idgr = rs.getInt("Id_groupe");
+           
+       }
+         
+         liste=connliste.Affich("Select id_seance from seance_groupe Where id_groupe=" + idgr);
+         cpt=liste.size();
+    for(int i=0;i<=cpt-1;i++)      //Ici on va créer les cases de cours
+         {
+       
+        idseance=liste.get(i);
+        System.out.println(idseance);
+        rs=stmt.executeQuery("Select id_enseignant from seance_enseignant Where id_seance=" + idseance);
+        while(rs.next())
+        {
+           idprof=rs.getInt("id_enseignant");
+           System.out.println("idprof:" +idprof);
+        }
+        rs=stmt.executeQuery("Select Nom from Utilisateurs Where ID=" + idprof);
+        while(rs.next())
+        {
+           nomprof=rs.getString("Nom");
+           
+        }
+           
+        
+       
+         if(i==0)
+         {
+              String recap = nomprof + "\n"  + "\n" + promo + "\n" + salle + "\r\n" ;
+                contenu.setText(recap);
+             monTableau.ajouterCours (contenu, 6, 5);
+         }
+         if(i==1)
+         {    
+              String recap = nomprof + "\n" + prof + "\n" + promo + "\n" + salle + "\r\n" ;
+                contenu.setText(recap);
+                monTableau.ajouterCours (contenu, 5, 5);
+         }
+    contenu.setBackground(Color.magenta);  //creation case
+    contenu.setEditable(false);
     
-    monTableau.ajouterCours (contenu, 6, 5);
+         }
+    
+    
     
     JScrollPane conteneurCal = new JScrollPane(monTableau);
     
@@ -339,21 +378,21 @@ public void initRecap()
      String id_cours="";
      String nomcours="";
       ArrayList<String> liste; 
-     liste=conn.Affich("Select Nom from utilisateurs Where ID=16");
+     liste=connliste.Affich("Select Nom from utilisateurs Where ID=16");
          for(int i=0;i<liste.size();i++)
        {
            
           prof = liste.get(i);
            
        }
-         liste=conn.Affich("Select Id_cours from enseignant Where ID_utilisateurs=16");
+         liste=connliste.Affich("Select Id_cours from enseignant Where ID_utilisateurs=16");
            for(int i=0;i<liste.size();i++)
        {
            
           id_cours = liste.get(i);
            
        }
-                    liste=conn.Affich("Select Nom  from cours Where ID="+ id_cours);
+                    liste=connliste.Affich("Select Nom  from cours Where ID="+ id_cours);
            for(int i=0;i<liste.size();i++)
        {
            
@@ -361,7 +400,7 @@ public void initRecap()
            
        }
      JComboBox cours = new JComboBox();
-      liste=conn.Affich("Select Nom from cours ");
+      liste=connliste.Affich("Select Nom from cours ");
          for(int i=0;i<1;i++)
        {
       cours.addItem(liste.get(i));
@@ -374,7 +413,7 @@ public void initRecap()
     
     //juste un test 
     JComboBox professeur = new JComboBox();
-    liste=conn.Affich("Select Nom from cours ");
+    liste=connliste.Affich("Select Nom from cours ");
          for(int i=0;i<1;i++)
        {
       professeur.addItem(liste.get(i));
@@ -393,7 +432,7 @@ public void initRecap()
 //juste un test 
     JComboBox sallefiltre = new JComboBox();
     
-      liste=conn.Affich("Select Nom from cours ");
+      liste=connliste.Affich("Select Nom from cours ");
          for(int i=0;i<1;i++)
        {
       sallefiltre.addItem(liste.get(i));
