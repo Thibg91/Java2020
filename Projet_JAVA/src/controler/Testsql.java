@@ -86,7 +86,7 @@ public class Testsql {
 //    cours.affiche(personne.getGroupe());
 
 
-  //  Fenetre myWindow = new Fenetre();
+   Fenetre myWindow = new Fenetre();
 //    myWindow.setVisible(true);
 //    String email = "Papier@edu.ece.fr";
 //    Traitement_Connexion test = new Traitement_Connexion(Connexion_sql.getInstance());
@@ -95,7 +95,7 @@ public class Testsql {
 //Login log=new Login();
 //log.Login();
 
-
+  
 
         Login monLogin = new Login();
        int ID= monLogin.Login();

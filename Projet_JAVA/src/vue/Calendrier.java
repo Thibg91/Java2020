@@ -26,5 +26,13 @@ public class Calendrier extends JTable {
 {
     this.getModel().setValueAt(monCours, row, col);
 }
+    
+public void supprimerCours (int row , int col)
+{
+    JTextPane Voidcontenu = new JTextPane();
+    Voidcontenu.setEditable(false);
+    Voidcontenu.setText("");
+    this.getModel().setValueAt(Voidcontenu, row, col);
+}
 }
 
