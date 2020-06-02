@@ -17,6 +17,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -98,9 +99,8 @@ public final class Fenetre extends JFrame implements ActionListener{
     JTextPane contenu = new JTextPane();
          for(int i=0;i<=cpt;i++)      //Ici on va créer les cases de cours
          {
-          
-            
-
+    contenu.setBackground(Color.magenta);
+    contenu.setEditable(false);
          }
     contenu.setEditable(false);
          
@@ -116,7 +116,7 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     JTextPane Voidcontenu = new JTextPane();
     Voidcontenu.setEditable(false);
     Voidcontenu.setText("");
-    Voidcontenu.setBounds( 501, 501, 200, 70);
+    Voidcontenu.setBounds( 501, 51, 200, 100);
     
     //Ici c'est juste la colonne qui affiche les heures du tableau
     JPanel firstColumnPane = new JPanel();
@@ -211,7 +211,7 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     boutonMaj.addActionListener(this);
     boutonRep.addActionListener(this);
     
-    monTableau.ajouterCours (contenu, 5, 5);
+    monTableau.ajouterCours (contenu, 6, 5);
     
     JScrollPane conteneurCal = new JScrollPane(monTableau);
     
@@ -420,7 +420,7 @@ public void initRecap()
     FenetreRecap.add(conteneurRec, BorderLayout.CENTER);
  }
 
- }
+ 
 
 
  

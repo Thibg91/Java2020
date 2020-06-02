@@ -42,10 +42,12 @@ public class Login extends JFrame implements ActionListener{
         ArrayList<String> liste; 
   private  Statement stmt;
   private  ResultSet rset;
-   private boolean verif;
-    private Recherchelog reche;
+    private Recherchelog reche=null;
+    private  Utilisateur Personne=null;
+    private int IDd;
+
     //Constructeur basique
-    public void Login() throws ClassNotFoundException, SQLException{
+    public int Login() throws ClassNotFoundException, SQLException{
         this.setTitle(" Connexion");
         this.setSize(350,250);
          this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -87,22 +89,24 @@ public class Login extends JFrame implements ActionListener{
          this.setVisible(true);
          System.out.println(chp_login.getText());
       
-        
+        return IDd;
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     @Override
     public void actionPerformed(ActionEvent arg0){
-     System.out.println(chp_login.getText());
-     System.out.println(chp_mdp.getText());
+    reche=new Recherchelog(connexion);
+     String email=chp_login.getText();
+     String mdp=chp_mdp.getText();
+     System.out.println(mdp);
         try {
-            Utilisateur Personne = reche.Recherche(chp_login.getText(),chp_mdp.getText());
-            //System.out.println(Personne.getDroit());
+             Personne = reche.Recherche(email,mdp);
+            System.out.println(Personne.getDroit());
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         } 
         
     }
-    
+  
    
   
 }

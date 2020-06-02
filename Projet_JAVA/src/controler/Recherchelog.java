@@ -23,7 +23,9 @@ public class Recherchelog {
     }
      public Utilisateur Recherche(String email,String mdpp) throws ClassNotFoundException, SQLException
     { 
-    Utilisateur personne = null;
+        System.out.println(email);
+   System.out.println(mdpp);
+   Utilisateur personne= null;
     String mdpbdd="";
     Statement stmt;
    
@@ -43,10 +45,14 @@ public class Recherchelog {
             personne = test.traitement_co(email);  
             
             
+            
          }
          else
          {
              System.out.println("no ok");
+             System.out.println(mdpbdd);
+             System.out.println(mdpp);
+             System.out.println(email);
          }
                       
            

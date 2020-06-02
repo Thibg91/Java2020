@@ -92,13 +92,14 @@ public class Testsql {
 //    Traitement_Connexion test = new Traitement_Connexion(Connexion_sql.getInstance());
 //    Etudiant personne = (Etudiant) test.traitement_co(email);
 //    System.out.println("Droit: "+personne.getDroit()+" Nom:"+ personne.getGroupe());
-Login log=new Login();
-log.Login();
+//Login log=new Login();
+//log.Login();
 
 
 
-        //Login monLogin = new Login();
-        //monLogin.Login();
+        Login monLogin = new Login();
+       int ID= monLogin.Login();
+       System.out.println(ID);
         
     
     
