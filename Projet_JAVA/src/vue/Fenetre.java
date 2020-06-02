@@ -196,8 +196,8 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
 
   
     
-     Login monLogin = new Login();
-    monLogin.setVisible(true);
+     //Login monLogin = new Login();
+    //monLogin.setVisible(true);
 
     defineMaj();
 
