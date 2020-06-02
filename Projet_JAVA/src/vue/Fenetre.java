@@ -213,6 +213,7 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     
     monTableau.ajouterCours (contenu, 6, 5);
     
+    
     JScrollPane conteneurCal = new JScrollPane(monTableau);
     
 
