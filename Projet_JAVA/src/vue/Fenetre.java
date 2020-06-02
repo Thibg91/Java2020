@@ -286,6 +286,8 @@ doc.setParagraphAttributes(0, doc.getLength(), center, false);
     this.setVisible(true); 
 
     }    
+
+   
  
   // nécessite des modifs mais permet d' 
     public void actionPerformed(ActionEvent arg0){

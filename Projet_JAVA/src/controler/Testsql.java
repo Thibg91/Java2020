@@ -97,7 +97,7 @@ public class Testsql {
 //    System.out.println("Droit: "+personne.getDroit()+" Nom:"+ personne.getGroupe());
 //Login log=new Login();
 //log.Login();
-Fenetre f=new Fenetre(Connexion_sql.getInstance());
+
 
 
 
@@ -114,22 +114,22 @@ Fenetre f=new Fenetre(Connexion_sql.getInstance());
         if(personne.getDroit() == 1){
             Admin student = (Admin) personne;
             System.out.println("Je suis un admin.");
-            Fenetre myWindow = new Fenetre();
+            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
         }
         if(personne.getDroit() == 2){
             Referent student = (Referent) personne;
             System.out.println("Je suis un referent.");
-            Fenetre myWindow = new Fenetre();
+            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
         }
         if(personne.getDroit() == 3){
             Enseignant student = (Enseignant) personne;
             System.out.println("Je suis un prof.");
-            Fenetre myWindow = new Fenetre();
+            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
         }
         if(personne.getDroit() == 4){
             Etudiant student = (Etudiant) personne;
             System.out.println("Mon numero etudiant est " + student.getNumero());
-            Fenetre myWindow = new Fenetre();
+            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
         }
 
     
