@@ -78,7 +78,14 @@ public class DAOSeance extends DAO<Seance>{
 
     @Override
     public Seance update(Seance obj) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            Statement stmt = connexion.createStatement();
+            stmt.executeUpdate("Update seance (Semaine, Date, Debut, Fin, Etat, Id_cours, Id_Typ) SET ('"+obj.getWeek()+"','"+obj.getDate()+"', '"+obj.getDebut()+"','"+ obj.getFin()+"', '"+obj.getEtat()+"', '"+obj.getCours()+"', '"+obj.getType()+"') WHERE Date='"+obj.getDate()+"'AND Debut='"+obj.getDebut()+"'");
+            obj = find(obj.getId());
+        } catch (SQLException ex) {
+            Logger.getLogger(DAOSeance.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return obj;
     }
 
     @Override
