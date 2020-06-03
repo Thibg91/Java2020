@@ -16,8 +16,8 @@ import javax.swing.JButton;
 
 //classe qui redéfini un bouton pour pouvoir intéragir avec (en cours de développement)
 public class BoutonInt extends JButton implements MouseListener{
-    
     private String nom;
+    
     public BoutonInt(String str){
     super(str);
     this.nom =str;  

@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import static java.time.temporal.TemporalQueries.localDate;
 import modele.Admin;
 import modele.Enseignant;
 import modele.Etudiant;
@@ -98,9 +99,7 @@ public class Testsql {
 //Login log=new Login();
 //log.Login();
 
-
-
-
+        Fenetre myWindow1 = new Fenetre(Connexion_sql.getInstance());
         Login monLogin = new Login();
         System.out.println("Mon id: " + monLogin.getEmail());
         do{

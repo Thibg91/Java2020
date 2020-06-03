@@ -5,6 +5,7 @@
  */
 package vue;
 
+import javax.swing.JButton;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -54,7 +55,9 @@ import javax.swing.table.AbstractTableModel;
        
         @Override
        public boolean isCellEditable(int row, int col)
-       {
+       {if(getValueAt(0,col) instanceof JButton)
+           return false;
+       else
            return true;
        }
        
