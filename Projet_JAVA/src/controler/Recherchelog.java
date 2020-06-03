@@ -43,7 +43,12 @@ public class Recherchelog {
     }
     else
     {
+
+        System.out.println("no ok");
+ 
+
         throw new ConnexionException();
+
     }  
     return personne;
     }

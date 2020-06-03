@@ -99,6 +99,41 @@ public class Testsql {
 //Login log=new Login();
 //log.Login();
 
+
+
+
+Fenetre f=new Fenetre(Connexion_sql.getInstance());
+//        Login monLogin = new Login();
+//        System.out.println("Mon id: " + monLogin.getEmail());
+//        do{
+//            System.out.print("");
+//        }while(monLogin.getEmail() == "");
+//        System.out.println("Mon id: " + monLogin.getEmail());
+//        monLogin.setVisible(false);
+//        Traitement_Connexion test = new Traitement_Connexion(Connexion_sql.getInstance());
+//        Utilisateur personne = test.traitement_co(monLogin.getEmail());
+//        System.out.println("Mon droit est " + personne.getDroit());
+//        if(personne.getDroit() == 1){
+//            Admin student = (Admin) personne;
+//            System.out.println("Je suis un admin.");
+//            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
+//        }
+//        if(personne.getDroit() == 2){
+//            Referent student = (Referent) personne;
+//            System.out.println("Je suis un referent.");
+//            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
+//        }
+//        if(personne.getDroit() == 3){
+//            Enseignant student = (Enseignant) personne;
+//            System.out.println("Je suis un prof.");
+//            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
+//        }
+//        if(personne.getDroit() == 4){
+//            Etudiant student = (Etudiant) personne;
+//            System.out.println("Mon numero etudiant est " + student.getNumero());
+//            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
+//        }
+
         Login monLogin = new Login();
         do{
             System.out.print("");
@@ -122,6 +157,7 @@ public class Testsql {
             Etudiant student = (Etudiant) personne;
             Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), student);
         }
+
 
     
     
