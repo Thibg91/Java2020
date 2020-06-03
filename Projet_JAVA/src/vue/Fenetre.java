@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.*;
@@ -25,10 +26,12 @@ import javax.swing.table.TableColumn;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import modele.Etudiant;
 import modele.Seance;
 import modele.Utilisateur;
-
 
 /**
  *
@@ -54,6 +57,7 @@ public final class Fenetre extends JFrame implements ActionListener {
     private BoutonInt boutonRec = new BoutonInt("Recap");
     private BoutonInt boutonMaj = new BoutonInt("Mise à jour");
     private BoutonInt boutonRep = new BoutonInt("Reporting");
+    private BoutonInt boutonAjout = new BoutonInt("Ajouter");
 
     private JPanel FenetreCalendrier = new JPanel();
     private JPanel FenetreRecap = new JPanel();
@@ -63,7 +67,6 @@ public final class Fenetre extends JFrame implements ActionListener {
     private JPanel ModifCours = new JPanel();
 
     //constructeur de la classe
-
     public Fenetre(Connection conn, Utilisateur user) throws ClassNotFoundException, SQLException {
         this.conn = conn;
         // déclaration de la fenetre
@@ -180,6 +183,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         boutonCal.addActionListener(this);
         boutonRec.addActionListener(this);
         boutonMaj.addActionListener(this);
+        boutonAjout.addActionListener(this);
         boutonRep.addActionListener(this);
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
@@ -226,7 +230,7 @@ public final class Fenetre extends JFrame implements ActionListener {
                 Statement stmts = conn.createStatement();
                 ResultSet ress = stmts.executeQuery("Select * from utilisateurs Where ID=" + idprof);
                 while (ress.next()) {
-                    nomprof = nomprof + " " +ress.getString("Nom");
+                    nomprof = nomprof + " " + ress.getString("Nom");
                 }
             }
             // Recherche de la salle
@@ -236,7 +240,7 @@ public final class Fenetre extends JFrame implements ActionListener {
                 Statement stmts = conn.createStatement();
                 ResultSet ress = stmts.executeQuery("Select * from salle Where ID=" + id_salle);
                 while (ress.next()) {
-                    nom_salle = nom_salle + " " +ress.getString("Nom");
+                    nom_salle = nom_salle + " " + ress.getString("Nom");
                 }
             }
             // Recherche de la matiere
@@ -258,14 +262,18 @@ public final class Fenetre extends JFrame implements ActionListener {
             JTextPane contenue = new JTextPane();
             contenue.setText(recap);
             monTableau.ajouterCours(contenue, Integer.parseInt(row_col.substring(0, 1)), Integer.parseInt(row_col.substring(1, 2)));
-            if (nom_cours.equals("Mathematiques"))
+            if (nom_cours.equals("Mathematiques")) {
                 contenue.setBackground(Color.magenta);  //creation case
-            if (nom_cours.equals("Probabilités"))
-                contenue.setBackground(Color.CYAN); 
-            if (nom_cours.equals("Electronique"))
+            }
+            if (nom_cours.equals("Probabilités")) {
+                contenue.setBackground(Color.CYAN);
+            }
+            if (nom_cours.equals("Electronique")) {
                 contenue.setBackground(Color.YELLOW);
-            if (nom_cours.equals("Physique"))
+            }
+            if (nom_cours.equals("Physique")) {
                 contenue.setBackground(Color.RED);
+            }
             contenue.setEditable(false);
         }
 
@@ -324,6 +332,46 @@ public final class Fenetre extends JFrame implements ActionListener {
             this.setContentPane(FenetreReporting);
             this.setSize(1499, 1000);
             this.setSize(1500, 1000);
+        }
+        if (arg0.getSource() == boutonAjout) {
+            System.out.println("J'ai cliqué sur le bouton Ajout");
+            JPanel tempPanel = (JPanel) boutonAjout.getParent();
+            JTextField matiere = (JTextField) tempPanel.getComponent(3);
+            JTextField semaine = (JTextField) tempPanel.getComponent(5);
+            JTextField date = (JTextField) tempPanel.getComponent(7);
+            JTextField debut = (JTextField) tempPanel.getComponent(9);
+            JTextField fin = (JTextField) tempPanel.getComponent(11);
+            JTextField etat = (JTextField) tempPanel.getComponent(13);
+            JTextField type = (JTextField) tempPanel.getComponent(15);
+            JTextField salle = (JTextField) tempPanel.getComponent(17);
+            Date jour = Date.valueOf((String)date.getText());
+            int week = Integer.parseInt((String)semaine.getText());
+            int types = Integer.parseInt((String)type.getText());
+            int mat = Integer.parseInt((String)matiere.getText());
+            String room = (String)salle.getText();
+            Time Debut = Time.valueOf((String)debut.getText());
+            Time Fin = Time.valueOf((String)fin.getText());
+;           Seance seance = new Seance(0, week, jour, Debut, Fin, (String)etat.getText(), types, mat);
+            DAO<Seance> amphi = new DAOSeance(this.conn);
+            seance = amphi.create(seance);
+            Statement stmt = null;
+            int id_salle = 0;
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from salle WHERE Nom='"+room+"'");
+                while(rs.next()) {
+                    id_salle = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                stmt = conn.createStatement();
+                stmt.executeUpdate("INSERT into seance_salle (id_seance, id_salle) VALUES ('"+seance.getId()+"','"+id_salle+"')");
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("Ma seance est:"+seance.getId());
         }
     }
 
@@ -463,7 +511,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         JPanel AjouterCours = new JPanel();
         AjouterCours.setBackground(Color.LIGHT_GRAY);
         AjouterCours.setLayout(new GridLayout(5, 4));
-        JButton AjouterB = new JButton("Ajouter");
 
         Object[][] coursActifTab = {
             {"Mathématique(Test)", "15h30-17h", "15 juin", "Mme Coudray", "1h30", "modifier", "supprimer"},
@@ -514,14 +561,14 @@ public final class Fenetre extends JFrame implements ActionListener {
         JLabel labelSalle = new JLabel("Salle :");
         labelSalle.setFont(font2);
 
-        JTextField TFMatiere = new JTextField();
-        JTextField TFSemaine = new JTextField();
-        JTextField TFDate = new JTextField();
-        JTextField TFHeureD = new JTextField();
-        JTextField TFHeureF = new JTextField();
-        JTextField TFEtat = new JTextField();
-        JTextField TFType = new JTextField();
-        JTextField TFSalle = new JTextField();
+        JTextField TFMatiere = new JTextField("3");
+        JTextField TFSemaine = new JTextField("17");
+        JTextField TFDate = new JTextField("2020-06-04");
+        JTextField TFHeureD = new JTextField("10:00:00");
+        JTextField TFHeureF = new JTextField("11:30:00");
+        JTextField TFEtat = new JTextField("validée");
+        JTextField TFType = new JTextField("2");
+        JTextField TFSalle = new JTextField("P330");
 
         AjouterCours.add(LabelAjout);
         AjouterCours.add(new JLabel(""));
@@ -551,7 +598,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         AjouterCours.add(TFSalle);
 
         AjouterCours.add(new JLabel(""));
-        AjouterCours.add(AjouterB);
+        AjouterCours.add(boutonAjout);
 
         FenetreMaj.setLayout(new GridLayout(4, 1));
         FenetreMaj.add(filtreCours);
@@ -580,59 +627,58 @@ public final class Fenetre extends JFrame implements ActionListener {
         JTextField TFduree = new JTextField("(Test)1H30");
     }
 
-
-    
     public class ButtonTableauInt extends DefaultCellEditor {
 
-    protected JButton button;
-    private boolean isPushed;
-    private ButtonListener boutList = new ButtonListener();
+        protected JButton button;
+        private boolean isPushed;
+        private ButtonListener boutList = new ButtonListener();
 
-    public ButtonTableauInt(JCheckBox checkBox) {
-        super(checkBox);
-        button = new JButton();
-        button.setOpaque(true);
-        button.addActionListener(boutList);
+        public ButtonTableauInt(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.addActionListener(boutList);
+        }
+
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
+            boutList.setRow(row);
+            boutList.setColumn(col);
+            boutList.setTable(table);
+            button.setText("modifier");
+            return button;
+        }
+
+        class ButtonListener implements ActionListener {
+
+            private int row, col;
+            private JTable table;
+            private int nbre = 0;
+
+            public void setColumn(int col) {
+                this.col = col;
+            }
+
+            public void setRow(int row) {
+                this.row = row;
+            }
+
+            public void setTable(JTable table) {
+                this.table = table;
+            }
+
+            public void actionPerformed(ActionEvent event) {
+                Object dureeValue = coursMaj.getModel().getValueAt(this.row, this.col - 1);
+                Object ProfValue = coursMaj.getModel().getValueAt(this.row, this.col - 2);
+                Object DateValue = coursMaj.getModel().getValueAt(this.row, this.col - 3);
+                Object HorValue = coursMaj.getModel().getValueAt(this.row, this.col - 4);
+                Object MatValue = coursMaj.getModel().getValueAt(this.row, this.col - 5);
+
+                setModifPane(MatValue, HorValue, DateValue, ProfValue, dureeValue);
+            }
+        }
     }
 
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
-        boutList.setRow(row);
-        boutList.setColumn(col);
-        boutList.setTable(table);
-        button.setText("modifier");
-        return button;
-    }
-
-    class ButtonListener implements ActionListener {
-
-        private int row, col;
-        private JTable table;
-        private int nbre = 0;
-
-        public void setColumn(int col) {
-            this.col = col;
-        }
-
-        public void setRow(int row) {
-            this.row = row;
-        }
-
-        public void setTable(JTable table) {
-            this.table = table;
-        }
-
-        public void actionPerformed(ActionEvent event) {
-       Object dureeValue =  coursMaj.getModel().getValueAt(this.row, this.col - 1);
-       Object ProfValue =  coursMaj.getModel().getValueAt(this.row, this.col - 2);
-       Object DateValue =  coursMaj.getModel().getValueAt(this.row, this.col - 3);
-       Object HorValue =  coursMaj.getModel().getValueAt(this.row, this.col - 4);
-       Object MatValue =  coursMaj.getModel().getValueAt(this.row, this.col - 5);
-                
-        setModifPane(MatValue,HorValue,DateValue,ProfValue,dureeValue);
-        }
-    }
-}
-    public void setModifPane(Object matiere ,Object horaire,Object date,Object prof,Object duree) {
+    public void setModifPane(Object matiere, Object horaire, Object date, Object prof, Object duree) {
         ModifCours.removeAll();
         Font font2 = new Font("Arial", Font.BOLD, 18);
         JLabel labelMatiere = new JLabel("Matière :");
@@ -651,7 +697,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         labelDate.setFont(font2);
         JTextField TFduree = new JTextField((String) duree);
         BoutonInt ValiderModif = new BoutonInt("Valider");
-        
+
         ModifCours.add(labelMatiere);
         ModifCours.add(TFMatiere);
         ModifCours.add(labelDate);
@@ -663,14 +709,13 @@ public final class Fenetre extends JFrame implements ActionListener {
         ModifCours.add(labelDuree);
         ModifCours.add(TFduree);
         ModifCours.add(ValiderModif);
-        
-       
-       ModifCours.setVisible(true);
-       this.setSize(1499, 1000);
-       this.setSize(1500, 1000);
+
+        ModifCours.setVisible(true);
+        this.setSize(1499, 1000);
+        this.setSize(1500, 1000);
     }
-        
-   public String insererSeance(Seance maSeance) {
+
+    public String insererSeance(Seance maSeance) {
         String Nrow = "";
         String Ncol = "";
         Date DateSeance = maSeance.getDate();
