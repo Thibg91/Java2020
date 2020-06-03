@@ -59,6 +59,7 @@ public final class Fenetre extends JFrame implements ActionListener {
     private BoutonInt boutonMaj = new BoutonInt("Mise à jour");
     private BoutonInt boutonRep = new BoutonInt("Reporting");
     private BoutonInt boutonAjout = new BoutonInt("Ajouter");
+    private BoutonInt ValiderModif = new BoutonInt("Valider");
 
     private JPanel FenetreCalendrier = new JPanel();
     private JPanel FenetreRecap = new JPanel();
@@ -188,6 +189,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         boutonAjout.addActionListener(this);
         boutonRep.addActionListener(this);
         boutonAjout.addActionListener(this);
+        ValiderModif.addActionListener(this);
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
         int cpt = 0;
@@ -264,6 +266,7 @@ public final class Fenetre extends JFrame implements ActionListener {
             recap = nom_cours + "\n" + nomprof + "\n" + "\n" + nom_promo + "\n" + nom_salle + "\r\n";
             JTextPane contenue = new JTextPane();
             contenue.setText(recap);
+            //System.out.println((String)contenue.getText());
             monTableau.ajouterCours(contenue, Integer.parseInt(row_col.substring(0, 1)), Integer.parseInt(row_col.substring(1, 2)));
             if (nom_cours.equals("Mathematiques")) {
                 contenue.setBackground(Color.magenta);  //creation case
@@ -336,19 +339,26 @@ public final class Fenetre extends JFrame implements ActionListener {
             this.setSize(1499, 1000);
             this.setSize(1500, 1000);
         }
+        /// Ajouter un cours
         if (arg0.getSource() == boutonAjout) {
             System.out.println("J'ai cliqué sur le bouton Ajout");
             JPanel tempPanel = (JPanel) boutonAjout.getParent();
             JTextField matiere = (JTextField) tempPanel.getComponent(3);
-            JTextField semaine = (JTextField) tempPanel.getComponent(5);
             JTextField date = (JTextField) tempPanel.getComponent(7);
             JTextField debut = (JTextField) tempPanel.getComponent(9);
             JTextField fin = (JTextField) tempPanel.getComponent(11);
             JTextField etat = (JTextField) tempPanel.getComponent(13);
             JTextField type = (JTextField) tempPanel.getComponent(15);
             JTextField salle = (JTextField) tempPanel.getComponent(17);
+            JTextField prof = (JTextField) tempPanel.getComponent(19);
+            JTextField promo = (JTextField) tempPanel.getComponent(21);
+            JTextField groupe = (JTextField) tempPanel.getComponent(23);
             Date jour = Date.valueOf((String)date.getText());
-            int week = Integer.parseInt((String)semaine.getText());
+            Calendar cal = Calendar.getInstance();
+            //La première semaine de l'année est celle contenant au moins 4 jours
+            cal.setMinimalDaysInFirstWeek(4);
+            cal.setTime(jour);
+            int week = cal.get(Calendar.WEEK_OF_YEAR);
             int types = Integer.parseInt((String)type.getText());
             int mat = Integer.parseInt((String)matiere.getText());
             String room = (String)salle.getText();
@@ -359,6 +369,8 @@ public final class Fenetre extends JFrame implements ActionListener {
             seance = amphi.create(seance);
             Statement stmt = null;
             int id_salle = 0;
+            int id_groupe = 0;
+            /// Creation dans la table seance_salle
             try {
                 stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery("Select * from salle WHERE Nom='"+room+"'");
@@ -374,7 +386,66 @@ public final class Fenetre extends JFrame implements ActionListener {
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
+            /// Creation dans a table seance_groupe
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from groupe WHERE Nom='"+room+"'");
+                while(rs.next()) {
+                    id_salle = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                stmt = conn.createStatement();
+                stmt.executeUpdate("INSERT into seance_salle (id_seance, id_salle) VALUES ('"+seance.getId()+"','"+id_salle+"')");
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
             System.out.println("Ma seance est:"+seance.getId());
+        }
+        /// Modifier un cours
+        if (arg0.getSource() == ValiderModif) {
+            System.out.println("J'ai cliqué sur le bouton Modifier");
+            JPanel tempPanel = (JPanel) ValiderModif.getParent();
+            JTextField matiere = (JTextField) tempPanel.getComponent(3);
+            JTextField semaine = (JTextField) tempPanel.getComponent(5);
+            JTextField date = (JTextField) tempPanel.getComponent(7);
+            JTextField debut = (JTextField) tempPanel.getComponent(9);
+            JTextField fin = (JTextField) tempPanel.getComponent(11);
+            JTextField etat = (JTextField) tempPanel.getComponent(13);
+            JTextField type = (JTextField) tempPanel.getComponent(15);
+            JTextField salle = (JTextField) tempPanel.getComponent(17);
+            JTextField prof = (JTextField) tempPanel.getComponent(19);
+            JTextField promo = (JTextField) tempPanel.getComponent(21);
+            JTextField groupe = (JTextField) tempPanel.getComponent(23);
+            Date jour = Date.valueOf((String)date.getText());
+            int week = Integer.parseInt((String)semaine.getText());
+            int types = Integer.parseInt((String)type.getText());
+            int mat = Integer.parseInt((String)matiere.getText());
+            String room = (String)salle.getText();
+            Time Debut = Time.valueOf((String)debut.getText());
+            Time Fin = Time.valueOf((String)fin.getText());
+;           Seance seance = new Seance(0, week, jour, Debut, Fin, (String)etat.getText(), types, mat);
+            DAO<Seance> amphi = new DAOSeance(this.conn);
+            seance = amphi.update(seance);
+            Statement stmt = null;
+            int id_salle = 0;
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from salle WHERE Nom='"+room+"'");
+                while(rs.next()) {
+                    id_salle = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                stmt = conn.createStatement();
+                stmt.executeUpdate("Update seance_salle (id_seance, id_salle) Set ('"+seance.getId()+"','"+id_salle+"') Where id_seance="+seance.getId());
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 
@@ -732,7 +803,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         JLabel labelDuree = new JLabel("Durée :");
         labelDate.setFont(font2);
         JTextField TFduree = new JTextField((String) duree);
-        BoutonInt ValiderModif = new BoutonInt("Valider");
 
         ModifCours.add(labelMatiere);
         ModifCours.add(TFMatiere);
