@@ -15,8 +15,8 @@ import javax.swing.table.AbstractTableModel;
 //Classe définissant mon modele de tableau, c'est du contenu d'open classroom ,il n'y a rien a modifier ici normalement
 class MonModel extends AbstractTableModel {
 
-    final private Object[][] monContenu;
-    final private String[] titre;
+    private Object[][] monContenu;
+     private String[] titre;
 
     public MonModel(Object[][] monContenu, String[] titre) {
         this.monContenu = monContenu;
@@ -61,6 +61,27 @@ class MonModel extends AbstractTableModel {
        else
            return true;
        }
+       
+        public void removeRow(int position){
+       
+      int indice = 0, indice2 = 0;
+      int nbRow = this.getRowCount()-1;
+      int nbCol = this.getColumnCount();
+      Object temp[][] = new Object[nbRow][nbCol];
+       
+      for(Object[] value : this.monContenu){
+         if(indice != position){
+            temp[indice2++] = value;
+         }
+         System.out.println("Indice = " + indice);
+         indice++;
+      }
+      this.monContenu = temp;
+      temp = null;
+      //Cette méthode permet d'avertir le tableau que les données
+      //ont été modifiées, ce qui permet une mise à jour complète du tableau
+      this.fireTableDataChanged();
+   }
        
      
         

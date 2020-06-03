@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -28,7 +29,6 @@ import javax.swing.text.StyledDocument;
 import modele.Etudiant;
 import modele.Seance;
 import modele.Utilisateur;
-
 
 /**
  *
@@ -48,6 +48,7 @@ public final class Fenetre extends JFrame implements ActionListener {
     private BoutonInt bouton2 = new BoutonInt("Semaine 2");
     private BoutonInt bouton3 = new BoutonInt("Semaine 3");
     private BoutonInt bouton4 = new BoutonInt("Semaine 4");
+    private BoutonInt boutonAjout = new BoutonInt("Ajouter");;
 
     private JMenuBar Navigation = new JMenuBar();
     private BoutonInt boutonCal = new BoutonInt("Emploi du temps");
@@ -61,9 +62,9 @@ public final class Fenetre extends JFrame implements ActionListener {
     private JPanel FenetreReporting = new JPanel();
 
     private JPanel ModifCours = new JPanel();
+    private Object[] objetAjout = null;
 
     //constructeur de la classe
-
     public Fenetre(Connection conn, Utilisateur user) throws ClassNotFoundException, SQLException {
         this.conn = conn;
         // déclaration de la fenetre
@@ -181,6 +182,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         boutonRec.addActionListener(this);
         boutonMaj.addActionListener(this);
         boutonRep.addActionListener(this);
+        boutonAjout.addActionListener(this);
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
         int cpt = 0;
@@ -226,7 +228,7 @@ public final class Fenetre extends JFrame implements ActionListener {
                 Statement stmts = conn.createStatement();
                 ResultSet ress = stmts.executeQuery("Select * from utilisateurs Where ID=" + idprof);
                 while (ress.next()) {
-                    nomprof = nomprof + " " +ress.getString("Nom");
+                    nomprof = nomprof + " " + ress.getString("Nom");
                 }
             }
             // Recherche de la salle
@@ -236,7 +238,7 @@ public final class Fenetre extends JFrame implements ActionListener {
                 Statement stmts = conn.createStatement();
                 ResultSet ress = stmts.executeQuery("Select * from salle Where ID=" + id_salle);
                 while (ress.next()) {
-                    nom_salle = nom_salle + " " +ress.getString("Nom");
+                    nom_salle = nom_salle + " " + ress.getString("Nom");
                 }
             }
             // Recherche de la matiere
@@ -258,14 +260,18 @@ public final class Fenetre extends JFrame implements ActionListener {
             JTextPane contenue = new JTextPane();
             contenue.setText(recap);
             monTableau.ajouterCours(contenue, Integer.parseInt(row_col.substring(0, 1)), Integer.parseInt(row_col.substring(1, 2)));
-            if (nom_cours.equals("Mathematiques"))
+            if (nom_cours.equals("Mathematiques")) {
                 contenue.setBackground(Color.magenta);  //creation case
-            if (nom_cours.equals("Probabilités"))
-                contenue.setBackground(Color.CYAN); 
-            if (nom_cours.equals("Electronique"))
+            }
+            if (nom_cours.equals("Probabilités")) {
+                contenue.setBackground(Color.CYAN);
+            }
+            if (nom_cours.equals("Electronique")) {
                 contenue.setBackground(Color.YELLOW);
-            if (nom_cours.equals("Physique"))
+            }
+            if (nom_cours.equals("Physique")) {
                 contenue.setBackground(Color.RED);
+            }
             contenue.setEditable(false);
         }
 
@@ -325,6 +331,15 @@ public final class Fenetre extends JFrame implements ActionListener {
             this.setSize(1499, 1000);
             this.setSize(1500, 1000);
         }
+        if (arg0.getSource() == boutonAjout) {
+            System.out.println("J'ai cliqué sur le bouton Ajouter");
+            JPanel tempPanel = (JPanel)boutonAjout.getParent();
+            JTextField tempText=(JTextField) tempPanel.getComponent(3);
+            System.out.println(tempText.getText());
+        
+        }
+        
+        
     }
 
 //initialise un calendrier
@@ -475,9 +490,11 @@ public final class Fenetre extends JFrame implements ActionListener {
         MonModel modelMaj = new MonModel(coursActifTab, coursActifTitle);
         this.coursMaj = new JTable(modelMaj);
         coursMaj.setDefaultRenderer(JComponent.class, new ComposantTable());
+        coursMaj.getColumn("Supprimer").setCellRenderer(new BoutonTableauSuppr());
+        coursMaj.getColumn("Supprimer").setCellEditor(new ButtonTableauSuppr(new JCheckBox()));
         coursMaj.getColumn("Modifier").setCellRenderer(new BoutonTableau());
         coursMaj.getColumn("Modifier").setCellEditor(new ButtonTableauInt(new JCheckBox()));
-        coursMaj.getColumn("Supprimer").setCellRenderer(new BoutonTableau());
+        
         coursMaj.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         TableColumn col1 = coursMaj.getColumnModel().getColumn(0);
         col1.setPreferredWidth(200);
@@ -551,8 +568,15 @@ public final class Fenetre extends JFrame implements ActionListener {
         AjouterCours.add(TFSalle);
 
         AjouterCours.add(new JLabel(""));
-        AjouterCours.add(AjouterB);
+        AjouterCours.add(boutonAjout);
+        Object[] tempObjets = {TFMatiere.getText(),TFSemaine.getText(),TFDate.getText(),TFHeureD.getText(),TFHeureF.getText(),TFEtat.getText(),TFType.getText(),TFSalle.getText()};
+       
+ 
+        
+        //objetAjout = tempObjets;
 
+        
+        
         FenetreMaj.setLayout(new GridLayout(4, 1));
         FenetreMaj.add(filtreCours);
         FenetreMaj.add(coursActif);
@@ -560,79 +584,107 @@ public final class Fenetre extends JFrame implements ActionListener {
         FenetreMaj.add(AjouterCours);
 
     }
+    
+     public class ButtonTableauSuppr extends DefaultCellEditor {
 
-    public void modifierUnCours() {
-        Font font2 = new Font("Arial", Font.BOLD, 18);
-        JLabel labelMatiere = new JLabel("Matière :");
-        labelMatiere.setFont(font2);
-        JTextField TFMatiere = new JTextField("(Test)Maths");
-        JLabel labelDate = new JLabel("Date :");
-        labelDate.setFont(font2);
-        JTextField TFDate = new JTextField("(Test)15 juin");
-        JLabel labelHoraireD = new JLabel("Début du cours :");
-        labelDate.setFont(font2);
-        JTextField TFHorD = new JTextField("(Test)12h00");
-        JLabel labelHoraireF = new JLabel("Fin du cours :");
-        labelDate.setFont(font2);
-        JTextField TFHorF = new JTextField("(Test)13h30");
-        JLabel labelDuree = new JLabel("Durée :");
-        labelDate.setFont(font2);
-        JTextField TFduree = new JTextField("(Test)1H30");
+        protected JButton button;
+        private boolean isPushed;
+        private ButtonListener boutList = new ButtonListener();
+
+        public ButtonTableauSuppr(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.addActionListener(boutList);
+        }
+
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
+            boutList.setRow(row);
+            boutList.setColumn(col);
+            boutList.setTable(table);
+            button.setText("Supprimer");
+            return button;
+        }
+
+        class ButtonListener implements ActionListener {
+
+            private int row, col;
+            private JTable table;
+            private int nbre = 0;
+
+            public void setColumn(int col) {
+                this.col = col;
+            }
+
+            public void setRow(int row) {
+                this.row = row;
+            }
+
+            public void setTable(JTable table) {
+                this.table = table;
+            }
+
+            public void actionPerformed(ActionEvent event) {
+                System.out.println("Je rentre dans le action listener de suppr");
+                int NROW = this.row;
+                System.out.println("valeur de NROW :"+NROW);
+                ((MonModel)table.getModel()).removeRow(NROW);
+                 resize();
+            }
+        }
     }
 
-
-    
     public class ButtonTableauInt extends DefaultCellEditor {
 
-    protected JButton button;
-    private boolean isPushed;
-    private ButtonListener boutList = new ButtonListener();
+        protected JButton button;
+        private boolean isPushed;
+        private ButtonListener boutList = new ButtonListener();
 
-    public ButtonTableauInt(JCheckBox checkBox) {
-        super(checkBox);
-        button = new JButton();
-        button.setOpaque(true);
-        button.addActionListener(boutList);
+        public ButtonTableauInt(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.addActionListener(boutList);
+        }
+
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
+            boutList.setRow(row);
+            boutList.setColumn(col);
+            boutList.setTable(table);
+            button.setText("modifier");
+            return button;
+        }
+
+        class ButtonListener implements ActionListener {
+
+            private int row, col;
+            private JTable table;
+            private int nbre = 0;
+
+            public void setColumn(int col) {
+                this.col = col;
+            }
+
+            public void setRow(int row) {
+                this.row = row;
+            }
+
+            public void setTable(JTable table) {
+                this.table = table;
+            }
+
+            public void actionPerformed(ActionEvent event) {
+                Object dureeValue = coursMaj.getModel().getValueAt(this.row, this.col - 1);
+                Object ProfValue = coursMaj.getModel().getValueAt(this.row, this.col - 2);
+                Object DateValue = coursMaj.getModel().getValueAt(this.row, this.col - 3);
+                Object HorValue = coursMaj.getModel().getValueAt(this.row, this.col - 4);
+                Object MatValue = coursMaj.getModel().getValueAt(this.row, this.col - 5);
+                setModifPane(MatValue, HorValue, DateValue, ProfValue, dureeValue);
+            }
+        }
     }
 
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
-        boutList.setRow(row);
-        boutList.setColumn(col);
-        boutList.setTable(table);
-        button.setText("modifier");
-        return button;
-    }
-
-    class ButtonListener implements ActionListener {
-
-        private int row, col;
-        private JTable table;
-        private int nbre = 0;
-
-        public void setColumn(int col) {
-            this.col = col;
-        }
-
-        public void setRow(int row) {
-            this.row = row;
-        }
-
-        public void setTable(JTable table) {
-            this.table = table;
-        }
-
-        public void actionPerformed(ActionEvent event) {
-       Object dureeValue =  coursMaj.getModel().getValueAt(this.row, this.col - 1);
-       Object ProfValue =  coursMaj.getModel().getValueAt(this.row, this.col - 2);
-       Object DateValue =  coursMaj.getModel().getValueAt(this.row, this.col - 3);
-       Object HorValue =  coursMaj.getModel().getValueAt(this.row, this.col - 4);
-       Object MatValue =  coursMaj.getModel().getValueAt(this.row, this.col - 5);
-                
-        setModifPane(MatValue,HorValue,DateValue,ProfValue,dureeValue);
-        }
-    }
-}
-    public void setModifPane(Object matiere ,Object horaire,Object date,Object prof,Object duree) {
+    public void setModifPane(Object matiere, Object horaire, Object date, Object prof, Object duree) {
         ModifCours.removeAll();
         Font font2 = new Font("Arial", Font.BOLD, 18);
         JLabel labelMatiere = new JLabel("Matière :");
@@ -651,7 +703,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         labelDate.setFont(font2);
         JTextField TFduree = new JTextField((String) duree);
         BoutonInt ValiderModif = new BoutonInt("Valider");
-        
+
         ModifCours.add(labelMatiere);
         ModifCours.add(TFMatiere);
         ModifCours.add(labelDate);
@@ -663,14 +715,13 @@ public final class Fenetre extends JFrame implements ActionListener {
         ModifCours.add(labelDuree);
         ModifCours.add(TFduree);
         ModifCours.add(ValiderModif);
-        
-       
-       ModifCours.setVisible(true);
-       this.setSize(1499, 1000);
-       this.setSize(1500, 1000);
+
+        ModifCours.setVisible(true);
+        this.setSize(1499, 1000);
+        this.setSize(1500, 1000);
     }
-        
-   public String insererSeance(Seance maSeance) {
+
+    public String insererSeance(Seance maSeance) {
         String Nrow = "";
         String Ncol = "";
         Date DateSeance = maSeance.getDate();
@@ -732,4 +783,10 @@ public final class Fenetre extends JFrame implements ActionListener {
 
     }
 
+    public void resize()
+    {
+         this.setSize(1499, 1000);
+         System.out.println("ca resize ma gueule tqt");
+        this.setSize(1500, 1000);
+    }
 }
