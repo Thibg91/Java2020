@@ -364,7 +364,7 @@ public final class Fenetre extends JFrame implements ActionListener {
             String room = (String)salle.getText();
             Time Debut = Time.valueOf((String)debut.getText());
             Time Fin = Time.valueOf((String)fin.getText());
-;           Seance seance = new Seance(0, week, jour, Debut, Fin, (String)etat.getText(), types, mat);
+            Seance seance = new Seance(0, week, jour, Debut, Fin, (String)etat.getText(), types, mat);
             DAO<Seance> amphi = new DAOSeance(this.conn);
             seance = amphi.create(seance);
             Statement stmt = null;
@@ -584,14 +584,14 @@ public final class Fenetre extends JFrame implements ActionListener {
         ModifCours.setBackground(Color.white);
         JPanel AjouterCours = new JPanel();
         AjouterCours.setBackground(Color.LIGHT_GRAY);
-        AjouterCours.setLayout(new GridLayout(5, 4));
+        AjouterCours.setLayout(new GridLayout(6, 4));
 
         Object[][] coursActifTab = {
-            {"Mathématique(Test)", "15h30-17h", "15 juin", "Mme Coudray", "1h30", "modifier", "supprimer"},
-            {"Physique", "12h00-13h30", "13 juin", "Mme Crambes", "1h30", "modifier", "supprimer"}
+            {"Mathématique", "2020-05-05", "10h15","11h45","validée","TD","P416", "Mme Coudray", "2022","Gr 06", "modifier", "supprimer"},
+            {"Electronique", "2020-05-06", "12h00","13h30","validée","TP","P445", "Mr Minot", "2022","Gr 09", "modifier", "supprimer"}
         };
 
-        String[] coursActifTitle = {"Matière", "Horaires", "Date", "Professeur", "durée", "Modifier", "Supprimer"};
+        String[] coursActifTitle = {"Matière", "Date", "Horaire début","Horaire fin","Etat","Type","Salle", "Professeur", "Promotion","Groupe", "Modifier", "Supprimer"};
 
         MonModel modelMaj = new MonModel(coursActifTab, coursActifTitle);
         this.coursMaj = new JTable(modelMaj);
@@ -603,18 +603,32 @@ public final class Fenetre extends JFrame implements ActionListener {
         
         coursMaj.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         TableColumn col1 = coursMaj.getColumnModel().getColumn(0);
-        col1.setPreferredWidth(200);
+        col1.setPreferredWidth(100);
         TableColumn col2 = coursMaj.getColumnModel().getColumn(1);
         col2.setPreferredWidth(100);
+        TableColumn col3 = coursMaj.getColumnModel().getColumn(2);
+        col3.setPreferredWidth(100);
         TableColumn col4 = coursMaj.getColumnModel().getColumn(3);
         col4.setPreferredWidth(100);
+        TableColumn col5 = coursMaj.getColumnModel().getColumn(4);
+        col5.setPreferredWidth(100);
         TableColumn col6 = coursMaj.getColumnModel().getColumn(5);
-        col6.setPreferredWidth(200);
+        col6.setPreferredWidth(100);
         TableColumn col7 = coursMaj.getColumnModel().getColumn(6);
-        col7.setPreferredWidth(200);
+        col7.setPreferredWidth(100);
+        TableColumn col8 = coursMaj.getColumnModel().getColumn(7);
+        col8.setPreferredWidth(100);
+        TableColumn col9 = coursMaj.getColumnModel().getColumn(8);
+        col9.setPreferredWidth(100);
+        TableColumn col10 = coursMaj.getColumnModel().getColumn(9);
+        col10.setPreferredWidth(100);
+        TableColumn col11 = coursMaj.getColumnModel().getColumn(10);
+        col11.setPreferredWidth(100);
+        TableColumn col12 = coursMaj.getColumnModel().getColumn(11);
+        col12.setPreferredWidth(100);
 
         JScrollPane conteneurMaj = new JScrollPane(coursMaj);
-        conteneurMaj.setPreferredSize(new Dimension(925, 1000));
+        conteneurMaj.setPreferredSize(new Dimension(1200, 1000));
 
         coursActif.add(conteneurMaj);
 
@@ -622,8 +636,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         LabelAjout.setFont(font1);
         JLabel labelMatiere = new JLabel("Matière :");
         labelMatiere.setFont(font2);
-        JLabel labelSemaine = new JLabel("Semaine :");
-        labelSemaine.setFont(font2);
         JLabel labelDate = new JLabel("Date :");
         labelDate.setFont(font2);
         JLabel labelHeureD = new JLabel("Heure de début :");
@@ -636,42 +648,57 @@ public final class Fenetre extends JFrame implements ActionListener {
         labelType.setFont(font2);
         JLabel labelSalle = new JLabel("Salle :");
         labelSalle.setFont(font2);
+        JLabel labelProf = new JLabel("Professeur :");
+        labelProf.setFont(font2);
+        JLabel labelPromo = new JLabel("Promo :");
+        labelPromo.setFont(font2);
+        JLabel labelGroupe = new JLabel("Groupe :");
+        labelGroupe.setFont(font2);
 
         JTextField TFMatiere = new JTextField("3");
-        JTextField TFSemaine = new JTextField("17");
         JTextField TFDate = new JTextField("2020-06-04");
         JTextField TFHeureD = new JTextField("10:00:00");
         JTextField TFHeureF = new JTextField("11:30:00");
         JTextField TFEtat = new JTextField("validée");
         JTextField TFType = new JTextField("2");
         JTextField TFSalle = new JTextField("P330");
+        JTextField TFProf = new JTextField("Mr Segado");
+        JTextField TFPromo = new JTextField("2022");
+        JTextField TFGroupe = new JTextField("Gr 09");
 
         AjouterCours.add(LabelAjout);
         AjouterCours.add(new JLabel(""));
 
         AjouterCours.add(labelMatiere);
         AjouterCours.add(TFMatiere);
-
-        AjouterCours.add(labelSemaine);
-        AjouterCours.add(TFSemaine);
-
+        
         AjouterCours.add(labelDate);
         AjouterCours.add(TFDate);
-
+        
         AjouterCours.add(labelHeureD);
         AjouterCours.add(TFHeureD);
-
+        
         AjouterCours.add(labelHeureF);
         AjouterCours.add(TFHeureF);
-
+        
         AjouterCours.add(labelEtat);
         AjouterCours.add(TFEtat);
-
+        
         AjouterCours.add(labelType);
         AjouterCours.add(TFType);
-
+        
         AjouterCours.add(labelSalle);
         AjouterCours.add(TFSalle);
+        
+
+        AjouterCours.add(labelProf);
+        AjouterCours.add(TFProf);
+        
+        AjouterCours.add(labelPromo);
+        AjouterCours.add(TFPromo);
+        
+        AjouterCours.add(labelGroupe);
+        AjouterCours.add(TFGroupe);
 
         AjouterCours.add(new JLabel(""));
         AjouterCours.add(boutonAjout);
@@ -775,34 +802,65 @@ public final class Fenetre extends JFrame implements ActionListener {
             }
 
             public void actionPerformed(ActionEvent event) {
-                Object dureeValue = coursMaj.getModel().getValueAt(this.row, this.col - 1);
-                Object ProfValue = coursMaj.getModel().getValueAt(this.row, this.col - 2);
-                Object DateValue = coursMaj.getModel().getValueAt(this.row, this.col - 3);
-                Object HorValue = coursMaj.getModel().getValueAt(this.row, this.col - 4);
-                Object MatValue = coursMaj.getModel().getValueAt(this.row, this.col - 5);
-                setModifPane(MatValue, HorValue, DateValue, ProfValue, dureeValue);
+                Object groupeValue = coursMaj.getModel().getValueAt(this.row, this.col - 1);
+                Object promoValue = coursMaj.getModel().getValueAt(this.row, this.col - 2);
+                Object profValue = coursMaj.getModel().getValueAt(this.row, this.col - 3);
+                Object salleValue = coursMaj.getModel().getValueAt(this.row, this.col - 4);
+                Object typeValue = coursMaj.getModel().getValueAt(this.row, this.col - 5);
+                Object etatValue = coursMaj.getModel().getValueAt(this.row, this.col - 6);
+                Object HeureFValue = coursMaj.getModel().getValueAt(this.row, this.col - 7);
+                Object HeureDValue = coursMaj.getModel().getValueAt(this.row, this.col - 8);
+                Object DateValue = coursMaj.getModel().getValueAt(this.row, this.col - 9);
+                Object MatValue = coursMaj.getModel().getValueAt(this.row, this.col - 10);
+                setModifPane(MatValue, DateValue, HeureDValue,HeureFValue,etatValue,typeValue,salleValue, profValue, promoValue, groupeValue);
             }
         }
     }
 
-    public void setModifPane(Object matiere, Object horaire, Object date, Object prof, Object duree) {
+    public void setModifPane(Object matiere,Object Date, Object HeureD, Object HeureF, Object Etat, Object Type, Object Salle, Object Prof, Object Promo, Object Groupe) {
         ModifCours.removeAll();
         Font font2 = new Font("Arial", Font.BOLD, 18);
+        
         JLabel labelMatiere = new JLabel("Matière :");
         labelMatiere.setFont(font2);
         JTextField TFMatiere = new JTextField((String) matiere);
+        
         JLabel labelDate = new JLabel("Date :");
         labelDate.setFont(font2);
-        JTextField TFDate = new JTextField((String) horaire);
-        JLabel labelHoraireD = new JLabel("Début du cours :");
-        labelDate.setFont(font2);
-        JTextField TFHorD = new JTextField((String) date);
+        JTextField TFDate = new JTextField((String) Date);
+ 
+         JLabel labelHoraireD = new JLabel("Début du cours :");
+         labelHoraireD.setFont(font2);
+         JTextField TFHorD = new JTextField((String) HeureD);
+        
         JLabel labelHoraireF = new JLabel("Fin du cours :");
-        labelDate.setFont(font2);
-        JTextField TFHorF = new JTextField((String) prof);
-        JLabel labelDuree = new JLabel("Durée :");
-        labelDate.setFont(font2);
-        JTextField TFduree = new JTextField((String) duree);
+
+        labelHoraireF.setFont(font2);
+        JTextField TFHorF = new JTextField((String) HeureF);
+        
+        JLabel labelEtat = new JLabel("Etat :");
+        labelEtat.setFont(font2);
+        JTextField TFEtat = new JTextField((String) Etat);
+        
+        JLabel labelType = new JLabel("Type :");
+        labelType.setFont(font2);
+         JTextField TFType = new JTextField((String) Type);
+         
+        JLabel labelSalle = new JLabel("Salle :");
+        labelSalle.setFont(font2);
+         JTextField TFSalle = new JTextField((String) Salle);
+         
+        JLabel labelProf = new JLabel("Professeur :");
+        labelProf.setFont(font2);
+         JTextField TFProf = new JTextField((String) Prof);
+         
+        JLabel labelPromo = new JLabel("Promotion :");
+        labelPromo.setFont(font2);
+         JTextField TFPromo = new JTextField((String) Promo);
+         
+        JLabel labelGroupe = new JLabel("Groupe :");
+        labelGroupe.setFont(font2);
+         JTextField TFGroupe = new JTextField((String) Groupe);
 
         ModifCours.add(labelMatiere);
         ModifCours.add(TFMatiere);
@@ -812,8 +870,19 @@ public final class Fenetre extends JFrame implements ActionListener {
         ModifCours.add(TFHorD);
         ModifCours.add(labelHoraireF);
         ModifCours.add(TFHorF);
-        ModifCours.add(labelDuree);
-        ModifCours.add(TFduree);
+        ModifCours.add(labelEtat);
+        ModifCours.add(TFEtat);
+        ModifCours.add(labelType);
+        ModifCours.add(TFType);
+        ModifCours.add(labelSalle);
+        ModifCours.add(TFSalle);
+        ModifCours.add(labelProf);
+        ModifCours.add(TFProf);
+        ModifCours.add(labelPromo);
+        ModifCours.add(TFPromo);
+        ModifCours.add(labelGroupe);
+        ModifCours.add(TFGroupe);
+ 
         ModifCours.add(ValiderModif);
 
         ModifCours.setVisible(true);
@@ -886,7 +955,6 @@ public final class Fenetre extends JFrame implements ActionListener {
     public void resize()
     {
          this.setSize(1499, 1000);
-         System.out.println("ca resize ma gueule tqt");
-        this.setSize(1500, 1000);
+         this.setSize(1500, 1000);
     }
 }
