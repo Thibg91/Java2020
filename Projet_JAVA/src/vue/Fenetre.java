@@ -8,11 +8,11 @@ package vue;
 import controler.Connexion_sql;
 import controler.DAO;
 import controler.DAOEtudiant;
-import java.sql.Date;
+import controler.DAOSeance;
 import java.awt.*;
-
 import java.awt.event.*;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -27,7 +27,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import modele.Etudiant;
 import modele.Seance;
-import java.sql.Time;
+import modele.Utilisateur;
+
 
 /**
  *
@@ -62,7 +63,8 @@ public final class Fenetre extends JFrame implements ActionListener {
     private JPanel ModifCours = new JPanel();
 
     //constructeur de la classe
-    public Fenetre(Connection conn) throws ClassNotFoundException, SQLException {
+
+    public Fenetre(Connection conn, Utilisateur user) throws ClassNotFoundException, SQLException {
         this.conn = conn;
         // déclaration de la fenetre
         String prof = "Coudray";
@@ -102,7 +104,9 @@ public final class Fenetre extends JFrame implements ActionListener {
         JTextPane firstColumn = new JTextPane();
         firstColumn.setBackground(Color.lightGray);
         firstColumn.setEditable(false);
+
         firstColumn.setText("\r\n \r\n \r\n \r\n" + "8h30-10h00" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "10h15-11h45" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "12h00-13h30" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "13h45-15h15" + "\r\n \r\n \r\n \r\n \r\n \r\n \r\n" + "15h30-17h00" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "17h15-18h45" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "19h00-20h30");
+
         firstColumn.setBounds(0, 0, 80, 1000);
         firstColumnPane.setLayout(null);
         firstColumnPane.add(firstColumn);
@@ -178,50 +182,91 @@ public final class Fenetre extends JFrame implements ActionListener {
         boutonMaj.addActionListener(this);
         boutonRep.addActionListener(this);
         Statement stmt = conn.createStatement();
+        Statement stt = conn.createStatement();
         int cpt = 0;
         int idgr = 0;
         int idprof = 0;
+        int idseance = 0;
+        int id_promo = 0;
+        int id_salle = 0;
+        int idcours = 0;
+        ResultSet rs = null;
         String nomprof = "";
-        String idseance = "";
-        ResultSet rs = stmt.executeQuery("Select id_groupe from etudiant Where Id_utilisateurs=8");
-
-        while (rs.next()) {
-
-            idgr = rs.getInt("Id_groupe");
-
+        String nom_promo = "";
+        String nom_salle = "";
+        String nom_cours = "";
+        if (user.getDroit() == 4) {
+            Etudiant student = (Etudiant) user;
+            rs = stmt.executeQuery("Select id_groupe from etudiant Where Id_utilisateurs=" + student.getID());
+            while (rs.next()) {
+                idgr = rs.getInt("id_groupe");
+            }
+            rs = stmt.executeQuery("Select * from groupe Where ID=" + idgr);
+            while (rs.next()) {
+                id_promo = rs.getInt("ID_promotion");
+            }
+            rs = stmt.executeQuery("Select * from promotion Where ID=" + id_promo);
+            while (rs.next()) {
+                nom_promo = rs.getString("Nom");
+            }
         }
-
-        liste = connliste.Affich("Select id_seance from seance_groupe Where id_groupe=" + idgr);
-        cpt = liste.size();
-        for (int i = 0; i <= cpt - 1; i++) //Ici on va créer les cases de cours
+        // Recherche des seances selon le groupe de l'etudiant
+        rs = stt.executeQuery("Select id_seance from seance_groupe Where id_groupe=" + idgr);
+        while (rs.next())//Ici on va créer les cases de cours
         {
-
-            idseance = liste.get(i);
-            System.out.println(idseance);
-            rs = stmt.executeQuery("Select id_enseignant from seance_enseignant Where id_seance=" + idseance);
-            while (rs.next()) {
-                idprof = rs.getInt("id_enseignant");
-                System.out.println("idprof:" + idprof);
+            nomprof = "";
+            nom_salle = "";
+            nom_cours = "";
+            idseance = rs.getInt("id_seance");
+            Statement stm = conn.createStatement();
+            // Recherche des profs
+            ResultSet res = stm.executeQuery("Select id_enseignant from seance_enseignant Where id_seance=" + idseance);
+            while (res.next()) {
+                idprof = res.getInt("id_enseignant");
+                Statement stmts = conn.createStatement();
+                ResultSet ress = stmts.executeQuery("Select * from utilisateurs Where ID=" + idprof);
+                while (ress.next()) {
+                    nomprof = nomprof + " " +ress.getString("Nom");
+                }
             }
-            rs = stmt.executeQuery("Select Nom from Utilisateurs Where ID=" + idprof);
-            while (rs.next()) {
-                nomprof = rs.getString("Nom");
-
+            // Recherche de la salle
+            res = stm.executeQuery("Select id_salle from seance_salle Where id_seance=" + idseance);
+            while (res.next()) {
+                id_salle = res.getInt("id_salle");
+                Statement stmts = conn.createStatement();
+                ResultSet ress = stmts.executeQuery("Select * from salle Where ID=" + id_salle);
+                while (ress.next()) {
+                    nom_salle = nom_salle + " " +ress.getString("Nom");
+                }
             }
-
-            if (i == 0) {
-                String recap = nomprof + "\n" + "\n" + promo + "\n" + salle + "\r\n";
-                contenu.setText(recap);
-                monTableau.ajouterCours(contenu, 6, 5);
+            // Recherche de la matiere
+            res = stm.executeQuery("Select * from seance Where ID=" + idseance);
+            while (res.next()) {
+                idcours = res.getInt("Id_cours");
+                Statement stmts = conn.createStatement();
+                ResultSet ress = stmts.executeQuery("Select * from cours Where ID=" + idcours);
+                while (ress.next()) {
+                    nom_cours = ress.getString("Nom");
+                }
             }
-            if (i == 1) {
-                String recap = nomprof + "\n" + prof + "\n" + promo + "\n" + salle + "\r\n";
-                contenu.setText(recap);
-                monTableau.ajouterCours(contenu, 5, 5);
-            }
-            contenu.setBackground(Color.magenta);  //creation case
-            contenu.setEditable(false);
-
+            DAO<Seance> amphi = new DAOSeance(conn);
+            Seance seance = amphi.find(idseance);
+            String row_col = "";
+            row_col = insererSeance(seance);
+            String recap = "";
+            recap = nom_cours + "\n" + nomprof + "\n" + "\n" + nom_promo + "\n" + nom_salle + "\r\n";
+            JTextPane contenue = new JTextPane();
+            contenue.setText(recap);
+            monTableau.ajouterCours(contenue, Integer.parseInt(row_col.substring(0, 1)), Integer.parseInt(row_col.substring(1, 2)));
+            if (nom_cours.equals("Mathematiques"))
+                contenue.setBackground(Color.magenta);  //creation case
+            if (nom_cours.equals("Probabilités"))
+                contenue.setBackground(Color.CYAN); 
+            if (nom_cours.equals("Electronique"))
+                contenue.setBackground(Color.YELLOW);
+            if (nom_cours.equals("Physique"))
+                contenue.setBackground(Color.RED);
+            contenue.setEditable(false);
         }
 
         JScrollPane conteneurCal = new JScrollPane(monTableau);
@@ -535,72 +580,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         JTextField TFduree = new JTextField("(Test)1H30");
     }
 
-    void insererSeance(Seance maSeance) {
-        int Ncol = -1;
-        int Nrow = -1;
-
-        Date DateSeance = maSeance.getDate();
-        Time heureSeance = maSeance.getDebut();
-        Calendar calendarD = Calendar.getInstance();
-        Calendar calendarH = Calendar.getInstance();
-        calendarD.setTime(DateSeance);
-        calendarH.setTime(heureSeance);
-        int hours = calendarH.get(Calendar.HOUR_OF_DAY);
-        int jour = calendarD.get(Calendar.DAY_OF_MONTH);
-
-        // 1 si dimanche,2 si lundi ect...
-        switch (jour) {
-            case 1:
-                break;
-            case 2:
-                Ncol = 0;
-                break;
-            case 3:
-                Ncol = 1;
-                break;
-            case 4:
-                Ncol = 2;
-                break;
-            case 5:
-                Ncol = 3;
-                break;
-            case 6:
-                Ncol = 4;
-                break;
-            case 7:
-                Ncol = 5;
-                break;
-        }
-
-        switch (hours) {
-            case 8:
-                Nrow = 0;
-                break;
-            case 10:
-                Nrow = 1;
-                break;
-            case 12:
-                Nrow = 2;
-                break;
-            case 13:
-                Nrow = 3;
-                break;
-            case 15:
-                Nrow = 4;
-                break;
-            case 17:
-                Nrow = 5;
-                break;
-            case 19:
-                Nrow = 6;
-                break;
-        }
-        String contenuS = "";
-        JTextPane contenuPane = new JTextPane();
-        contenuPane.setEditable(false);
-        monTableau.ajouterCours(contenuPane, Nrow, Ncol);
-
-    }
 
     
     public class ButtonTableauInt extends DefaultCellEditor {
@@ -687,7 +666,68 @@ public final class Fenetre extends JFrame implements ActionListener {
        
         
         ModifCours.setVisible(true);
+    }
         
+   public String insererSeance(Seance maSeance) {
+        String Nrow = "";
+        String Ncol = "";
+        Date DateSeance = maSeance.getDate();
+        Time heureSeance = maSeance.getDebut();
+        Calendar calendarD = Calendar.getInstance();
+        Calendar calendarH = Calendar.getInstance();
+        calendarD.setTime(DateSeance);
+        calendarH.setTime(heureSeance);
+        int hours = calendarH.get(Calendar.HOUR_OF_DAY) - 1;
+        int jour = calendarD.get(Calendar.DAY_OF_WEEK);
+        // 1 si dimanche,2 si lundi ect...
+        switch (jour) {
+            case 1:
+                break;
+            case 2:
+                Ncol = "0";
+                break;
+            case 3:
+                Ncol = "1";
+                break;
+            case 4:
+                Ncol = "2";
+                break;
+            case 5:
+                Ncol = "3";
+                break;
+            case 6:
+                Ncol = "4";
+                break;
+            case 7:
+                Ncol = "5";
+                break;
+        }
+
+        switch (hours) {
+            case 8:
+                Nrow = "0";
+                break;
+            case 10:
+                Nrow = "1";
+                break;
+            case 12:
+                Nrow = "2";
+                break;
+            case 13:
+                Nrow = "3";
+                break;
+            case 15:
+                Nrow = "4";
+                break;
+            case 17:
+                Nrow = "5";
+                break;
+            case 19:
+                Nrow = "6";
+                break;
+        }
+        return Nrow + Ncol;
+
     }
 
 }

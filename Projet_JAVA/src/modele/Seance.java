@@ -23,7 +23,7 @@ public class Seance {
     private int cours;
     private int type;
     
-    public Seance(int id, int week,Date date, Time debut, Time fin, String etat, int cours, int type){
+    public Seance(int id, int week, Date date, Time debut, Time fin, String etat, int cours, int type){
         this.id_seance = id;
         this.semaine = week;
         this.date = date;

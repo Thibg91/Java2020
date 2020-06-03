@@ -12,25 +12,26 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author titig
  */
- //Classe définissant mon modele de tableau, c'est du contenu d'open classroom ,il n'y a rien a modifier ici normalement
-    class MonModel extends AbstractTableModel{
-        final private Object[][] monContenu;
-        final private String[] titre;
-        
-        public MonModel(Object[][] monContenu , String[] titre){
-            this.monContenu = monContenu;
-            this.titre = titre;
-        }
-        
-        @Override
-        public String getColumnName(int col){
+//Classe définissant mon modele de tableau, c'est du contenu d'open classroom ,il n'y a rien a modifier ici normalement
+class MonModel extends AbstractTableModel {
+
+    final private Object[][] monContenu;
+    final private String[] titre;
+
+    public MonModel(Object[][] monContenu, String[] titre) {
+        this.monContenu = monContenu;
+        this.titre = titre;
+    }
+
+    @Override
+    public String getColumnName(int col) {
         return this.titre[col];
-        }
-                
-        @Override
-        public int getColumnCount()
-        {
+    }
+
+    @Override
+    public int getColumnCount() {
         return this.titre.length;
+
         }
         
         @Override
@@ -64,3 +65,4 @@ import javax.swing.table.AbstractTableModel;
      
         
     }
+
