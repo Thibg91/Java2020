@@ -45,9 +45,7 @@ public class Recherchelog {
     else
     {
         System.out.println("no ok");
-        System.out.println(mdpbdd);
-        System.out.println(mdpp);
-        System.out.println(email);
+ 
     }  
     return personne;
     }
