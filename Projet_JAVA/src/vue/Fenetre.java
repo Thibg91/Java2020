@@ -599,7 +599,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         boutList.setRow(row);
         boutList.setColumn(col);
         boutList.setTable(table);
-        button.setText((value == null) ? "" : value.toString());
+        button.setText("modifier");
         return button;
     }
 
@@ -663,9 +663,11 @@ public final class Fenetre extends JFrame implements ActionListener {
         ModifCours.add(labelDuree);
         ModifCours.add(TFduree);
         ModifCours.add(ValiderModif);
-       
         
-        ModifCours.setVisible(true);
+       
+       ModifCours.setVisible(true);
+       this.setSize(1499, 1000);
+       this.setSize(1500, 1000);
     }
         
    public String insererSeance(Seance maSeance) {

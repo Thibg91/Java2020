@@ -99,7 +99,6 @@ public class Testsql {
 //Login log=new Login();
 //log.Login();
 
-        Fenetre myWindow1 = new Fenetre(Connexion_sql.getInstance());
         Login monLogin = new Login();
         do{
             System.out.print("");

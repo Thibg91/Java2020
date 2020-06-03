@@ -5,6 +5,7 @@
  */
 package vue;
 import controler.Affichage_Seance;
+import controler.ConnexionException;
 import controler.Connexion_sql;
 import controler.Recherchelog;
 import controler.Traitement_Connexion;
@@ -93,7 +94,11 @@ public class Login extends JFrame implements ActionListener{
         String mdp=chp_mdp.getText();
         //System.out.println(mdp);
         try {
-            Personne = reche.Recherche(email,mdp);
+            try {
+                Personne = reche.Recherche(email,mdp);
+            } catch (ConnexionException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
             this.email = Personne.getEmail();
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
