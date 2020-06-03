@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import static java.time.temporal.TemporalQueries.localDate;
 import modele.Admin;
 import modele.Enseignant;
 import modele.Etudiant;
@@ -100,6 +101,7 @@ public class Testsql {
 
 
 
+
 Fenetre f=new Fenetre(Connexion_sql.getInstance());
 //        Login monLogin = new Login();
 //        System.out.println("Mon id: " + monLogin.getEmail());
@@ -131,6 +133,31 @@ Fenetre f=new Fenetre(Connexion_sql.getInstance());
 //            System.out.println("Mon numero etudiant est " + student.getNumero());
 //            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
 //        }
+
+        Login monLogin = new Login();
+        do{
+            System.out.print("");
+        }while(monLogin.getEmail() == "");
+        monLogin.setVisible(false);
+        Traitement_Connexion test = new Traitement_Connexion(Connexion_sql.getInstance());
+        Utilisateur personne = test.traitement_co(monLogin.getEmail());
+        if(personne.getDroit() == 1){
+            Admin student = (Admin) personne;
+            //Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
+        }
+        if(personne.getDroit() == 2){
+            Referent student = (Referent) personne;
+            //Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
+        }
+        if(personne.getDroit() == 3){
+            Enseignant student = (Enseignant) personne;
+            //Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
+        }
+        if(personne.getDroit() == 4){
+            Etudiant student = (Etudiant) personne;
+            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), student);
+        }
+
 
     
     

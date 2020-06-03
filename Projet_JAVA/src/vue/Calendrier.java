@@ -7,6 +7,7 @@ package vue;
 
 import javax.swing.JTable;
 import javax.swing.JTextPane;
+import modele.Seance;
 
 /**
  *
@@ -34,5 +35,7 @@ public void supprimerCours (int row , int col)
     Voidcontenu.setText("");
     this.getModel().setValueAt(Voidcontenu, row, col);
 }
+
+
 }
 

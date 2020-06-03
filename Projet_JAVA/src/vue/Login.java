@@ -5,6 +5,7 @@
  */
 package vue;
 import controler.Affichage_Seance;
+import controler.ConnexionException;
 import controler.Connexion_sql;
 import controler.Recherchelog;
 import controler.Traitement_Connexion;
@@ -33,8 +34,8 @@ import modele.Utilisateur;
 public class Login extends JFrame implements ActionListener{
     // Y a  deux champs de texte et un bouton pour submit
     private JPanel chp_co = new JPanel();
-    private JTextField chp_login = new JTextField();
-    private JTextField chp_mdp = new JTextField();
+    private JTextField chp_login = new JTextField("Papier@edu.ece.fr");
+    private JTextField chp_mdp = new JTextField("Papier123");
     private BoutonInt valider = new BoutonInt("Valider");
     private Connection connexion = null;
     private JTextArea ID = new JTextArea("Identifiant : ");
@@ -84,7 +85,6 @@ public class Login extends JFrame implements ActionListener{
         //le conteneur principal de la fenetre est chp_co
         this.setContentPane(chp_co);
         this.setVisible(true);
-        System.out.println("gogo:"+chp_login.getText());
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     
@@ -94,9 +94,12 @@ public class Login extends JFrame implements ActionListener{
         String mdp=chp_mdp.getText();
         //System.out.println(mdp);
         try {
-            Personne = reche.Recherche(email,mdp);
+            try {
+                Personne = reche.Recherche(email,mdp);
+            } catch (ConnexionException ex) {
+                Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+            }
             this.email = Personne.getEmail();
-            System.out.println("entrée dans recherche");
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         } 

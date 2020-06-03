@@ -21,7 +21,7 @@ public class Recherchelog {
     {
         this.connexion = conn; 
     }
-     public Utilisateur Recherche(String email,String mdpp) throws ClassNotFoundException, SQLException
+     public Utilisateur Recherche(String email,String mdpp) throws ClassNotFoundException, SQLException, ConnexionException
     { 
     //System.out.println(email);
     //System.out.println(mdpp);
@@ -37,15 +37,18 @@ public class Recherchelog {
         mdpbdd=rs.getString("Password");
     }
     if(mdpbdd.equals(mdpp))
-    {         
-        System.out.println("ok");   
+    {          
         Traitement_Connexion test = new Traitement_Connexion(this.connexion);
         personne = test.traitement_co(email);
     }
     else
     {
+
         System.out.println("no ok");
  
+
+        throw new ConnexionException();
+
     }  
     return personne;
     }

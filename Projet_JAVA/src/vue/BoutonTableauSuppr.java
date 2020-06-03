@@ -14,13 +14,11 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author titig
  */
-public class BoutonTableau extends JButton implements TableCellRenderer {
-    
+public class BoutonTableauSuppr extends JButton implements TableCellRenderer{
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean isFocus, int row, int col) {
-        this.setText("modifier");
+        this.setText("supprimer");
         
         return this;
         
     }
-    
 }
