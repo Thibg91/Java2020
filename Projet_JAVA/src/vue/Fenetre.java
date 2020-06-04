@@ -196,7 +196,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         //Login monLogin = new Login();
         //monLogin.setVisible(true);
         defineMaj();
-        defineReporting();
+      
 
         bouton1.addActionListener(this);
         bouton2.addActionListener(this);
@@ -290,7 +290,7 @@ public final class Fenetre extends JFrame implements ActionListener {
             if (nom_cours.equals("Mathematiques")) {
                 contenue.setBackground(Color.magenta);  //creation case
             }
-            if (nom_cours.equals("Probabilités")) {
+            if (nom_cours.equals("Probabilites")) {
                 contenue.setBackground(Color.CYAN);
             }
             if (nom_cours.equals("Electronique")) {
@@ -324,6 +324,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         //contenu de Droite 
         FenetreCalendrier.add(rightLayout, BorderLayout.EAST);
         this.initRecap("", "", "");
+          defineReporting();
         defineRecap();
 
         this.setContentPane(FenetreCalendrier);
@@ -1327,7 +1328,7 @@ public final class Fenetre extends JFrame implements ActionListener {
             }
         }
     }
-     public void defineReporting()
+     public void defineReporting() throws SQLException, ClassNotFoundException
      {
          JPanel Ligne1 = new JPanel();
          JPanel Ligne2 = new JPanel();
@@ -1345,11 +1346,80 @@ public final class Fenetre extends JFrame implements ActionListener {
          FinalContent.setLayout(new BoxLayout(FinalContent,BoxLayout.PAGE_AXIS));
          
          //Premier graph : Ici il faut récupérer le nombre d'heure de chaque matière, le nombre d'heure de chaque matière qui n'ont pas encore été faites (ressemble aux barres du bas), et diviser le 2eme par le 1er
+         String nbcoursmaths;
+         double cpt1=0;
+         double cpt2=0,cpt3=0,cpt4=0;
+         int idgrp=student.getGroupe();
+         int ids=0;
+         System.out.println(idgrp);
+          Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=1 and ID=" +ids);
+        for (int i = 0; i < liste.size(); i++) {
+           nbcoursmaths=liste.get(i);
+           
+        }
+        for(int i=0;i<liste.size();i++)
+        {
+            cpt1=cpt1+1;
+        }
+       }
+       rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=2 and ID=" +ids);
+        for (int i = 0; i < liste.size(); i++) {
+           nbcoursmaths=liste.get(i);
+           
+        }
+        for(int i=0;i<liste.size();i++)
+        {
+            cpt2=cpt2+1;
+        }
+       }
+       rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=3 and ID=" +ids);
+        for (int i = 0; i < liste.size(); i++) {
+           nbcoursmaths=liste.get(i);
+           
+        }
+        for(int i=0;i<liste.size();i++)
+        {
+            cpt3=cpt3+1;
+        }
+       }
+       rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=4 and ID=" +ids);
+        for (int i = 0; i < liste.size(); i++) {
+           nbcoursmaths=liste.get(i);
+           
+        }
+        for(int i=0;i<liste.size();i++)
+        {
+            cpt4=cpt4+1;
+        }
+       }
+        double somme= cpt1+cpt2+cpt3+cpt4;
+         double cp1=(cpt1/somme)*100;
+         double cp2=(cpt2/somme)*100;
+         double cp3=(cpt3/somme)*100;
+         double cp4=(cpt4/somme)*100;
+      
          DefaultPieDataset HeureRestantes = new DefaultPieDataset();
-         HeureRestantes.setValue("Mathématiques", 23);
-         HeureRestantes.setValue("Electronique", 27);
-         HeureRestantes.setValue("Physique", 30);
-         HeureRestantes.setValue("Probabilités", 20);
+         HeureRestantes.setValue("Mathématiques", cp1);
+         HeureRestantes.setValue("Electronique", cp2);
+         HeureRestantes.setValue("Physique", cp3);
+         HeureRestantes.setValue("Probabilités", cp4);
          JFreeChart pieChart = ChartFactory.createPieChart("Heures restantes par matière",HeureRestantes,true,true,true);
          ChartPanel cPanel = new ChartPanel (pieChart);
          
@@ -1368,14 +1438,80 @@ public final class Fenetre extends JFrame implements ActionListener {
          JFreeChart BarChart = ChartFactory.createBarChart("Nombre de place par salle","Nombre de place","Salle",placeSalle,PlotOrientation.VERTICAL,true,true,false);
          ChartPanel BPanel = new ChartPanel (BarChart);
          
-         //ici faut compter sur la semaine le nombre d'heure réalisé dans la semaine en tout pour un éleves, en gros faut faire une boucle avec i qui augmente de 1 pour chaque heure de l'éleve chaque jour et ensuite on multiplie par 1.5 pour les heures 
-         DefaultCategoryDataset heureparSemaine = new DefaultCategoryDataset();
-         heureparSemaine.addValue(3, "Heure", "Lundi");
-         heureparSemaine.addValue(4.5, "Heure", "Mardi");
-         heureparSemaine.addValue(10.5, "Heure", "Mercredi");
-         heureparSemaine.addValue(13.5, "Heure", "Jeudi");
-         heureparSemaine.addValue(15, "Heure", "Vendredi");
-         heureparSemaine.addValue(18, "Heure", "Samedi");
+        
+       //ici faut compter sur la semaine le nombre d'heure réalisé dans la semaine en tout pour un éleves, en gros faut faire une boucle avec i qui augmente de 1 pour chaque heure de l'éleve chaque jour et ensuite on multiplie par 1.5 pour les heures 
+         int cptt=0;
+         String oned="";
+         int cptt2=0,cptt3=0,cptt4=0,cptt5=0,cptt6=0;
+          rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-01' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt=cptt+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-02' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt2=cptt2+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-03' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt3=cptt3+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-04' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt4=cptt4+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-05' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt5=cptt5+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-06' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt6=cptt6+1;
+         
+        }
+       }
+       
+        System.out.println(cptt);
+       DefaultCategoryDataset heureparSemaine = new DefaultCategoryDataset();
+         heureparSemaine.addValue(cptt, "Heure", "Lundi");
+         heureparSemaine.addValue(cptt+cptt2, "Heure", "Mardi");
+         heureparSemaine.addValue(cptt+cptt2+cptt3, "Heure", "Mercredi");
+         heureparSemaine.addValue(cptt+cptt2+cptt3+cptt4, "Heure", "Jeudi");
+         heureparSemaine.addValue(cptt+cptt2+cptt3+cptt4+cptt5, "Heure", "Vendredi");
+         heureparSemaine.addValue(cptt+cptt2+cptt3+cptt4+cptt5+cptt6, "Heure", "Samedi");
          JFreeChart lineChart = ChartFactory.createLineChart("Nombre d'heure de l'étudiant au cours de la semaine","Jours","compteur d'heure",heureparSemaine,PlotOrientation.VERTICAL,false,true,false);
          ChartPanel LPanel = new ChartPanel (lineChart);
          
