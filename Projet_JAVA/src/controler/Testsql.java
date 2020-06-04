@@ -99,10 +99,6 @@ public class Testsql {
 //Login log=new Login();
 //log.Login();
 
-
-
-
-Fenetre f=new Fenetre(Connexion_sql.getInstance());
 //        Login monLogin = new Login();
 //        System.out.println("Mon id: " + monLogin.getEmail());
 //        do{
