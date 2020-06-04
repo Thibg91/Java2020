@@ -78,10 +78,15 @@ public class DAOSeance extends DAO<Seance>{
 
     @Override
     public Seance update(Seance obj) {
+        int id = 0;
         try {
             Statement stmt = connexion.createStatement();
-            stmt.executeUpdate("Update seance (Semaine, Date, Debut, Fin, Etat, Id_cours, Id_Typ) SET ('"+obj.getWeek()+"','"+obj.getDate()+"', '"+obj.getDebut()+"','"+ obj.getFin()+"', '"+obj.getEtat()+"', '"+obj.getCours()+"', '"+obj.getType()+"') WHERE Date='"+obj.getDate()+"'AND Debut='"+obj.getDebut()+"'");
-            obj = find(obj.getId());
+            stmt.executeUpdate("Update seance SET Semaine='"+obj.getWeek()+"',Date='"+obj.getDate()+"', Debut='"+obj.getDebut()+"', Fin='"+ obj.getFin()+"', Etat='"+obj.getEtat()+"', Id_cours='"+obj.getCours()+"', Id_Typ='"+obj.getType()+"' WHERE Date='"+obj.getDate()+"'AND Debut='"+obj.getDebut()+"'");
+            Statement stt = connexion.createStatement();
+            ResultSet rs=stt.executeQuery("select * from seance WHERE Date='"+obj.getDate()+"'AND Debut='"+obj.getDebut()+"'");
+            rs.next();
+            id = rs.getInt("ID");
+            obj = find(id);
         } catch (SQLException ex) {
             Logger.getLogger(DAOSeance.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +29,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modele.Etudiant;
@@ -150,7 +153,7 @@ private  ArrayList<String> liste3;
             cours.addItem(liste.get(i + 2));
             cours.addItem(liste.get(i + 3));
         }
-
+        System.out.println("le cours est : " + (String) liste.get(2));
         JLabel coursLabel = new JLabel("Cours : ");
         coursPanel.add(coursLabel);
         coursPanel.add(cours);
@@ -197,7 +200,6 @@ private  ArrayList<String> liste3;
         boutonMaj.addActionListener(this);
         boutonAjout.addActionListener(this);
         boutonRep.addActionListener(this);
-        boutonAjout.addActionListener(this);
         ValiderModif.addActionListener(this);
         bouton5.addActionListener(new Filtre());
         Statement stmt = conn.createStatement();
@@ -354,37 +356,55 @@ private  ArrayList<String> liste3;
             System.out.println("J'ai cliqué sur le bouton Ajout");
             JPanel tempPanel = (JPanel) boutonAjout.getParent();
             JTextField matiere = (JTextField) tempPanel.getComponent(3);
-            JTextField date = (JTextField) tempPanel.getComponent(7);
-            JTextField debut = (JTextField) tempPanel.getComponent(9);
-            JTextField fin = (JTextField) tempPanel.getComponent(11);
-            JTextField etat = (JTextField) tempPanel.getComponent(13);
-            JTextField type = (JTextField) tempPanel.getComponent(15);
-            JTextField salle = (JTextField) tempPanel.getComponent(17);
-            JTextField prof = (JTextField) tempPanel.getComponent(19);
-            JTextField promo = (JTextField) tempPanel.getComponent(21);
-            JTextField groupe = (JTextField) tempPanel.getComponent(23);
-            Date jour = Date.valueOf((String)date.getText());
+            JTextField date = (JTextField) tempPanel.getComponent(5);
+            JTextField debut = (JTextField) tempPanel.getComponent(7);
+            JTextField fin = (JTextField) tempPanel.getComponent(9);
+            JTextField etat = (JTextField) tempPanel.getComponent(11);
+            JTextField type = (JTextField) tempPanel.getComponent(13);
+            JTextField salle = (JTextField) tempPanel.getComponent(15);
+            JTextField prof = (JTextField) tempPanel.getComponent(17);
+            JTextField promo = (JTextField) tempPanel.getComponent(19);
+            JTextField groupe = (JTextField) tempPanel.getComponent(21);
+            Date jour = Date.valueOf((String) date.getText());
             Calendar cal = Calendar.getInstance();
             //La première semaine de l'année est celle contenant au moins 4 jours
             cal.setMinimalDaysInFirstWeek(4);
             cal.setTime(jour);
             int week = cal.get(Calendar.WEEK_OF_YEAR);
-            int types = Integer.parseInt((String)type.getText());
-            int mat = Integer.parseInt((String)matiere.getText());
-            String room = (String)salle.getText();
-            Time Debut = Time.valueOf((String)debut.getText());
-            Time Fin = Time.valueOf((String)fin.getText());
-            Seance seance = new Seance(0, week, jour, Debut, Fin, (String)etat.getText(), types, mat);
-            DAO<Seance> amphi = new DAOSeance(this.conn);
-            seance = amphi.create(seance);
+            int types = Integer.parseInt((String) type.getText());
+            String mat = (String) matiere.getText();
+            String room = (String) salle.getText();
+            String groupes = (String) groupe.getText();
+            String promos = (String) promo.getText();
+            Time Debut = Time.valueOf((String) debut.getText());
+            Time Fin = Time.valueOf((String) fin.getText());
+
             Statement stmt = null;
             int id_salle = 0;
             int id_groupe = 0;
+            int id_promo = 0;
+            int id_prof = 0;
+            int id_matiere = 0;
+            /// Recherche id de la matiere
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from cours WHERE Nom='" + mat + "'");
+                while (rs.next()) {
+                    id_matiere = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            Seance seance = new Seance(0, week, jour, Debut, Fin, (String) etat.getText(), id_matiere, types);
+            DAO<Seance> amphi = new DAOSeance(this.conn);
+            seance = amphi.create(seance);
+
             /// Creation dans la table seance_salle
             try {
                 stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("Select * from salle WHERE Nom='"+room+"'");
-                while(rs.next()) {
+                ResultSet rs = stmt.executeQuery("Select * from salle WHERE Nom='" + room + "'");
+                while (rs.next()) {
                     id_salle = rs.getInt("ID");
                 }
             } catch (SQLException ex) {
@@ -392,59 +412,115 @@ private  ArrayList<String> liste3;
             }
             try {
                 stmt = conn.createStatement();
-                stmt.executeUpdate("INSERT into seance_salle (id_seance, id_salle) VALUES ('"+seance.getId()+"','"+id_salle+"')");
+                stmt.executeUpdate("INSERT into seance_salle (id_seance, id_salle) VALUES ('" + seance.getId() + "','" + id_salle + "')");
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            /// Creation dans la table seance_enseignant
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from utilisateurs WHERE Nom='" + (String) prof.getText() + "'");
+                while (rs.next()) {
+                    id_prof = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                stmt = conn.createStatement();
+                stmt.executeUpdate("INSERT into seance_enseignant (id_seance, id_enseignant) VALUES ('" + seance.getId() + "','" + id_prof + "')");
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
             /// Creation dans a table seance_groupe
             try {
                 stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("Select * from groupe WHERE Nom='"+room+"'");
-                while(rs.next()) {
-                    id_salle = rs.getInt("ID");
+                ResultSet rs = stmt.executeQuery("Select * from promotion WHERE Nom='" + promos + "'");
+                while (rs.next()) {
+                    id_promo = rs.getInt("ID");
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 stmt = conn.createStatement();
-                stmt.executeUpdate("INSERT into seance_salle (id_seance, id_salle) VALUES ('"+seance.getId()+"','"+id_salle+"')");
+                ResultSet rs = stmt.executeQuery("Select * from groupe WHERE Nom='" + groupes + "' and ID_promotion='" + id_promo + "'");
+                while (rs.next()) {
+                    id_groupe = rs.getInt("ID");
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println("Ma seance est:"+seance.getId());
+            try {
+                stmt = conn.createStatement();
+                stmt.executeUpdate("INSERT into seance_groupe (id_seance, id_groupe) VALUES ('" + seance.getId() + "','" + id_groupe + "')");
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.out.println("Ma seance est:" + seance.getId());
         }
         /// Modifier un cours
         if (arg0.getSource() == ValiderModif) {
             System.out.println("J'ai cliqué sur le bouton Modifier");
             JPanel tempPanel = (JPanel) ValiderModif.getParent();
-            JTextField matiere = (JTextField) tempPanel.getComponent(3);
-            JTextField semaine = (JTextField) tempPanel.getComponent(5);
-            JTextField date = (JTextField) tempPanel.getComponent(7);
-            JTextField debut = (JTextField) tempPanel.getComponent(9);
-            JTextField fin = (JTextField) tempPanel.getComponent(11);
-            JTextField etat = (JTextField) tempPanel.getComponent(13);
-            JTextField type = (JTextField) tempPanel.getComponent(15);
-            JTextField salle = (JTextField) tempPanel.getComponent(17);
-            JTextField prof = (JTextField) tempPanel.getComponent(19);
-            JTextField promo = (JTextField) tempPanel.getComponent(21);
-            JTextField groupe = (JTextField) tempPanel.getComponent(23);
-            Date jour = Date.valueOf((String)date.getText());
-            int week = Integer.parseInt((String)semaine.getText());
-            int types = Integer.parseInt((String)type.getText());
-            int mat = Integer.parseInt((String)matiere.getText());
-            String room = (String)salle.getText();
-            Time Debut = Time.valueOf((String)debut.getText());
-            Time Fin = Time.valueOf((String)fin.getText());
-;           Seance seance = new Seance(0, week, jour, Debut, Fin, (String)etat.getText(), types, mat);
-            DAO<Seance> amphi = new DAOSeance(this.conn);
-            seance = amphi.update(seance);
+            JTextField matiere = (JTextField) tempPanel.getComponent(1);
+            JTextField date = (JTextField) tempPanel.getComponent(3);
+            JTextField debut = (JTextField) tempPanel.getComponent(5);
+            JTextField fin = (JTextField) tempPanel.getComponent(7);
+            JTextField etat = (JTextField) tempPanel.getComponent(9);
+            JTextField type = (JTextField) tempPanel.getComponent(11);
+            JTextField salle = (JTextField) tempPanel.getComponent(13);
+            JTextField prof = (JTextField) tempPanel.getComponent(15);
+            JTextField promo = (JTextField) tempPanel.getComponent(17);
+            JTextField groupe = (JTextField) tempPanel.getComponent(19);
+            Date jour = Date.valueOf((String) date.getText());
+            Calendar cal = Calendar.getInstance();
+            //La première semaine de l'année est celle contenant au moins 4 jours
+            cal.setMinimalDaysInFirstWeek(4);
+            cal.setTime(jour);
+            int week = cal.get(Calendar.WEEK_OF_YEAR);
+            String mat = (String) matiere.getText();
+            String room = (String) salle.getText();
+            String groupes = (String) groupe.getText();
+            String promos = (String) promo.getText();
+            Time Debut = Time.valueOf((String) debut.getText());
+            Time Fin = Time.valueOf((String) fin.getText());
+
             Statement stmt = null;
             int id_salle = 0;
+            int id_groupe = 0;
+            int id_promo = 0;
+            int id_prof = 0;
+            int id_matiere = 0;
+            int types = 0;
+            /// Recherche id de la matiere
             try {
                 stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("Select * from salle WHERE Nom='"+room+"'");
-                while(rs.next()) {
+                ResultSet rs = stmt.executeQuery("Select * from cours WHERE Nom='" + mat + "'");
+                while (rs.next()) {
+                    id_matiere = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from type_cours WHERE Nom='" + (String)type.getText() + "'");
+                while (rs.next()) {
+                    types = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            Seance seance = new Seance(0, week, jour, Debut, Fin, (String) etat.getText(), id_matiere, types);
+            DAO<Seance> amphi = new DAOSeance(this.conn);
+            seance = amphi.update(seance);
+            /// Update dans la table seance_salle
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from salle WHERE Nom='" + room + "'");
+                while (rs.next()) {
                     id_salle = rs.getInt("ID");
                 }
             } catch (SQLException ex) {
@@ -452,7 +528,55 @@ private  ArrayList<String> liste3;
             }
             try {
                 stmt = conn.createStatement();
-                stmt.executeUpdate("Update seance_salle (id_seance, id_salle) Set ('"+seance.getId()+"','"+id_salle+"') Where id_seance="+seance.getId());
+                stmt.executeUpdate("Update seance_salle SET id_salle=" + id_salle + " WHERE id_seance=" + seance.getId());
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            /// Update dans la table seance_enseignant
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from utilisateurs WHERE Nom='" + (String) prof.getText() + "'");
+                while (rs.next()) {
+                    id_prof = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                stmt = conn.createStatement();
+                stmt.executeUpdate("Update seance_enseignant SET id_enseignant=" + id_prof + " WHERE id_seance=" + seance.getId());
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            /// Update dans a table seance_groupe
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from promotion WHERE Nom='" + promos + "'");
+                while (rs.next()) {
+                    id_promo = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from groupe WHERE Nom='" + groupes + "' and ID_promotion='" + id_promo + "'");
+                while (rs.next()) {
+                    id_groupe = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                stmt = conn.createStatement();
+                stmt.executeUpdate("Update seance_groupe SET id_groupe=" + id_groupe + " WHERE id_seance=" + seance.getId());
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            resize();
+            FenetreMaj.removeAll();
+            try {
+                defineMaj();
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -495,13 +619,12 @@ private  ArrayList<String> liste3;
     public void initRecap() {
 
         Object[][] test_Recap = {
-            {"Mathématique(Test)", "15h30-17h", "15 juin", "Mme Coudray", "1h30"},
-            {"Mathématique(Test)", "15h30-17h", "15 juin", "Mme Coudray", "1h30"}
+            {"Mathématique", "2020-05-05", "10h15","11h45","validée","TD","P416", "Mme Coudray", "2022","Gr 06"},
         };
 
-        String[] recapTitle = {"Matière", "Horaires", "Date", "Professeur", "durée"};
+        String[] coursActifTitle = {"Matière", "Date", "Horaire début","Horaire fin","Etat","Type","Salle", "Professeur", "Promotion","Groupe"};
 
-        MonModel modelRecap = new MonModel(test_Recap, recapTitle);
+        MonModel modelRecap = new MonModel(test_Recap, coursActifTitle);
         this.monRecap = new JTable(modelRecap);
     }
 
@@ -576,7 +699,7 @@ private  ArrayList<String> liste3;
         FenetreRecap.add(conteneurRec, BorderLayout.CENTER);
     }
 
-    public void defineMaj() {
+    public void defineMaj() throws SQLException {
         Font font1 = new Font("Arial", Font.BOLD, 32);
         Font font2 = new Font("Arial", Font.BOLD, 18);
         JPanel filtreCours = new JPanel();
@@ -588,13 +711,84 @@ private  ArrayList<String> liste3;
         JPanel AjouterCours = new JPanel();
         AjouterCours.setBackground(Color.LIGHT_GRAY);
         AjouterCours.setLayout(new GridLayout(6, 4));
-        
-        Object[][] coursActifTab = {
-            {"Mathématique", "2020-05-05", "10h15","11h45","validée","TD","P416", "Mme Coudray", "2022","Gr 06", "modifier", "supprimer"},
-            {"Electronique", "2020-05-06", "12h00","13h30","validée","TP","P445", "Mr Minot", "2022","Gr 09", "modifier", "supprimer"}
-        };
 
-        String[] coursActifTitle = {"Matière", "Date", "Horaire début","Horaire fin","Etat","Type","Salle", "Professeur", "Promotion","Groupe", "Modifier", "Supprimer"};
+        Seance amphi = null;
+        int id = 0, semaine = 0, id_cours = 0, id_type = 0, id_promo = 0, id_groupe = 0, id_salle = 0, id_prof = 0;
+        Time debut = null, fin = null;
+        Date date = null;
+        String etat = null, nom_type = null, nom_matiere = null, nom_promo = null, nom_groupe = null, nom_salle = null, nom_prof = null;
+        Object[][] coursActifTab = new Object[100][12];;
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("select * from seance");
+        int i = 0;
+        while (rs.next()) {
+            id = rs.getInt("ID");
+            etat = rs.getString("Etat");
+            semaine = rs.getInt("Semaine");
+            date = rs.getDate("Date");
+            debut = rs.getTime("Debut");
+            fin = rs.getTime("Fin");
+            id_cours = rs.getInt("Id_cours");
+            id_type = rs.getInt("Id_Typ");
+            Statement stt = conn.createStatement();
+            ResultSet res = stt.executeQuery("select * from seance_groupe WHERE id_seance=" + id);
+            while (res.next()){
+                id_groupe = res.getInt("id_groupe");
+            }
+            res = stt.executeQuery("select * from groupe WHERE ID=" + id_groupe);
+            while (res.next()){
+                nom_groupe = res.getString("Nom");
+                id_promo = res.getInt("ID_promotion");
+            }
+            res = stt.executeQuery("select * from promotion WHERE ID=" + id_groupe);
+            while (res.next()){
+                nom_promo = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from cours WHERE ID=" + id_cours);
+            while (res.next()){
+                nom_matiere = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from type_cours WHERE ID=" + id_type);
+            while (res.next()){
+                nom_type = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from seance_salle WHERE id_seance=" + id);
+            while (res.next()){
+                id_salle = res.getInt("id_salle");
+            }
+            res = stt.executeQuery("select * from salle WHERE ID=" + id_salle);
+            while (res.next()){
+                nom_salle = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from seance_enseignant WHERE id_seance=" + id);
+            while (res.next()){
+                id_prof = res.getInt("id_enseignant");
+            }
+            res = stt.executeQuery("select * from utilisateurs WHERE ID=" + id_prof);
+            while (res.next()){
+                nom_prof = res.getString("Nom");
+            }
+            coursActifTab[i][0] = nom_matiere;
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String text = df.format(date);
+            coursActifTab[i][1] = text;
+            DateFormat def = new SimpleDateFormat("HH:mm:ss");
+            def.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String time_debut = def.format(debut);
+            coursActifTab[i][2] = time_debut;
+            String time_fin = def.format(fin);
+            coursActifTab[i][3] = time_fin;
+            coursActifTab[i][4] = etat;
+            coursActifTab[i][5] = nom_type;
+            coursActifTab[i][6] = nom_salle;
+            coursActifTab[i][7] = nom_prof;
+            coursActifTab[i][8] = nom_promo;
+            coursActifTab[i][9] = nom_groupe;
+            coursActifTab[i][10] = "modifier";
+            coursActifTab[i][11] = "supprimer";
+            i++;
+        }
+        String[] coursActifTitle = {"Matière", "Date", "Horaire début", "Horaire fin", "Etat", "Type", "Salle", "Professeur", "Promotion", "Groupe", "Modifier", "Supprimer"};
 
         MonModel modelMaj = new MonModel(coursActifTab, coursActifTitle);
         this.coursMaj = new JTable(modelMaj);
@@ -603,7 +797,7 @@ private  ArrayList<String> liste3;
         coursMaj.getColumn("Supprimer").setCellEditor(new ButtonTableauSuppr(new JCheckBox()));
         coursMaj.getColumn("Modifier").setCellRenderer(new BoutonTableau());
         coursMaj.getColumn("Modifier").setCellEditor(new ButtonTableauInt(new JCheckBox()));
-        
+
         coursMaj.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         TableColumn col1 = coursMaj.getColumnModel().getColumn(0);
         col1.setPreferredWidth(100);
@@ -658,65 +852,61 @@ private  ArrayList<String> liste3;
         JLabel labelGroupe = new JLabel("Groupe :");
         labelGroupe.setFont(font2);
 
-        JTextField TFMatiere = new JTextField("3");
+        JTextField TFMatiere = new JTextField("Mathematiques");
         JTextField TFDate = new JTextField("2020-06-04");
         JTextField TFHeureD = new JTextField("10:00:00");
         JTextField TFHeureF = new JTextField("11:30:00");
         JTextField TFEtat = new JTextField("validée");
         JTextField TFType = new JTextField("2");
         JTextField TFSalle = new JTextField("P330");
-        JTextField TFProf = new JTextField("Mr Segado");
-        JTextField TFPromo = new JTextField("2022");
-        JTextField TFGroupe = new JTextField("Gr 09");
+        JTextField TFProf = new JTextField("Segado");
+        JTextField TFPromo = new JTextField("Ing2");
+        JTextField TFGroupe = new JTextField("Gr1");
 
         AjouterCours.add(LabelAjout);
         AjouterCours.add(new JLabel(""));
 
         AjouterCours.add(labelMatiere);
         AjouterCours.add(TFMatiere);
-        
+
         AjouterCours.add(labelDate);
         AjouterCours.add(TFDate);
-        
+
         AjouterCours.add(labelHeureD);
         AjouterCours.add(TFHeureD);
-        
+
         AjouterCours.add(labelHeureF);
         AjouterCours.add(TFHeureF);
-        
+
         AjouterCours.add(labelEtat);
         AjouterCours.add(TFEtat);
-        
+
         AjouterCours.add(labelType);
         AjouterCours.add(TFType);
-        
+
         AjouterCours.add(labelSalle);
         AjouterCours.add(TFSalle);
-        
 
         AjouterCours.add(labelProf);
         AjouterCours.add(TFProf);
-        
+
         AjouterCours.add(labelPromo);
         AjouterCours.add(TFPromo);
-        
+
         AjouterCours.add(labelGroupe);
         AjouterCours.add(TFGroupe);
 
         AjouterCours.add(new JLabel(""));
         AjouterCours.add(boutonAjout);
 
-        
-        
-        FenetreMaj.setLayout(new GridLayout(4, 1));
-        FenetreMaj.add(filtreCours);
+        FenetreMaj.setLayout(new GridLayout(3, 1));
         FenetreMaj.add(coursActif);
         FenetreMaj.add(ModifCours);
         FenetreMaj.add(AjouterCours);
 
     }
-    
-     public class ButtonTableauSuppr extends DefaultCellEditor {
+
+    public class ButtonTableauSuppr extends DefaultCellEditor {
 
         protected JButton button;
         private boolean isPushed;
@@ -758,9 +948,9 @@ private  ArrayList<String> liste3;
             public void actionPerformed(ActionEvent event) {
                 System.out.println("Je rentre dans le action listener de suppr");
                 int NROW = this.row;
-                System.out.println("valeur de NROW :"+NROW);
-                ((MonModel)table.getModel()).removeRow(NROW);
-                 resize();
+                System.out.println("valeur de NROW :" + NROW);
+                ((MonModel) table.getModel()).removeRow(NROW);
+                resize();
             }
         }
     }
@@ -815,55 +1005,55 @@ private  ArrayList<String> liste3;
                 Object HeureDValue = coursMaj.getModel().getValueAt(this.row, this.col - 8);
                 Object DateValue = coursMaj.getModel().getValueAt(this.row, this.col - 9);
                 Object MatValue = coursMaj.getModel().getValueAt(this.row, this.col - 10);
-                setModifPane(MatValue, DateValue, HeureDValue,HeureFValue,etatValue,typeValue,salleValue, profValue, promoValue, groupeValue);
+                setModifPane(MatValue, DateValue, HeureDValue, HeureFValue, etatValue, typeValue, salleValue, profValue, promoValue, groupeValue);
             }
         }
     }
 
-    public void setModifPane(Object matiere,Object Date, Object HeureD, Object HeureF, Object Etat, Object Type, Object Salle, Object Prof, Object Promo, Object Groupe) {
+    public void setModifPane(Object matiere, Object Date, Object HeureD, Object HeureF, Object Etat, Object Type, Object Salle, Object Prof, Object Promo, Object Groupe) {
         ModifCours.removeAll();
         Font font2 = new Font("Arial", Font.BOLD, 18);
-        
+
         JLabel labelMatiere = new JLabel("Matière :");
         labelMatiere.setFont(font2);
         JTextField TFMatiere = new JTextField((String) matiere);
-        
+
         JLabel labelDate = new JLabel("Date :");
         labelDate.setFont(font2);
         JTextField TFDate = new JTextField((String) Date);
- 
-         JLabel labelHoraireD = new JLabel("Début du cours :");
-         labelHoraireD.setFont(font2);
-         JTextField TFHorD = new JTextField((String) HeureD);
-        
+
+        JLabel labelHoraireD = new JLabel("Début du cours :");
+        labelHoraireD.setFont(font2);
+        JTextField TFHorD = new JTextField((String) HeureD);
+
         JLabel labelHoraireF = new JLabel("Fin du cours :");
 
         labelHoraireF.setFont(font2);
         JTextField TFHorF = new JTextField((String) HeureF);
-        
+
         JLabel labelEtat = new JLabel("Etat :");
         labelEtat.setFont(font2);
         JTextField TFEtat = new JTextField((String) Etat);
-        
+
         JLabel labelType = new JLabel("Type :");
         labelType.setFont(font2);
-         JTextField TFType = new JTextField((String) Type);
-         
+        JTextField TFType = new JTextField((String) Type);
+
         JLabel labelSalle = new JLabel("Salle :");
         labelSalle.setFont(font2);
-         JTextField TFSalle = new JTextField((String) Salle);
-         
+        JTextField TFSalle = new JTextField((String) Salle);
+
         JLabel labelProf = new JLabel("Professeur :");
         labelProf.setFont(font2);
-         JTextField TFProf = new JTextField((String) Prof);
-         
+        JTextField TFProf = new JTextField((String) Prof);
+
         JLabel labelPromo = new JLabel("Promotion :");
         labelPromo.setFont(font2);
-         JTextField TFPromo = new JTextField((String) Promo);
-         
+        JTextField TFPromo = new JTextField((String) Promo);
+
         JLabel labelGroupe = new JLabel("Groupe :");
         labelGroupe.setFont(font2);
-         JTextField TFGroupe = new JTextField((String) Groupe);
+        JTextField TFGroupe = new JTextField((String) Groupe);
 
         ModifCours.add(labelMatiere);
         ModifCours.add(TFMatiere);
@@ -885,7 +1075,7 @@ private  ArrayList<String> liste3;
         ModifCours.add(TFPromo);
         ModifCours.add(labelGroupe);
         ModifCours.add(TFGroupe);
- 
+
         ModifCours.add(ValiderModif);
 
         ModifCours.setVisible(true);
@@ -955,10 +1145,9 @@ private  ArrayList<String> liste3;
 
     }
 
-    public void resize()
-    {
-         this.setSize(1499, 1000);
-         this.setSize(1500, 1000);
+    public void resize() {
+        this.setSize(1499, 1000);
+        this.setSize(1500, 1000);
     }
     private class Filtre implements ActionListener
     {
