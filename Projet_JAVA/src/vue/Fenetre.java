@@ -414,13 +414,12 @@ public final class Fenetre extends JFrame implements ActionListener {
     public void initRecap() {
 
         Object[][] test_Recap = {
-            {"Mathématique(Test)", "15h30-17h", "15 juin", "Mme Coudray", "1h30"},
-            {"Mathématique(Test)", "15h30-17h", "15 juin", "Mme Coudray", "1h30"}
+            {"Mathématique", "2020-05-05", "10h15","11h45","validée","TD","P416", "Mme Coudray", "2022","Gr 06"},
         };
 
-        String[] recapTitle = {"Matière", "Horaires", "Date", "Professeur", "durée"};
+        String[] coursActifTitle = {"Matière", "Date", "Horaire début","Horaire fin","Etat","Type","Salle", "Professeur", "Promotion","Groupe"};
 
-        MonModel modelRecap = new MonModel(test_Recap, recapTitle);
+        MonModel modelRecap = new MonModel(test_Recap, coursActifTitle);
         this.monRecap = new JTable(modelRecap);
     }
 
