@@ -98,7 +98,7 @@ public class Testsql {
 //    System.out.println("Droit: "+personne.getDroit()+" Nom:"+ personne.getGroupe());
 //Login log=new Login();
 //log.Login();
-
+    
 //        Login monLogin = new Login();
 //        System.out.println("Mon id: " + monLogin.getEmail());
 //        do{
