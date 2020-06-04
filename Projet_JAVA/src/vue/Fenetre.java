@@ -605,16 +605,85 @@ public final class Fenetre extends JFrame implements ActionListener {
     }
 
 //initialise le tableau de récap
-    public void initRecap() {
+    public void initRecap() throws SQLException {
 
-        Object[][] test_Recap = {
-            {"Mathématique(Test)", "15h30-17h", "15 juin", "Mme Coudray", "1h30"},
-            {"Mathématique(Test)", "15h30-17h", "15 juin", "Mme Coudray", "1h30"}
-        };
+        Seance amphi = null;
+        int id = 0, semaine = 0, id_cours = 0, id_type = 0, id_promo = 0, id_groupe = 0, id_salle = 0, id_prof = 0;
+        Time debut = null, fin = null;
+        Date date = null;
+        String etat = null, nom_type = null, nom_matiere = null, nom_promo = null, nom_groupe = null, nom_salle = null, nom_prof = null;
+        Object[][] coursRecap = new Object[100][10];;
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("select * from seance");
+        int i = 0;
+        while (rs.next()) {
+            id = rs.getInt("ID");
+            etat = rs.getString("Etat");
+            semaine = rs.getInt("Semaine");
+            date = rs.getDate("Date");
+            debut = rs.getTime("Debut");
+            fin = rs.getTime("Fin");
+            id_cours = rs.getInt("Id_cours");
+            id_type = rs.getInt("Id_Typ");
+            Statement stt = conn.createStatement();
+            ResultSet res = stt.executeQuery("select * from seance_groupe WHERE id_seance=" + id);
+            while (res.next()){
+                id_groupe = res.getInt("id_groupe");
+            }
+            res = stt.executeQuery("select * from groupe WHERE ID=" + id_groupe);
+            while (res.next()){
+                nom_groupe = res.getString("Nom");
+                id_promo = res.getInt("ID_promotion");
+            }
+            res = stt.executeQuery("select * from promotion WHERE ID=" + id_groupe);
+            while (res.next()){
+                nom_promo = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from cours WHERE ID=" + id_cours);
+            while (res.next()){
+                nom_matiere = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from type_cours WHERE ID=" + id_type);
+            while (res.next()){
+                nom_type = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from seance_salle WHERE id_seance=" + id);
+            while (res.next()){
+                id_salle = res.getInt("id_salle");
+            }
+            res = stt.executeQuery("select * from salle WHERE ID=" + id_salle);
+            while (res.next()){
+                nom_salle = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from seance_enseignant WHERE id_seance=" + id);
+            while (res.next()){
+                id_prof = res.getInt("id_enseignant");
+            }
+            res = stt.executeQuery("select * from utilisateurs WHERE ID=" + id_prof);
+            while (res.next()){
+                nom_prof = res.getString("Nom");
+            }
+            coursRecap[i][0] = nom_matiere;
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String text = df.format(date);
+            coursRecap[i][1] = text;
+            DateFormat def = new SimpleDateFormat("HH:mm:ss");
+            def.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String time_debut = def.format(debut);
+            coursRecap[i][2] = time_debut;
+            String time_fin = def.format(fin);
+            coursRecap[i][3] = time_fin;
+            coursRecap[i][4] = etat;
+            coursRecap[i][5] = nom_type;
+            coursRecap[i][6] = nom_salle;
+            coursRecap[i][7] = nom_prof;
+            coursRecap[i][8] = nom_promo;
+            coursRecap[i][9] = nom_groupe;
+            i++;
+        }
+        String[] recapTitle = {"Matière", "Date", "Horaire début", "Horaire fin", "Etat", "Type", "Salle", "Professeur", "Promotion", "Groupe"};
 
-        String[] recapTitle = {"Matière", "Horaires", "Date", "Professeur", "durée"};
-
-        MonModel modelRecap = new MonModel(test_Recap, recapTitle);
+        MonModel modelRecap = new MonModel(coursRecap, recapTitle);
         this.monRecap = new JTable(modelRecap);
     }
 
