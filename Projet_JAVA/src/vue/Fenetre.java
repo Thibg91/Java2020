@@ -53,14 +53,16 @@ public final class Fenetre extends JFrame implements ActionListener {
     private Calendrier monTableau;
     private JTable monRecap;
     private JTable coursMaj;
-
+  private JLabel salleLabel = new JLabel("Salle : ");
+  private JLabel coursLabel = new JLabel("Cours : ");
+   private  JLabel profLabel = new JLabel("Professeur : ");
     private Connection conn = null;
     private Connexion_sql connliste = new Connexion_sql();
     private BoutonInt bouton1 = new BoutonInt("Semaine 1");
     private BoutonInt bouton2 = new BoutonInt("Semaine 2");
     private BoutonInt bouton3 = new BoutonInt("Semaine 3");
     private BoutonInt bouton4 = new BoutonInt("Semaine 4");
-
+    private BoutonInt bouton5=new BoutonInt("Filtrer");
     private JMenuBar Navigation = new JMenuBar();
     private BoutonInt boutonCal = new BoutonInt("Emploi du temps");
     private BoutonInt boutonRec = new BoutonInt("Recap");
@@ -68,7 +70,9 @@ public final class Fenetre extends JFrame implements ActionListener {
     private BoutonInt boutonRep = new BoutonInt("Reporting");
     private BoutonInt boutonAjout = new BoutonInt("Ajouter");
     private BoutonInt ValiderModif = new BoutonInt("Valider");
-
+    private   JComboBox sallefiltre = new JComboBox();
+    private JComboBox professeur = new JComboBox();
+    private JComboBox cours = new JComboBox();
     private JPanel FenetreCalendrier = new JPanel();
     private JPanel FenetreRecap = new JPanel();
     private JPanel FenetreMaj = new JPanel();
@@ -76,6 +80,11 @@ public final class Fenetre extends JFrame implements ActionListener {
 
     private JPanel ModifCours = new JPanel();
     private Object[] objetAjout = null;
+
+private  ArrayList<String> liste;
+private  ArrayList<String> liste2;
+private  ArrayList<String> liste3;
+
     //constructeur de la classe
     public Fenetre(Connection conn, Utilisateur user) throws ClassNotFoundException, SQLException {
         this.conn = conn;
@@ -84,7 +93,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         String id_cours = "";
         String nomcours = "Maths";
         String promo = "Ing3";
-        ArrayList<String> liste;
+       
         //modification des propriétés de la fenetre principale (titre, taille, position et action de fermeture)
         this.setSize(1500, 1000);
         this.setTitle("Mon Calendrier");
@@ -134,6 +143,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         changePage.add(bouton2);
         changePage.add(bouton3);
         changePage.add(bouton4);
+       
 
         //test de case avec des données
         this.initCalendrier();
@@ -169,17 +179,19 @@ public final class Fenetre extends JFrame implements ActionListener {
         JPanel profPanel = new JPanel();
         profPanel.add(profLabel);
         profPanel.add(professeur);
+      
 
-        JLabel salleLabel = new JLabel("Salle : ");
-
+        JLabel salleLabel = new JLabel("Salle: ");
+        
 //juste un test 
         JComboBox sallefiltre = new JComboBox();
 
-        liste = connliste.Affich("Select Nom from cours ");
+        liste = connliste.Affich("Select Nom from salle ");
         for (int i = 0; i < liste.size(); i++) {
             sallefiltre.addItem(liste.get(i));
 
         }
+      
 
         rightLayout.add(coursPanel);
         rightLayout.add(profPanel);
@@ -199,6 +211,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         boutonAjout.addActionListener(this);
         boutonRep.addActionListener(this);
         ValiderModif.addActionListener(this);
+        bouton5.addActionListener(new Filtre());
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
         int cpt = 0;
@@ -280,7 +293,7 @@ public final class Fenetre extends JFrame implements ActionListener {
             if (nom_cours.equals("Mathematiques")) {
                 contenue.setBackground(Color.magenta);  //creation case
             }
-            if (nom_cours.equals("Probabilités")) {
+            if (nom_cours.equals("Probabilites")) {
                 contenue.setBackground(Color.CYAN);
             }
             if (nom_cours.equals("Electronique")) {
@@ -578,8 +591,9 @@ public final class Fenetre extends JFrame implements ActionListener {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        
     }
-
+  
 //initialise un calendrier
     public void initCalendrier() {
         //ici on déclare le meme type de composant mais il est vide, on va initialiser le tableau en le remplissant de Voidcontenu
@@ -612,15 +626,85 @@ public final class Fenetre extends JFrame implements ActionListener {
     }
 
 //initialise le tableau de récap
-    public void initRecap() {
+    public void initRecap() throws SQLException {
 
-        Object[][] test_Recap = {
-            {"Mathématique", "2020-05-05", "10h15","11h45","validée","TD","P416", "Mme Coudray", "2022","Gr 06"},
-        };
+        Seance amphi = null;
+        int id = 0, semaine = 0, id_cours = 0, id_type = 0, id_promo = 0, id_groupe = 0, id_salle = 0, id_prof = 0;
+        Time debut = null, fin = null;
+        Date date = null;
+        String etat = null, nom_type = null, nom_matiere = null, nom_promo = null, nom_groupe = null, nom_salle = null, nom_prof = null;
+        Object[][] coursRecap = new Object[100][10];;
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("select * from seance");
+        int i = 0;
+        while (rs.next()) {
+            id = rs.getInt("ID");
+            etat = rs.getString("Etat");
+            semaine = rs.getInt("Semaine");
+            date = rs.getDate("Date");
+            debut = rs.getTime("Debut");
+            fin = rs.getTime("Fin");
+            id_cours = rs.getInt("Id_cours");
+            id_type = rs.getInt("Id_Typ");
+            Statement stt = conn.createStatement();
+            ResultSet res = stt.executeQuery("select * from seance_groupe WHERE id_seance=" + id);
+            while (res.next()){
+                id_groupe = res.getInt("id_groupe");
+            }
+            res = stt.executeQuery("select * from groupe WHERE ID=" + id_groupe);
+            while (res.next()){
+                nom_groupe = res.getString("Nom");
+                id_promo = res.getInt("ID_promotion");
+            }
+            res = stt.executeQuery("select * from promotion WHERE ID=" + id_groupe);
+            while (res.next()){
+                nom_promo = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from cours WHERE ID=" + id_cours);
+            while (res.next()){
+                nom_matiere = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from type_cours WHERE ID=" + id_type);
+            while (res.next()){
+                nom_type = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from seance_salle WHERE id_seance=" + id);
+            while (res.next()){
+                id_salle = res.getInt("id_salle");
+            }
+            res = stt.executeQuery("select * from salle WHERE ID=" + id_salle);
+            while (res.next()){
+                nom_salle = res.getString("Nom");
+            }
+            res = stt.executeQuery("select * from seance_enseignant WHERE id_seance=" + id);
+            while (res.next()){
+                id_prof = res.getInt("id_enseignant");
+            }
+            res = stt.executeQuery("select * from utilisateurs WHERE ID=" + id_prof);
+            while (res.next()){
+                nom_prof = res.getString("Nom");
+            }
+            coursRecap[i][0] = nom_matiere;
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            String text = df.format(date);
+            coursRecap[i][1] = text;
+            DateFormat def = new SimpleDateFormat("HH:mm:ss");
+            def.setTimeZone(TimeZone.getTimeZone("GMT"));
+            String time_debut = def.format(debut);
+            coursRecap[i][2] = time_debut;
+            String time_fin = def.format(fin);
+            coursRecap[i][3] = time_fin;
+            coursRecap[i][4] = etat;
+            coursRecap[i][5] = nom_type;
+            coursRecap[i][6] = nom_salle;
+            coursRecap[i][7] = nom_prof;
+            coursRecap[i][8] = nom_promo;
+            coursRecap[i][9] = nom_groupe;
+            i++;
+        }
+        String[] recapTitle = {"Matière", "Date", "Horaire début", "Horaire fin", "Etat", "Type", "Salle", "Professeur", "Promotion", "Groupe"};
 
-        String[] coursActifTitle = {"Matière", "Date", "Horaire début","Horaire fin","Etat","Type","Salle", "Professeur", "Promotion","Groupe"};
-
-        MonModel modelRecap = new MonModel(test_Recap, coursActifTitle);
+        MonModel modelRecap = new MonModel(coursRecap, recapTitle);
         this.monRecap = new JTable(modelRecap);
     }
 
@@ -647,43 +731,35 @@ public final class Fenetre extends JFrame implements ActionListener {
             nomcours = liste.get(i);
 
         }
-        JComboBox cours = new JComboBox();
+        
         liste = connliste.Affich("Select Nom from cours ");
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < liste.size(); i++) {
             cours.addItem(liste.get(i));
-            cours.addItem(liste.get(i + 1));
-            cours.addItem(liste.get(i + 2));
-            cours.addItem(liste.get(i + 3));
+         
         }
 
-        JLabel coursLabel = new JLabel("Cours : ");
+        
 
         //juste un test 
-        JComboBox professeur = new JComboBox();
-        liste = connliste.Affich("Select Nom from cours ");
-        for (int i = 0; i < 1; i++) {
+      
+        liste = connliste.Affich("Select Nom from utilisateurs where Droit=3 ");
+        for (int i = 0; i < liste.size(); i++) {
             professeur.addItem(liste.get(i));
-            professeur.addItem(liste.get(i + 1));
-            professeur.addItem(liste.get(i + 2));
-            professeur.addItem(liste.get(i + 3));
+            
         }
 
-        JLabel profLabel = new JLabel("Professeur : ");
         JPanel profPanel = new JPanel();
         profPanel.add(profLabel);
         profPanel.add(professeur);
 
-        JLabel salleLabel = new JLabel("Salle : ");
+        //LAAAAAAAa
 
 //juste un test 
-        JComboBox sallefiltre = new JComboBox();
-
-        liste = connliste.Affich("Select Nom from cours ");
-        for (int i = 0; i < 1; i++) {
+      
+        liste = connliste.Affich("Select Nom from salle ");
+        for (int i = 0; i < liste.size(); i++) {
             sallefiltre.addItem(liste.get(i));
-            sallefiltre.addItem(liste.get(i + 1));
-            sallefiltre.addItem(liste.get(i + 2));
-            sallefiltre.addItem(liste.get(i + 3));
+           
         }
 
         JPanel FiltreRecap = new JPanel();
@@ -693,7 +769,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         FiltreRecap.add(cours);
         FiltreRecap.add(profLabel);
         FiltreRecap.add(professeur);
-
+        FiltreRecap.add(bouton5);
         JScrollPane conteneurRec = new JScrollPane(monRecap);
 
         FenetreRecap.setLayout(new BorderLayout());
@@ -715,6 +791,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         JPanel AjouterCours = new JPanel();
         AjouterCours.setBackground(Color.LIGHT_GRAY);
         AjouterCours.setLayout(new GridLayout(6, 4));
+
         Seance amphi = null;
         int id = 0, semaine = 0, id_cours = 0, id_type = 0, id_promo = 0, id_groupe = 0, id_salle = 0, id_prof = 0;
         Time debut = null, fin = null;
@@ -1153,6 +1230,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         this.setSize(1499, 1000);
         this.setSize(1500, 1000);
     }
+
     
      public void defineReporting()
      {
@@ -1264,4 +1342,47 @@ public final class Fenetre extends JFrame implements ActionListener {
      }
     
     
+
+    private class Filtre implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+          String cours1=cours.getSelectedItem().toString();
+          cours1 = cours1.replaceAll("[\r\n]+", ""); //
+           String IDcours="";
+           String seance1="";
+           String test="";
+           String prof1=professeur.getSelectedItem().toString();
+           String salle1=sallefiltre.getSelectedItem().toString();
+       
+        System.out.println("'"+cours1+"'");
+       Statement stm;
+            try {
+                ResultSet res;
+                stm = conn.createStatement();
+                res = stm.executeQuery("select ID from cours where Nom = '"+cours1+"'");
+                while (res.next()) {
+                    IDcours=res.getString("ID");
+         
+            }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            // Recherche des profs
+        
+         try {
+                liste2 = connliste.Affich("Select * from seance where Id_cours=" + IDcours);
+            } catch (ClassNotFoundException | SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        for (int i = 0; i < liste2.size(); i++) {
+          seance1=liste2.get(i);
+          System.out.println(liste2.get(i)+ "ici2");
+        }
+       
+        
+           
+        }
+    }
+
 }
