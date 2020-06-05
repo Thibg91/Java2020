@@ -30,12 +30,12 @@ public class DAOEnseignant extends DAO<Enseignant> {
         String nom = null, prenom = null, email = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from utilisateurs WHERE ID="+id_prof);
-            while(rs.next()) {
+            ResultSet rs = stmt.executeQuery("select * from utilisateurs WHERE ID=" + id_prof);
+            while (rs.next()) {
                 id = rs.getInt("ID");
                 email = rs.getString("Email");
                 nom = rs.getString("Nom");
-                prenom = rs.getString("Prenom");  
+                prenom = rs.getString("Prenom");
                 droit = rs.getInt("Droit");
             }
             prof = new Enseignant(id, email, nom, prenom, droit);
@@ -64,14 +64,13 @@ public class DAOEnseignant extends DAO<Enseignant> {
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer l'etudiant de la table utilisateur
-            ResultSet rs=stmt.executeQuery("DELETE from utilisateurs WHERE ID="+obj.getID());
+            ResultSet rs = stmt.executeQuery("DELETE from utilisateurs WHERE ID=" + obj.getID());
             //Supprimer l'etudiant de la table etudaint
-            ResultSet res=stmt.executeQuery("DELETE from enseignant WHERE Id_utilisateurs="+obj.getID());
+            ResultSet res = stmt.executeQuery("DELETE from enseignant WHERE Id_utilisateurs=" + obj.getID());
             System.out.println("Le prof a été supprimé");
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(DAOEnseignant.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }

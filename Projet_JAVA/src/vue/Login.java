@@ -4,25 +4,17 @@
  * and open the template in the editor.
  */
 package vue;
-import controler.Affichage_Seance;
 import controler.ConnexionException;
-import controler.Connexion_sql;
 import controler.Recherchelog;
-import controler.Traitement_Connexion;
 import java.awt.*;
-
 import java.awt.event.*;
-import java.io.Console;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
 import java.sql.Connection;
-import modele.Etudiant;
 import modele.Utilisateur;
 
 /**
@@ -33,13 +25,13 @@ import modele.Utilisateur;
 //fenetre de connexion
 public class Login extends JFrame implements ActionListener{
     // Y a  deux champs de texte et un bouton pour submit
-    private JPanel chp_co = new JPanel();
-    private JTextField chp_login = new JTextField("Papier@edu.ece.fr");
-    private JTextField chp_mdp = new JTextField("Papier123");
-    private BoutonInt valider = new BoutonInt("Valider");
-    private Connection connexion = null;
-    private JTextArea ID = new JTextArea("Identifiant : ");
-    private JTextArea MDP = new JTextArea("Mot de passe : ");
+    private final JPanel chp_co = new JPanel();
+    private final JTextField chp_login = new JTextField("Papier@edu.ece.fr");
+    private final JTextField chp_mdp = new JTextField("Papier123");
+    private final BoutonInt valider = new BoutonInt("Valider");
+    private final Connection connexion = null;
+    private final JTextArea ID = new JTextArea("Identifiant : ");
+    private final JTextArea MDP = new JTextArea("Mot de passe : ");
     private Statement stmt;
     private ResultSet rset;
     private Recherchelog reche=null;
@@ -88,14 +80,14 @@ public class Login extends JFrame implements ActionListener{
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     
+    @Override
     public void actionPerformed(ActionEvent arg0){
         reche=new Recherchelog(connexion);
-        String email=chp_login.getText();
+        String mail=chp_login.getText();
         String mdp=chp_mdp.getText();
-        //System.out.println(mdp);
         try {
             try {
-                Personne = reche.Recherche(email,mdp);
+                Personne = reche.Recherche(mail,mdp);
             } catch (ConnexionException ex) {
                 Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
             }

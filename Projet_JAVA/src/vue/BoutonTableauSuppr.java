@@ -15,6 +15,7 @@ import javax.swing.table.TableCellRenderer;
  * @author titig
  */
 public class BoutonTableauSuppr extends JButton implements TableCellRenderer{
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean isFocus, int row, int col) {
         this.setText("supprimer");
         

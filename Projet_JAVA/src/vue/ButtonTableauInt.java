@@ -20,7 +20,7 @@ import javax.swing.JTable;
 public class ButtonTableauInt extends DefaultCellEditor {
     protected JButton button;
     private boolean isPushed;
-    private ButtonListener boutList = new ButtonListener();
+    private final ButtonListener boutList = new ButtonListener();
     
     public ButtonTableauInt(JCheckBox checkBox){
         super(checkBox);
@@ -29,6 +29,7 @@ public class ButtonTableauInt extends DefaultCellEditor {
         button.addActionListener(boutList);
     }
     
+    @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col){
         boutList.setRow(row);
         boutList.setColumn(col);
@@ -40,12 +41,13 @@ public class ButtonTableauInt extends DefaultCellEditor {
     class ButtonListener implements ActionListener{
         private int row, col;
         private JTable table;
-        private int nbre = 0;
+        private final int nbre = 0;
         
         public void setColumn(int col){this.col = col;}
         public void setRow(int row){this.row = row;}
         public void setTable(JTable table){this.table = table;}
         
+        @Override
         public void actionPerformed(ActionEvent event) {
             System.out.println("On verra pour ca plus ");
             

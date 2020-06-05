@@ -17,7 +17,7 @@ import modele.Groupe;
  *
  * @author Gautier PLANTE
  */
-public class DAOGroupe extends DAO<Groupe>{
+public class DAOGroupe extends DAO<Groupe> {
 
     public DAOGroupe(Connection conn) {
         super(conn);
@@ -30,8 +30,8 @@ public class DAOGroupe extends DAO<Groupe>{
         String nom = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from groupe WHERE ID="+id_groupe);
-            while(rs.next()) {
+            ResultSet rs = stmt.executeQuery("select * from groupe WHERE ID=" + id_groupe);
+            while (rs.next()) {
                 id = rs.getInt("ID");
                 nom = rs.getString("Nom");
                 id_promo = rs.getInt("ID_promotion");
@@ -62,14 +62,13 @@ public class DAOGroupe extends DAO<Groupe>{
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer l'etudiant de la table utilisateur
-            ResultSet rs=stmt.executeQuery("DELETE from groupe WHERE ID="+obj.getId());
+            ResultSet rs = stmt.executeQuery("DELETE from groupe WHERE ID=" + obj.getId());
             //Supprimer l'etudiant de la table etudaint
-            ResultSet res=stmt.executeQuery("DELETE from seance_groupe WHERE Id_groupe="+obj.getId());
+            ResultSet res = stmt.executeQuery("DELETE from seance_groupe WHERE Id_groupe=" + obj.getId());
             System.out.println("Le groupe a été supprimé");
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(DAOGroupe.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }

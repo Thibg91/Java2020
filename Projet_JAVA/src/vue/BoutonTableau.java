@@ -16,6 +16,7 @@ import javax.swing.table.TableCellRenderer;
  */
 public class BoutonTableau extends JButton implements TableCellRenderer {
     
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean isFocus, int row, int col) {
         this.setText("modifier");
         

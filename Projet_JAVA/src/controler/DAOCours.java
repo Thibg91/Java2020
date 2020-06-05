@@ -30,8 +30,8 @@ public class DAOCours extends DAO<Cours> {
         String nom = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from cours WHERE ID="+id_cours);
-            while(rs.next()) {
+            ResultSet rs = stmt.executeQuery("select * from cours WHERE ID=" + id_cours);
+            while (rs.next()) {
                 id = rs.getInt("ID");
                 nom = rs.getString("Nom");
             }
@@ -61,14 +61,13 @@ public class DAOCours extends DAO<Cours> {
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer l'etudiant de la table cours
-            ResultSet rs=stmt.executeQuery("DELETE from cours WHERE ID="+obj.getId());
+            ResultSet rs = stmt.executeQuery("DELETE from cours WHERE ID=" + obj.getId());
             //Supprimer l'etudiant de la table seance
-            ResultSet res=stmt.executeQuery("DELETE from seance WHERE Id_cours="+obj.getId());
+            ResultSet res = stmt.executeQuery("DELETE from seance WHERE Id_cours=" + obj.getId());
             System.out.println("Le cours a été supprimé");
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(DAOCours.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }

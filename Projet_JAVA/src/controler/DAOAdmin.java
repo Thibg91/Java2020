@@ -17,7 +17,7 @@ import modele.Admin;
  *
  * @author Gautier PLANTE
  */
-public class DAOAdmin extends DAO<Admin>{
+public class DAOAdmin extends DAO<Admin> {
 
     public DAOAdmin(Connection conn) {
         super(conn);
@@ -30,12 +30,12 @@ public class DAOAdmin extends DAO<Admin>{
         String nom = null, prenom = null, email = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from utilisateurs WHERE ID="+id_admin);
-            while(rs.next()) {
+            ResultSet rs = stmt.executeQuery("select * from utilisateurs WHERE ID=" + id_admin);
+            while (rs.next()) {
                 id = rs.getInt("ID");
                 email = rs.getString("Email");
                 nom = rs.getString("Nom");
-                prenom = rs.getString("Prenom");  
+                prenom = rs.getString("Prenom");
                 droit = rs.getInt("Droit");
             }
             boss = new Admin(id, email, nom, prenom, droit);
@@ -64,11 +64,10 @@ public class DAOAdmin extends DAO<Admin>{
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer l'etudiant de la table utilisateur
-            ResultSet rs=stmt.executeQuery("DELETE from utilisateurs WHERE ID="+obj.getID());
-        }
-        catch (SQLException ex) {
+            ResultSet rs = stmt.executeQuery("DELETE from utilisateurs WHERE ID=" + obj.getID());
+        } catch (SQLException ex) {
             Logger.getLogger(DAOAdmin.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }

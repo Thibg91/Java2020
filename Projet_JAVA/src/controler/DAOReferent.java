@@ -17,7 +17,7 @@ import modele.Referent;
  *
  * @author Gautier PLANTE
  */
-public class DAOReferent extends DAO<Referent>{
+public class DAOReferent extends DAO<Referent> {
 
     public DAOReferent(Connection conn) {
         super(conn);
@@ -30,12 +30,12 @@ public class DAOReferent extends DAO<Referent>{
         String nom = null, prenom = null, email = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from utilisateurs WHERE ID="+id_ref);
-            while(rs.next()) {
+            ResultSet rs = stmt.executeQuery("select * from utilisateurs WHERE ID=" + id_ref);
+            while (rs.next()) {
                 id = rs.getInt("ID");
                 email = rs.getString("Email");
                 nom = rs.getString("Nom");
-                prenom = rs.getString("Prenom");  
+                prenom = rs.getString("Prenom");
                 droit = rs.getInt("Droit");
             }
             ref = new Referent(id, email, nom, prenom, droit);
@@ -64,10 +64,10 @@ public class DAOReferent extends DAO<Referent>{
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer l'etudiant de la table utilisateur
-            ResultSet rs=stmt.executeQuery("DELETE from utilisateurs WHERE ID="+obj.getID());
-        }
-        catch (SQLException ex) {
+            ResultSet rs = stmt.executeQuery("DELETE from utilisateurs WHERE ID=" + obj.getID());
+        } catch (SQLException ex) {
             Logger.getLogger(DAOReferent.class.getName()).log(Level.SEVERE, null, ex);
-        }    }
-    
+        }
+    }
+
 }

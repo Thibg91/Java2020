@@ -17,7 +17,7 @@ import modele.Type_Cours;
  *
  * @author Gautier PLANTE
  */
-public class DAOType extends DAO<Type_Cours>{
+public class DAOType extends DAO<Type_Cours> {
 
     public DAOType(Connection conn) {
         super(conn);
@@ -30,8 +30,8 @@ public class DAOType extends DAO<Type_Cours>{
         String nom = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from salle WHERE ID="+id_type);
-            while(rs.next()) {
+            ResultSet rs = stmt.executeQuery("select * from salle WHERE ID=" + id_type);
+            while (rs.next()) {
                 id = rs.getInt("ID");
                 nom = rs.getString("Nom");
             }
@@ -61,14 +61,13 @@ public class DAOType extends DAO<Type_Cours>{
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer l'etudiant de la table utilisateur
-            ResultSet rs=stmt.executeQuery("DELETE from type_cours WHERE ID="+obj.getId());
+            ResultSet rs = stmt.executeQuery("DELETE from type_cours WHERE ID=" + obj.getId());
             //Supprimer l'etudiant de la table etudaint
-            ResultSet res=stmt.executeQuery("DELETE from seance WHERE ID_Typ="+obj.getId());
+            ResultSet res = stmt.executeQuery("DELETE from seance WHERE ID_Typ=" + obj.getId());
             System.out.println("Le type a été supprimé");
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(DAOType.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }

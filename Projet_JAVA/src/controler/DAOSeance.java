@@ -11,17 +11,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
-import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import modele.Seance;
-import java.sql.Timestamp;
 
 /**
  *
  * @author Gautier PLANTE
  */
-public class DAOSeance extends DAO<Seance>{
+public class DAOSeance extends DAO<Seance> {
 
     public DAOSeance(Connection conn) {
         super(conn);
@@ -36,8 +34,8 @@ public class DAOSeance extends DAO<Seance>{
         String etat = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from seance WHERE ID="+id_seance);
-            while(rs.next()) {
+            ResultSet rs = stmt.executeQuery("select * from seance WHERE ID=" + id_seance);
+            while (rs.next()) {
                 id = rs.getInt("ID");
                 etat = rs.getString("Etat");
                 semaine = rs.getInt("Semaine");
@@ -63,10 +61,10 @@ public class DAOSeance extends DAO<Seance>{
         int id = 0;
         try {
             Statement stmt = connexion.createStatement();
-            stmt.executeUpdate("INSERT into seance (Semaine, Date, Debut, Fin, Etat, Id_cours, Id_Typ) VALUES ('"+obj.getWeek()+"','"+obj.getDate()+"', '"+obj.getDebut()+"','"+ obj.getFin()+"', '"+obj.getEtat()+"', '"+obj.getCours()+"', '"+obj.getType()+"')");
+            stmt.executeUpdate("INSERT into seance (Semaine, Date, Debut, Fin, Etat, Id_cours, Id_Typ) VALUES ('" + obj.getWeek() + "','" + obj.getDate() + "', '" + obj.getDebut() + "','" + obj.getFin() + "', '" + obj.getEtat() + "', '" + obj.getCours() + "', '" + obj.getType() + "')");
             Statement stt = connexion.createStatement();
-            ResultSet rs=stt.executeQuery("select * from seance WHERE Date='"+obj.getDate()+"'AND Debut='"+obj.getDebut()+"'");
-            while(rs.next()) {
+            ResultSet rs = stt.executeQuery("select * from seance WHERE Date='" + obj.getDate() + "'AND Debut='" + obj.getDebut() + "'");
+            while (rs.next()) {
                 id = rs.getInt("ID");
             }
             obj.setId(id);
@@ -78,15 +76,10 @@ public class DAOSeance extends DAO<Seance>{
 
     @Override
     public Seance update(Seance obj) {
-        int id = 0;
         try {
             Statement stmt = connexion.createStatement();
-            stmt.executeUpdate("Update seance SET Semaine='"+obj.getWeek()+"',Date='"+obj.getDate()+"', Debut='"+obj.getDebut()+"', Fin='"+ obj.getFin()+"', Etat='"+obj.getEtat()+"', Id_cours='"+obj.getCours()+"', Id_Typ='"+obj.getType()+"' WHERE Date='"+obj.getDate()+"'AND Debut='"+obj.getDebut()+"'");
-            Statement stt = connexion.createStatement();
-            ResultSet rs=stt.executeQuery("select * from seance WHERE Date='"+obj.getDate()+"'AND Debut='"+obj.getDebut()+"'");
-            rs.next();
-            id = rs.getInt("ID");
-            obj = find(id);
+            stmt.executeUpdate("Update seance SET Semaine='" + obj.getWeek() + "',Date='" + obj.getDate() + "', Debut='" + obj.getDebut() + "', Fin='" + obj.getFin() + "', Etat='" + obj.getEtat() + "', Id_cours='" + obj.getCours() + "', Id_Typ='" + obj.getType() + "' WHERE ID="+obj.getId());
+            obj = find(obj.getId());
         } catch (SQLException ex) {
             Logger.getLogger(DAOSeance.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -98,16 +91,15 @@ public class DAOSeance extends DAO<Seance>{
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer la seance de la table seance
-            stmt.executeUpdate("DELETE from seance WHERE ID="+obj.getId());
+            stmt.executeUpdate("DELETE from seance WHERE ID=" + obj.getId());
             //Supprimer a seance des autres tables
-            stmt.executeUpdate("DELETE from seance_salle WHERE id_seance="+obj.getId());
-            stmt.executeUpdate("DELETE from seance_groupe WHERE id_seance="+obj.getId());
-            stmt.executeUpdate("DELETE from seance_enseignant WHERE id_seance="+obj.getId());
+            stmt.executeUpdate("DELETE from seance_salle WHERE id_seance=" + obj.getId());
+            stmt.executeUpdate("DELETE from seance_groupe WHERE id_seance=" + obj.getId());
+            stmt.executeUpdate("DELETE from seance_enseignant WHERE id_seance=" + obj.getId());
             System.out.println("La séance a été supprimée");
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(DAOSeance.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }

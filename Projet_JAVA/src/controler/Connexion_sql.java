@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package controler;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -11,42 +12,40 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 /**
  *
  * @author Gautier PLANTE
  */
 public class Connexion_sql {
 
-	private static String url;
-	private static String user = "root";
-	private static String passwd = "";
-	private static Connection connect;
-          private Statement stmt;
-   private ResultSet rset;
-   private ResultSetMetaData rsetMeta;
-	public static Connection getInstance() throws SQLException, ClassNotFoundException{
-		    // chargement driver "com.mysql.jdbc.Driver"
-        
-       Class.forName("com.mysql.jdbc.Driver");
+    private static String url;
+    private static String user = "root";
+    private static String passwd = "";
+    private static Connection connect;
+    private Statement stmt;
+    private ResultSet rset;
+    private ResultSetMetaData rsetMeta;
 
-        // url de connexion "jdbc:mysql://localhost:3305/usernameECE"
+    public static Connection getInstance() throws SQLException, ClassNotFoundException {
+        // chargement driver "com.mysql.jdbc.Driver"
+
+        Class.forName("com.mysql.jdbc.Driver");
+
         String urlDatabase = "jdbc:mysql://localhost:3306/projetplanning?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC";
-       // String urlDatabase = "jdbc:mysql://localhost:3308/jps?characterEncoding=latin1";
 
         //création d'une connexion JDBC à la base 
-        connect = DriverManager.getConnection(urlDatabase, "root","");
+        connect = DriverManager.getConnection(urlDatabase, user, passwd);
 
-    
-		return connect;	
-	}
-        public ArrayList Affich(String requete) throws ClassNotFoundException, SQLException
-        {
-          connect=getInstance();   
-      stmt = connect.createStatement();
-      
-		
+        return connect;
+    }
+
+    public ArrayList Affich(String requete) throws ClassNotFoundException, SQLException {
+        connect = getInstance();
+        stmt = connect.createStatement();
+
         // création d'un ordre SQL (statement)
-       rset = stmt.executeQuery(requete);
+        rset = stmt.executeQuery(requete);
 
         // récupération du résultat de l'ordre
         rsetMeta = rset.getMetaData();
@@ -74,11 +73,8 @@ public class Connexion_sql {
             // ajouter les champs de la ligne dans l'ArrayList
             liste.add(champs);
         }
-        
 
- return liste;
+        return liste;
     }
 
-
-        }
-
+}

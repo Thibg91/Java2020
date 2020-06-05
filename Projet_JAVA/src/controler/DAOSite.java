@@ -30,8 +30,8 @@ public class DAOSite extends DAO<Site> {
         String nom = null;
         try {
             Statement stmt = connexion.createStatement();
-            ResultSet rs=stmt.executeQuery("select * from site WHERE ID="+id_site);
-            while(rs.next()) {
+            ResultSet rs = stmt.executeQuery("select * from site WHERE ID=" + id_site);
+            while (rs.next()) {
                 id = rs.getInt("ID");
                 nom = rs.getString("Nom");
             }
@@ -61,14 +61,13 @@ public class DAOSite extends DAO<Site> {
         try {
             Statement stmt = connexion.createStatement();
             //Supprimer l'etudiant de la table utilisateur
-            ResultSet rs=stmt.executeQuery("DELETE from site WHERE ID="+obj.getId());
+            ResultSet rs = stmt.executeQuery("DELETE from site WHERE ID=" + obj.getId());
             //Supprimer l'etudiant de la table etudaint
-            ResultSet res=stmt.executeQuery("DELETE from salle WHERE ID_site="+obj.getId());
+            ResultSet res = stmt.executeQuery("DELETE from salle WHERE ID_site=" + obj.getId());
             System.out.println("Le site a été supprimé");
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             Logger.getLogger(DAOSite.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
 }
