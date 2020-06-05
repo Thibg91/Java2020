@@ -130,8 +130,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         //Login monLogin = new Login();
         //monLogin.setVisible(true);
         defineMaj();
-        defineReporting();
-
+        //defineReporting();
         bouton1.addActionListener(this);
         bouton2.addActionListener(this);
         bouton3.addActionListener(this);
@@ -154,10 +153,11 @@ public final class Fenetre extends JFrame implements ActionListener {
             this.prof = (Enseignant) user;
             afficheCalendrierProf(this.prof, week);
         }
-
-        this.initRecap("", "", "");
-        defineRecap();
-
+        if (user.getDroit() != 1 && user.getDroit() != 2) {
+            this.initRecap("", "", "");
+            defineRecap();
+            defineReporting();
+        }
         this.setContentPane(FenetreCalendrier);
         //Cacher la fenetre ou pas : bool 
         this.setVisible(true);
@@ -231,6 +231,20 @@ public final class Fenetre extends JFrame implements ActionListener {
 
         rightLayout.add(coursPanel);
         rightLayout.add(profPanel);
+
+        defineMaj();
+
+        bouton1.addActionListener(this);
+        bouton2.addActionListener(this);
+        bouton3.addActionListener(this);
+        bouton4.addActionListener(this);
+        boutonCal.addActionListener(this);
+        boutonRec.addActionListener(this);
+        boutonMaj.addActionListener(this);
+        boutonAjout.addActionListener(this);
+        boutonRep.addActionListener(this);
+        ValiderModif.addActionListener(this);
+        bouton5.addActionListener(new Filtre());
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
         int cpt = 0;
@@ -297,14 +311,14 @@ public final class Fenetre extends JFrame implements ActionListener {
             if (nom_cours.equals("Mathematiques")) {
                 contenue.setBackground(Color.magenta);  //creation case
             }
-            if (nom_cours.equals("Probabilités")) {
-                contenue.setBackground(Color.CYAN);
-            }
             if (nom_cours.equals("Electronique")) {
                 contenue.setBackground(Color.YELLOW);
             }
             if (nom_cours.equals("Physique")) {
                 contenue.setBackground(Color.RED);
+            }
+            if (nom_cours.equals("Probabilités")) {
+                contenue.setBackground(Color.BLUE);
             }
             contenue.setEditable(false);
         }
@@ -489,8 +503,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
         JScrollPane conteneurCal = new JScrollPane(monTableau);
 
-        //Login monLogin = new Login();
-        // monLogin.setVisible(true);
         //partie barre de navigation
         this.Navigation.add(boutonCal);
         this.Navigation.add(boutonRec);
@@ -508,18 +520,29 @@ public final class Fenetre extends JFrame implements ActionListener {
         FenetreCalendrier.add(firstColumnPane, BorderLayout.WEST);
         //contenu de Droite 
         FenetreCalendrier.add(rightLayout, BorderLayout.EAST);
+        if (user.getDroit() != 1) {
+            this.initRecap("", "", "");
+            defineRecap();
+        }
+
+        this.setContentPane(FenetreCalendrier);
+        //Cacher la fenetre ou pas : bool 
+        this.setVisible(true);
     }
 
     // nécessite des modifs mais permet d' 
     public void actionPerformed(ActionEvent arg0) {
         if (arg0.getSource() == bouton1) {
+            System.out.println("test");
             resize();
             FenetreCalendrier.removeAll();
             try {
-                if (user.getDroit() == 4)
+                if (user.getDroit() == 4) {
                     afficheCalendrier(this.student, 23);
-                if (user.getDroit() == 3)
+                }
+                if (user.getDroit() == 3) {
                     afficheCalendrierProf(this.prof, 23);
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -527,13 +550,16 @@ public final class Fenetre extends JFrame implements ActionListener {
             }
         }
         if (arg0.getSource() == bouton2) {
+            System.out.println("test");
             resize();
             FenetreCalendrier.removeAll();
             try {
-                if (user.getDroit() == 4)
+                if (user.getDroit() == 4) {
                     afficheCalendrier(this.student, 24);
-                if (user.getDroit() == 3)
+                }
+                if (user.getDroit() == 3) {
                     afficheCalendrierProf(this.prof, 24);
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -544,10 +570,12 @@ public final class Fenetre extends JFrame implements ActionListener {
             resize();
             FenetreCalendrier.removeAll();
             try {
-                if (user.getDroit() == 4)
+                if (user.getDroit() == 4) {
                     afficheCalendrier(this.student, 25);
-                if (user.getDroit() == 3)
+                }
+                if (user.getDroit() == 3) {
                     afficheCalendrierProf(this.prof, 25);
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -558,10 +586,12 @@ public final class Fenetre extends JFrame implements ActionListener {
             resize();
             FenetreCalendrier.removeAll();
             try {
-                if (user.getDroit() == 4)
+                if (user.getDroit() == 4) {
                     afficheCalendrier(this.student, 26);
-                if (user.getDroit() == 3)
+                }
+                if (user.getDroit() == 3) {
                     afficheCalendrierProf(this.prof, 26);
+                }
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
@@ -722,7 +752,7 @@ public final class Fenetre extends JFrame implements ActionListener {
             String promos = (String) promo.getText();
             Time Debut = Time.valueOf((String) debut.getText());
             Time Fin = Time.valueOf((String) fin.getText());
-            int id_seance = Integer.parseInt((String)id.getText());
+            int id_seance = Integer.parseInt((String) id.getText());
             Statement stmt = null;
             int id_salle = 0;
             int id_groupe = 0;
@@ -873,7 +903,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         if (user.getDroit() == 4) {
             r = stmts.executeQuery("select * from seance_groupe where id_groupe= " + idgrp);
         }
-        if (user.getDroit() == 3){
+        if (user.getDroit() == 3) {
             r = stmts.executeQuery("select * from seance_enseignant where id_enseignant= " + this.prof.getID());
         }
         while (r.next()) {
@@ -1159,7 +1189,7 @@ public final class Fenetre extends JFrame implements ActionListener {
             coursActifTab[i][12] = "supprimer";
             i++;
         }
-        String[] coursActifTitle = {"Id","Matière", "Date", "Horaire début", "Horaire fin", "Etat", "Type", "Salle", "Professeur", "Promotion", "Groupe", "Modifier", "Supprimer"};
+        String[] coursActifTitle = {"Id", "Matière", "Date", "Horaire début", "Horaire fin", "Etat", "Type", "Salle", "Professeur", "Promotion", "Groupe", "Modifier", "Supprimer"};
 
         MonModel modelMaj = new MonModel(coursActifTab, coursActifTitle);
         this.coursMaj = new JTable(modelMaj);
@@ -1413,7 +1443,7 @@ public final class Fenetre extends JFrame implements ActionListener {
     public void setModifPane(Object Id, Object matiere, Object Date, Object HeureD, Object HeureF, Object Etat, Object Type, Object Salle, Object Prof, Object Promo, Object Groupe) {
         ModifCours.removeAll();
         Font font2 = new Font("Arial", Font.BOLD, 18);
-        
+
         JLabel labelMatiere = new JLabel("Matière :");
         labelMatiere.setFont(font2);
         JTextField TFMatiere = new JTextField((String) matiere);
@@ -1454,7 +1484,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         JLabel labelGroupe = new JLabel("Groupe :");
         labelGroupe.setFont(font2);
         JTextField TFGroupe = new JTextField((String) Groupe);
-        
+
         JLabel labelId = new JLabel("Id :");
         labelId.setFont(font2);
         JTextField TFId = new JTextField(String.valueOf(Id));
@@ -1581,7 +1611,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
     }
 
-    public void defineReporting() {
+    public void defineReporting() throws SQLException, ClassNotFoundException {
         JPanel Ligne1 = new JPanel();
         JPanel Ligne2 = new JPanel();
         JPanel Ligne3 = new JPanel();
@@ -1598,11 +1628,72 @@ public final class Fenetre extends JFrame implements ActionListener {
         FinalContent.setLayout(new BoxLayout(FinalContent, BoxLayout.PAGE_AXIS));
 
         //Premier graph : Ici il faut récupérer le nombre d'heure de chaque matière, le nombre d'heure de chaque matière qui n'ont pas encore été faites (ressemble aux barres du bas), et diviser le 2eme par le 1er
+        String nbcoursmaths;
+        double cpt1 = 0;
+        double cpt2 = 0, cpt3 = 0, cpt4 = 0;
+        int idgrp = student.getGroupe();
+        int ids = 0;
+        System.out.println(idgrp);
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=1 and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                nbcoursmaths = liste.get(i);
+
+            }
+            for (int i = 0; i < liste.size(); i++) {
+                cpt1 = cpt1 + 1;
+            }
+        }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=2 and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                nbcoursmaths = liste.get(i);
+
+            }
+            for (int i = 0; i < liste.size(); i++) {
+                cpt2 = cpt2 + 1;
+            }
+        }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=3 and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                nbcoursmaths = liste.get(i);
+
+            }
+            for (int i = 0; i < liste.size(); i++) {
+                cpt3 = cpt3 + 1;
+            }
+        }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=4 and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                nbcoursmaths = liste.get(i);
+
+            }
+            for (int i = 0; i < liste.size(); i++) {
+                cpt4 = cpt4 + 1;
+            }
+        }
+        double somme = cpt1 + cpt2 + cpt3 + cpt4;
+        double cp1 = (cpt1 / somme) * 100;
+        double cp2 = (cpt2 / somme) * 100;
+        double cp3 = (cpt3 / somme) * 100;
+        double cp4 = (cpt4 / somme) * 100;
+
         DefaultPieDataset HeureRestantes = new DefaultPieDataset();
-        HeureRestantes.setValue("Mathématiques", 23);
-        HeureRestantes.setValue("Electronique", 27);
-        HeureRestantes.setValue("Physique", 30);
-        HeureRestantes.setValue("Probabilités", 20);
+        HeureRestantes.setValue("Mathématiques", cp1);
+        HeureRestantes.setValue("Electronique", cp2);
+        HeureRestantes.setValue("Physique", cp3);
+        HeureRestantes.setValue("Probabilités", cp4);
         JFreeChart pieChart = ChartFactory.createPieChart("Heures restantes par matière", HeureRestantes, true, true, true);
         ChartPanel cPanel = new ChartPanel(pieChart);
 
@@ -1622,13 +1713,72 @@ public final class Fenetre extends JFrame implements ActionListener {
         ChartPanel BPanel = new ChartPanel(BarChart);
 
         //ici faut compter sur la semaine le nombre d'heure réalisé dans la semaine en tout pour un éleves, en gros faut faire une boucle avec i qui augmente de 1 pour chaque heure de l'éleve chaque jour et ensuite on multiplie par 1.5 pour les heures 
+        int cptt = 0;
+        String oned = "";
+        int cptt2 = 0, cptt3 = 0, cptt4 = 0, cptt5 = 0, cptt6 = 0;
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Date='2020-06-01' and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                cptt = cptt + 1;
+
+            }
+        }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Date='2020-06-02' and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                cptt2 = cptt2 + 1;
+
+            }
+        }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Date='2020-06-03' and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                cptt3 = cptt3 + 1;
+
+            }
+        }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Date='2020-06-04' and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                cptt4 = cptt4 + 1;
+
+            }
+        }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Date='2020-06-05' and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                cptt5 = cptt5 + 1;
+
+            }
+        }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+        while (rs.next()) {
+            ids = rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Date='2020-06-06' and ID=" + ids);
+            for (int i = 0; i < liste.size(); i++) {
+                cptt6 = cptt6 + 1;
+
+            }
+        }
+
+        System.out.println(cptt);
         DefaultCategoryDataset heureparSemaine = new DefaultCategoryDataset();
-        heureparSemaine.addValue(3, "Heure", "Lundi");
-        heureparSemaine.addValue(4.5, "Heure", "Mardi");
-        heureparSemaine.addValue(10.5, "Heure", "Mercredi");
-        heureparSemaine.addValue(13.5, "Heure", "Jeudi");
-        heureparSemaine.addValue(15, "Heure", "Vendredi");
-        heureparSemaine.addValue(18, "Heure", "Samedi");
+        heureparSemaine.addValue(cptt, "Heure", "Lundi");
+        heureparSemaine.addValue(cptt + cptt2, "Heure", "Mardi");
+        heureparSemaine.addValue(cptt + cptt2 + cptt3, "Heure", "Mercredi");
+        heureparSemaine.addValue(cptt + cptt2 + cptt3 + cptt4, "Heure", "Jeudi");
+        heureparSemaine.addValue(cptt + cptt2 + cptt3 + cptt4 + cptt5, "Heure", "Vendredi");
+        heureparSemaine.addValue(cptt + cptt2 + cptt3 + cptt4 + cptt5 + cptt6, "Heure", "Samedi");
         JFreeChart lineChart = ChartFactory.createLineChart("Nombre d'heure de l'étudiant au cours de la semaine", "Jours", "compteur d'heure", heureparSemaine, PlotOrientation.VERTICAL, false, true, false);
         ChartPanel LPanel = new ChartPanel(lineChart);
 
@@ -1686,4 +1836,43 @@ public final class Fenetre extends JFrame implements ActionListener {
         FenetreReporting.add(FinalContent);
     }
 
+    public void hideCal() {
+        this.boutonCal.setVisible(false);
+    }
+
+    public void hideRec() {
+        this.boutonRec.setVisible(false);
+    }
+
+    public void hideMaj() {
+        this.boutonMaj.setVisible(false);
+    }
+
+    public void hideRep() {
+        this.boutonRep.setVisible(false);
+    }
+
+    public void showCal() {
+        this.boutonCal.setVisible(true);
+    }
+
+    public void showRec() {
+        this.boutonRec.setVisible(true);
+    }
+
+    public void showMaj() {
+        this.boutonMaj.setVisible(true);
+    }
+
+    public void showRep() {
+        this.boutonRep.setVisible(true);
+    }
+
+    public void setContentMaj() {
+        this.setContentPane(FenetreMaj);
+    }
+
+    public void setContentRec() {
+        this.setContentPane(FenetreRecap);
+    }
 }

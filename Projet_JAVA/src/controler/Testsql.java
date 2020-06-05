@@ -41,19 +41,40 @@ public class Testsql {
         Utilisateur personne = test.traitement_co(monLogin.getEmail());
         if (personne.getDroit() == 1) {
             Admin student = (Admin) personne;
-            //Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
+            
+          Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), student, week);
+            myWindow.hideCal();
+            myWindow.hideRec();
+            myWindow.hideRep();
+            myWindow.showMaj();
+            myWindow.setContentMaj();
+            
         }
         if (personne.getDroit() == 2) {
             Referent student = (Referent) personne;
-            //Fenetre myWindow = new Fenetre(Connexion_sql.getInstance());
+           Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), student, week);
+            myWindow.hideCal();
+            myWindow.showRec();
+            myWindow.showRep();
+            myWindow.hideMaj();
+            myWindow.setContentRec();
+            
         }
-        if (personne.getDroit() == 3) {
-            Enseignant prof = (Enseignant) personne;
-            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), prof, week);
+        if(personne.getDroit() == 3){
+            Enseignant student = (Enseignant) personne;
+            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), student, week);
+            myWindow.showCal();
+            myWindow.showRec();
+            myWindow.hideRep();
+            myWindow.hideMaj();
         }
         if (personne.getDroit() == 4) {
             Etudiant student = (Etudiant) personne;
             Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), student, week);
+            myWindow.showCal();
+            myWindow.showRec();
+            myWindow.showRep();
+            myWindow.hideMaj();
         }
 
     }
