@@ -196,8 +196,6 @@ private  ArrayList<String> liste3;
         rightLayout.add(coursPanel);
         rightLayout.add(profPanel);
 
-        //Login monLogin = new Login();
-        //monLogin.setVisible(true);
         defineMaj();
         defineReporting();
 
@@ -307,8 +305,6 @@ private  ArrayList<String> liste3;
 
         JScrollPane conteneurCal = new JScrollPane(monTableau);
 
-        //Login monLogin = new Login();
-        // monLogin.setVisible(true);
         //partie barre de navigation
         this.Navigation.add(boutonCal);
         this.Navigation.add(boutonRec);
@@ -905,7 +901,7 @@ private  ArrayList<String> liste3;
         col12.setPreferredWidth(100);
 
         JScrollPane conteneurMaj = new JScrollPane(coursMaj);
-        conteneurMaj.setPreferredSize(new Dimension(1200, 1000));
+        conteneurMaj.setPreferredSize(new Dimension(1300, 800));
 
         coursActif.add(conteneurMaj);
 
@@ -1379,10 +1375,48 @@ private  ArrayList<String> liste3;
           seance1=liste2.get(i);
           System.out.println(liste2.get(i)+ "ici2");
         }
-       
-        
-           
-        }
+       }
     }
 
+    
+    public void hideCal()
+    {
+        this.boutonCal.setVisible(false);
+    }
+    public void hideRec()
+    {
+        this.boutonRec.setVisible(false);
+    }
+    public void hideMaj()
+    {
+        this.boutonMaj.setVisible(false);
+    }
+    public void hideRep()
+    {
+        this.boutonRep.setVisible(false);
+    }
+    public void showCal()
+    {
+        this.boutonCal.setVisible(true);
+    }
+    public void showRec()
+    {
+        this.boutonRec.setVisible(true);
+    }
+    public void showMaj()
+    {
+        this.boutonMaj.setVisible(true);
+    }
+    public void showRep()
+    {
+        this.boutonRep.setVisible(true);
+    }
+    public void setContentMaj()
+    {
+        this.setContentPane(FenetreMaj);
+    }
+    public void setContentRec()
+    {
+        this.setContentPane(FenetreRecap);
+    }
 }
