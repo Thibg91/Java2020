@@ -53,16 +53,16 @@ public final class Fenetre extends JFrame implements ActionListener {
     private Calendrier monTableau;
     private JTable monRecap;
     private JTable coursMaj;
-  private JLabel salleLabel = new JLabel("Salle : ");
-  private JLabel coursLabel = new JLabel("Cours : ");
-   private  JLabel profLabel = new JLabel("Professeur : ");
+    private JLabel salleLabel = new JLabel("Salle : ");
+    private JLabel coursLabel = new JLabel("Cours : ");
+    private JLabel profLabel = new JLabel("Professeur : ");
     private Connection conn = null;
     private Connexion_sql connliste = new Connexion_sql();
     private BoutonInt bouton1 = new BoutonInt("Semaine 1");
     private BoutonInt bouton2 = new BoutonInt("Semaine 2");
     private BoutonInt bouton3 = new BoutonInt("Semaine 3");
     private BoutonInt bouton4 = new BoutonInt("Semaine 4");
-    private BoutonInt bouton5=new BoutonInt("Filtrer");
+    private BoutonInt bouton5 = new BoutonInt("Filtrer");
     private JMenuBar Navigation = new JMenuBar();
     private BoutonInt boutonCal = new BoutonInt("Emploi du temps");
     private BoutonInt boutonRec = new BoutonInt("Recap");
@@ -70,20 +70,21 @@ public final class Fenetre extends JFrame implements ActionListener {
     private BoutonInt boutonRep = new BoutonInt("Reporting");
     private BoutonInt boutonAjout = new BoutonInt("Ajouter");
     private BoutonInt ValiderModif = new BoutonInt("Valider");
-    private   JComboBox sallefiltre = new JComboBox();
+    private JComboBox sallefiltre = new JComboBox();
     private JComboBox professeur = new JComboBox();
     private JComboBox cours = new JComboBox();
     private JPanel FenetreCalendrier = new JPanel();
     private JPanel FenetreRecap = new JPanel();
     private JPanel FenetreMaj = new JPanel();
     private JPanel FenetreReporting = new JPanel();
+    private Etudiant student;
 
     private JPanel ModifCours = new JPanel();
     private Object[] objetAjout = null;
+    private ArrayList<String> liste;
+    private ArrayList<String> liste2;
+    private ArrayList<String> liste3;
 
-private  ArrayList<String> liste;
-private  ArrayList<String> liste2;
-private  ArrayList<String> liste3;
 
     //constructeur de la classe
     public Fenetre(Connection conn, Utilisateur user) throws ClassNotFoundException, SQLException {
@@ -93,7 +94,7 @@ private  ArrayList<String> liste3;
         String id_cours = "";
         String nomcours = "Maths";
         String promo = "Ing3";
-       
+
         //modification des propriétés de la fenetre principale (titre, taille, position et action de fermeture)
         this.setSize(1500, 1000);
         this.setTitle("Mon Calendrier");
@@ -143,11 +144,9 @@ private  ArrayList<String> liste3;
         changePage.add(bouton2);
         changePage.add(bouton3);
         changePage.add(bouton4);
-       
 
         //test de case avec des données
         this.initCalendrier();
-        this.initRecap();
 
         //Partie filtre : c'est la partie sur la droite de la page qui va contenir tout les filtres utiles sur notre tableau
         JPanel rightLayout = new JPanel();
@@ -179,10 +178,9 @@ private  ArrayList<String> liste3;
         JPanel profPanel = new JPanel();
         profPanel.add(profLabel);
         profPanel.add(professeur);
-      
 
         JLabel salleLabel = new JLabel("Salle: ");
-        
+
 //juste un test 
         JComboBox sallefiltre = new JComboBox();
 
@@ -191,13 +189,12 @@ private  ArrayList<String> liste3;
             sallefiltre.addItem(liste.get(i));
 
         }
-      
 
         rightLayout.add(coursPanel);
         rightLayout.add(profPanel);
 
         defineMaj();
-        defineReporting();
+      
 
         bouton1.addActionListener(this);
         bouton2.addActionListener(this);
@@ -225,7 +222,7 @@ private  ArrayList<String> liste3;
         String nom_salle = "";
         String nom_cours = "";
         if (user.getDroit() == 4) {
-            Etudiant student = (Etudiant) user;
+            this.student = (Etudiant) user;
             rs = stmt.executeQuery("Select id_groupe from etudiant Where Id_utilisateurs=" + student.getID());
             while (rs.next()) {
                 idgr = rs.getInt("id_groupe");
@@ -322,7 +319,8 @@ private  ArrayList<String> liste3;
         FenetreCalendrier.add(firstColumnPane, BorderLayout.WEST);
         //contenu de Droite 
         FenetreCalendrier.add(rightLayout, BorderLayout.EAST);
-
+        this.initRecap("", "", "");
+          defineReporting();
         defineRecap();
 
         this.setContentPane(FenetreCalendrier);
@@ -511,7 +509,7 @@ private  ArrayList<String> liste3;
             }
             try {
                 stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("Select * from type_cours WHERE Nom='" + (String)type.getText() + "'");
+                ResultSet rs = stmt.executeQuery("Select * from type_cours WHERE Nom='" + (String) type.getText() + "'");
                 while (rs.next()) {
                     types = rs.getInt("ID");
                 }
@@ -587,9 +585,9 @@ private  ArrayList<String> liste3;
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }
-  
+
 //initialise un calendrier
     public void initCalendrier() {
         //ici on déclare le meme type de composant mais il est vide, on va initialiser le tableau en le remplissant de Voidcontenu
@@ -622,86 +620,138 @@ private  ArrayList<String> liste3;
     }
 
 //initialise le tableau de récap
-    public void initRecap() throws SQLException {
+    public void initRecap(String salle2, String Mat, String prof) throws SQLException, ClassNotFoundException {
 
+        int idgrp = student.getGroupe();
+        int idseance = 0;
         Seance amphi = null;
-        int id = 0, semaine = 0, id_cours = 0, id_type = 0, id_promo = 0, id_groupe = 0, id_salle = 0, id_prof = 0;
+        ArrayList<Integer> arraylistProf = new ArrayList<Integer>();
+        ArrayList<Integer> arraylistMatiere = new ArrayList<Integer>();
+        ArrayList<Integer> arraylistSalle = new ArrayList<Integer>();
+        int id = 0, semaine = 0, id_cours = 0, id_type = 0, id_promo = 0, id_groupe = 0, id_salle = 0, id_prof = 0, i = 0;
         Time debut = null, fin = null;
         Date date = null;
         String etat = null, nom_type = null, nom_matiere = null, nom_promo = null, nom_groupe = null, nom_salle = null, nom_prof = null;
-        Object[][] coursRecap = new Object[100][10];;
-        Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("select * from seance");
-        int i = 0;
-        while (rs.next()) {
-            id = rs.getInt("ID");
-            etat = rs.getString("Etat");
-            semaine = rs.getInt("Semaine");
-            date = rs.getDate("Date");
-            debut = rs.getTime("Debut");
-            fin = rs.getTime("Fin");
-            id_cours = rs.getInt("Id_cours");
-            id_type = rs.getInt("Id_Typ");
-            Statement stt = conn.createStatement();
-            ResultSet res = stt.executeQuery("select * from seance_groupe WHERE id_seance=" + id);
-            while (res.next()){
-                id_groupe = res.getInt("id_groupe");
+        Object[][] coursRecap = new Object[100][10];
+        Statement stmts = conn.createStatement();
+        ResultSet r = stmts.executeQuery("select * from seance_groupe where id_groupe= " + idgrp);
+        while (r.next()) {
+            boolean okProf = false;
+            boolean okMatiere = false;
+            boolean okSalle = false;
+            idseance = r.getInt("id_seance");
+            Statement stmt = conn.createStatement();
+            if (!prof.equals("")) {
+                Statement st = conn.createStatement();
+                ResultSet ress = st.executeQuery("Select * from seance where ID in (select id_seance from seance_enseignant Where id_enseignant in (select ID from utilisateurs where Nom='" + prof + "'))");
+                while (ress.next()) {
+                    arraylistProf.add(ress.getInt("ID"));
+                }
+                if (arraylistProf.contains(new Integer(idseance))) {
+                    okProf = true;
+                }
+            } 
+            if (prof.equals("")){
+                okProf = true;
             }
-            res = stt.executeQuery("select * from groupe WHERE ID=" + id_groupe);
-            while (res.next()){
-                nom_groupe = res.getString("Nom");
-                id_promo = res.getInt("ID_promotion");
+            if (!Mat.equals("")) {
+                Statement st = conn.createStatement();
+                ResultSet ress = st.executeQuery("Select * from seance where Id_cours in (Select ID from cours Where Nom='" + Mat + "')");
+                while (ress.next()) {
+                    arraylistMatiere.add(ress.getInt("ID"));
+                }
+                System.out.println("");
+                if (arraylistMatiere.contains(new Integer(idseance))) {
+                    okMatiere = true;
+                }
+            } else {
+                okMatiere = true;
             }
-            res = stt.executeQuery("select * from promotion WHERE ID=" + id_groupe);
-            while (res.next()){
-                nom_promo = res.getString("Nom");
+            if (!salle2.equals("")) {
+                Statement st = conn.createStatement();
+                ResultSet ress = st.executeQuery("Select * from seance where ID in (select id_seance from seance_salle Where id_salle in (select ID from salle where Nom='" + salle2 + "'))");
+                while (ress.next()) {
+                    arraylistSalle.add(ress.getInt("ID"));
+                }
+                if (arraylistSalle.contains(new Integer(idseance))) {
+                    okSalle = true;
+                }
+            } else {
+                okSalle = true;
             }
-            res = stt.executeQuery("select * from cours WHERE ID=" + id_cours);
-            while (res.next()){
-                nom_matiere = res.getString("Nom");
+            if (okProf == true && okMatiere == true && okSalle == true) {
+                ResultSet rs = stmt.executeQuery("select * from seance where ID=" + idseance);
+                while (rs.next()) {
+                    id = rs.getInt("ID");
+                    etat = rs.getString("Etat");
+                    semaine = rs.getInt("Semaine");
+                    date = rs.getDate("Date");
+                    debut = rs.getTime("Debut");
+                    fin = rs.getTime("Fin");
+                    id_cours = rs.getInt("Id_cours");
+                    id_type = rs.getInt("Id_Typ");
+                    Statement stt = conn.createStatement();
+                    ResultSet res = stt.executeQuery("select * from seance_groupe WHERE id_seance=" + id);
+                    while (res.next()) {
+                        id_groupe = res.getInt("id_groupe");
+                    }
+                    res = stt.executeQuery("select * from groupe WHERE ID=" + id_groupe);
+                    while (res.next()) {
+                        nom_groupe = res.getString("Nom");
+                        id_promo = res.getInt("ID_promotion");
+                    }
+                    res = stt.executeQuery("select * from promotion WHERE ID=" + id_promo);
+                    while (res.next()) {
+                        nom_promo = res.getString("Nom");
+                    }
+                    res = stt.executeQuery("select * from cours WHERE ID=" + id_cours);
+                    while (res.next()) {
+                        nom_matiere = res.getString("Nom");
+                    }
+                    res = stt.executeQuery("select * from type_cours WHERE ID=" + id_type);
+                    while (res.next()) {
+                        nom_type = res.getString("Nom");
+                    }
+                    res = stt.executeQuery("select * from seance_salle WHERE id_seance=" + id);
+                    while (res.next()) {
+                        id_salle = res.getInt("id_salle");
+                    }
+                    res = stt.executeQuery("select * from salle WHERE ID=" + id_salle);
+                    while (res.next()) {
+                        nom_salle = res.getString("Nom");
+                    }
+                    res = stt.executeQuery("select * from seance_enseignant WHERE id_seance=" + id);
+                    while (res.next()) {
+                        id_prof = res.getInt("id_enseignant");
+                    }
+                    res = stt.executeQuery("select * from utilisateurs WHERE ID=" + id_prof);
+                    while (res.next()) {
+                        nom_prof = res.getString("Nom");
+                    }
+                    coursRecap[i][0] = nom_matiere;
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+                    String text = df.format(date);
+                    coursRecap[i][1] = text;
+                    DateFormat def = new SimpleDateFormat("HH:mm:ss");
+                    def.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    String time_debut = def.format(debut);
+                    coursRecap[i][2] = time_debut;
+                    String time_fin = def.format(fin);
+                    coursRecap[i][3] = time_fin;
+                    coursRecap[i][4] = etat;
+                    coursRecap[i][5] = nom_type;
+                    coursRecap[i][6] = nom_salle;
+                    coursRecap[i][7] = nom_prof;
+                    coursRecap[i][8] = nom_promo;
+                    coursRecap[i][9] = nom_groupe;
+                    i++;
+                }
             }
-            res = stt.executeQuery("select * from type_cours WHERE ID=" + id_type);
-            while (res.next()){
-                nom_type = res.getString("Nom");
-            }
-            res = stt.executeQuery("select * from seance_salle WHERE id_seance=" + id);
-            while (res.next()){
-                id_salle = res.getInt("id_salle");
-            }
-            res = stt.executeQuery("select * from salle WHERE ID=" + id_salle);
-            while (res.next()){
-                nom_salle = res.getString("Nom");
-            }
-            res = stt.executeQuery("select * from seance_enseignant WHERE id_seance=" + id);
-            while (res.next()){
-                id_prof = res.getInt("id_enseignant");
-            }
-            res = stt.executeQuery("select * from utilisateurs WHERE ID=" + id_prof);
-            while (res.next()){
-                nom_prof = res.getString("Nom");
-            }
-            coursRecap[i][0] = nom_matiere;
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            String text = df.format(date);
-            coursRecap[i][1] = text;
-            DateFormat def = new SimpleDateFormat("HH:mm:ss");
-            def.setTimeZone(TimeZone.getTimeZone("GMT"));
-            String time_debut = def.format(debut);
-            coursRecap[i][2] = time_debut;
-            String time_fin = def.format(fin);
-            coursRecap[i][3] = time_fin;
-            coursRecap[i][4] = etat;
-            coursRecap[i][5] = nom_type;
-            coursRecap[i][6] = nom_salle;
-            coursRecap[i][7] = nom_prof;
-            coursRecap[i][8] = nom_promo;
-            coursRecap[i][9] = nom_groupe;
-            i++;
-        }
-        String[] recapTitle = {"Matière", "Date", "Horaire début", "Horaire fin", "Etat", "Type", "Salle", "Professeur", "Promotion", "Groupe"};
+            String[] recapTitle = {"Matière", "Date", "Horaire début", "Horaire fin", "Etat", "Type", "Salle", "Professeur", "Promotion", "Groupe"};
 
-        MonModel modelRecap = new MonModel(coursRecap, recapTitle);
-        this.monRecap = new JTable(modelRecap);
+            MonModel modelRecap = new MonModel(coursRecap, recapTitle);
+            this.monRecap = new JTable(modelRecap);
+        }
     }
 
     public void defineRecap() throws ClassNotFoundException, SQLException {
@@ -727,21 +777,20 @@ private  ArrayList<String> liste3;
             nomcours = liste.get(i);
 
         }
-        
         liste = connliste.Affich("Select Nom from cours ");
+        cours.removeAllItems();
+        cours.addItem("");
         for (int i = 0; i < liste.size(); i++) {
             cours.addItem(liste.get(i));
-         
+
         }
-
-        
-
         //juste un test 
-      
         liste = connliste.Affich("Select Nom from utilisateurs where Droit=3 ");
+        professeur.removeAllItems();
+        professeur.addItem("");
         for (int i = 0; i < liste.size(); i++) {
             professeur.addItem(liste.get(i));
-            
+
         }
 
         JPanel profPanel = new JPanel();
@@ -749,13 +798,13 @@ private  ArrayList<String> liste3;
         profPanel.add(professeur);
 
         //LAAAAAAAa
-
 //juste un test 
-      
         liste = connliste.Affich("Select Nom from salle ");
+        sallefiltre.removeAllItems();
+        sallefiltre.addItem("");
         for (int i = 0; i < liste.size(); i++) {
             sallefiltre.addItem(liste.get(i));
-           
+
         }
 
         JPanel FiltreRecap = new JPanel();
@@ -808,40 +857,40 @@ private  ArrayList<String> liste3;
             id_type = rs.getInt("Id_Typ");
             Statement stt = conn.createStatement();
             ResultSet res = stt.executeQuery("select * from seance_groupe WHERE id_seance=" + id);
-            while (res.next()){
+            while (res.next()) {
                 id_groupe = res.getInt("id_groupe");
             }
             res = stt.executeQuery("select * from groupe WHERE ID=" + id_groupe);
-            while (res.next()){
+            while (res.next()) {
                 nom_groupe = res.getString("Nom");
                 id_promo = res.getInt("ID_promotion");
             }
             res = stt.executeQuery("select * from promotion WHERE ID=" + id_groupe);
-            while (res.next()){
+            while (res.next()) {
                 nom_promo = res.getString("Nom");
             }
             res = stt.executeQuery("select * from cours WHERE ID=" + id_cours);
-            while (res.next()){
+            while (res.next()) {
                 nom_matiere = res.getString("Nom");
             }
             res = stt.executeQuery("select * from type_cours WHERE ID=" + id_type);
-            while (res.next()){
+            while (res.next()) {
                 nom_type = res.getString("Nom");
             }
             res = stt.executeQuery("select * from seance_salle WHERE id_seance=" + id);
-            while (res.next()){
+            while (res.next()) {
                 id_salle = res.getInt("id_salle");
             }
             res = stt.executeQuery("select * from salle WHERE ID=" + id_salle);
-            while (res.next()){
+            while (res.next()) {
                 nom_salle = res.getString("Nom");
             }
             res = stt.executeQuery("select * from seance_enseignant WHERE id_seance=" + id);
-            while (res.next()){
+            while (res.next()) {
                 id_prof = res.getInt("id_enseignant");
             }
             res = stt.executeQuery("select * from utilisateurs WHERE ID=" + id_prof);
-            while (res.next()){
+            while (res.next()) {
                 nom_prof = res.getString("Nom");
             }
             coursActifTab[i][0] = nom_matiere;
@@ -1025,9 +1074,35 @@ private  ArrayList<String> liste3;
             public void actionPerformed(ActionEvent event) {
                 System.out.println("Je rentre dans le action listener de suppr");
                 int NROW = this.row;
+                Object groupeValue = coursMaj.getModel().getValueAt(this.row, this.col - 2);
+                Object promoValue = coursMaj.getModel().getValueAt(this.row, this.col - 3);
+                Object profValue = coursMaj.getModel().getValueAt(this.row, this.col - 4);
+                Object salleValue = coursMaj.getModel().getValueAt(this.row, this.col - 5);
+                Object typeValue = coursMaj.getModel().getValueAt(this.row, this.col - 6);
+                Object etatValue = coursMaj.getModel().getValueAt(this.row, this.col - 7);
+                Object HeureFValue = coursMaj.getModel().getValueAt(this.row, this.col - 8);
+                Object HeureDValue = coursMaj.getModel().getValueAt(this.row, this.col - 9);
+                Object DateValue = coursMaj.getModel().getValueAt(this.row, this.col - 10);
+                Object MatValue = coursMaj.getModel().getValueAt(this.row, this.col - 11);
+                DAO<Seance> classroom = new DAOSeance(conn);
+                Statement stt;
+                int idgrpe = 0;
+                System.out.println(Time.valueOf((String) HeureDValue));
+                try {
+                    stt = conn.createStatement();
+                    ResultSet res = stt.executeQuery("select * from seance WHERE Date='" + Date.valueOf((String) DateValue) + "' AND Debut='" + Time.valueOf((String) HeureDValue) + "'");
+                    while (res.next()) {
+                        idgrpe = res.getInt("ID");
+                        Seance seance = classroom.find(idgrpe);
+                        classroom.delete(seance);
+                    }
+                } catch (SQLException ex) {
+                    Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 System.out.println("valeur de NROW :" + NROW);
                 ((MonModel) table.getModel()).removeRow(NROW);
                 resize();
+
             }
         }
     }
@@ -1226,9 +1301,30 @@ private  ArrayList<String> liste3;
         this.setSize(1499, 1000);
         this.setSize(1500, 1000);
     }
+    private class Filtre implements ActionListener {
 
-    
-     public void defineReporting()
+        public void actionPerformed(ActionEvent e) {
+
+            String salle = sallefiltre.getSelectedItem().toString();
+            salle = salle.replaceAll("[\n]+", "");
+            String mat = cours.getSelectedItem().toString();
+            mat = mat.replaceAll("[\n]+", "");
+
+            String prof = professeur.getSelectedItem().toString();
+            prof = prof.replaceAll("[\n]+", "");
+            resize();
+            FenetreRecap.removeAll();
+            try {
+                initRecap(salle, mat, prof);
+                defineRecap();
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+     public void defineReporting() throws SQLException, ClassNotFoundException
      {
          JPanel Ligne1 = new JPanel();
          JPanel Ligne2 = new JPanel();
@@ -1246,11 +1342,80 @@ private  ArrayList<String> liste3;
          FinalContent.setLayout(new BoxLayout(FinalContent,BoxLayout.PAGE_AXIS));
          
          //Premier graph : Ici il faut récupérer le nombre d'heure de chaque matière, le nombre d'heure de chaque matière qui n'ont pas encore été faites (ressemble aux barres du bas), et diviser le 2eme par le 1er
+         String nbcoursmaths;
+         double cpt1=0;
+         double cpt2=0,cpt3=0,cpt4=0;
+         int idgrp=student.getGroupe();
+         int ids=0;
+         System.out.println(idgrp);
+          Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=1 and ID=" +ids);
+        for (int i = 0; i < liste.size(); i++) {
+           nbcoursmaths=liste.get(i);
+           
+        }
+        for(int i=0;i<liste.size();i++)
+        {
+            cpt1=cpt1+1;
+        }
+       }
+       rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=2 and ID=" +ids);
+        for (int i = 0; i < liste.size(); i++) {
+           nbcoursmaths=liste.get(i);
+           
+        }
+        for(int i=0;i<liste.size();i++)
+        {
+            cpt2=cpt2+1;
+        }
+       }
+       rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=3 and ID=" +ids);
+        for (int i = 0; i < liste.size(); i++) {
+           nbcoursmaths=liste.get(i);
+           
+        }
+        for(int i=0;i<liste.size();i++)
+        {
+            cpt3=cpt3+1;
+        }
+       }
+       rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+            liste = connliste.Affich("Select ID from seance where Id_cours=4 and ID=" +ids);
+        for (int i = 0; i < liste.size(); i++) {
+           nbcoursmaths=liste.get(i);
+           
+        }
+        for(int i=0;i<liste.size();i++)
+        {
+            cpt4=cpt4+1;
+        }
+       }
+        double somme= cpt1+cpt2+cpt3+cpt4;
+         double cp1=(cpt1/somme)*100;
+         double cp2=(cpt2/somme)*100;
+         double cp3=(cpt3/somme)*100;
+         double cp4=(cpt4/somme)*100;
+      
          DefaultPieDataset HeureRestantes = new DefaultPieDataset();
-         HeureRestantes.setValue("Mathématiques", 23);
-         HeureRestantes.setValue("Electronique", 27);
-         HeureRestantes.setValue("Physique", 30);
-         HeureRestantes.setValue("Probabilités", 20);
+         HeureRestantes.setValue("Mathématiques", cp1);
+         HeureRestantes.setValue("Electronique", cp2);
+         HeureRestantes.setValue("Physique", cp3);
+         HeureRestantes.setValue("Probabilités", cp4);
          JFreeChart pieChart = ChartFactory.createPieChart("Heures restantes par matière",HeureRestantes,true,true,true);
          ChartPanel cPanel = new ChartPanel (pieChart);
          
@@ -1269,14 +1434,80 @@ private  ArrayList<String> liste3;
          JFreeChart BarChart = ChartFactory.createBarChart("Nombre de place par salle","Nombre de place","Salle",placeSalle,PlotOrientation.VERTICAL,true,true,false);
          ChartPanel BPanel = new ChartPanel (BarChart);
          
-         //ici faut compter sur la semaine le nombre d'heure réalisé dans la semaine en tout pour un éleves, en gros faut faire une boucle avec i qui augmente de 1 pour chaque heure de l'éleve chaque jour et ensuite on multiplie par 1.5 pour les heures 
-         DefaultCategoryDataset heureparSemaine = new DefaultCategoryDataset();
-         heureparSemaine.addValue(3, "Heure", "Lundi");
-         heureparSemaine.addValue(4.5, "Heure", "Mardi");
-         heureparSemaine.addValue(10.5, "Heure", "Mercredi");
-         heureparSemaine.addValue(13.5, "Heure", "Jeudi");
-         heureparSemaine.addValue(15, "Heure", "Vendredi");
-         heureparSemaine.addValue(18, "Heure", "Samedi");
+        
+       //ici faut compter sur la semaine le nombre d'heure réalisé dans la semaine en tout pour un éleves, en gros faut faire une boucle avec i qui augmente de 1 pour chaque heure de l'éleve chaque jour et ensuite on multiplie par 1.5 pour les heures 
+         int cptt=0;
+         String oned="";
+         int cptt2=0,cptt3=0,cptt4=0,cptt5=0,cptt6=0;
+          rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-01' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt=cptt+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-02' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt2=cptt2+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-03' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt3=cptt3+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-04' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt4=cptt4+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-05' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt5=cptt5+1;
+         
+        }
+       }
+        rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+       while(rs.next())
+       {
+           ids=rs.getInt("id_seance");
+        liste = connliste.Affich("Select ID from seance where Date='2020-06-06' and ID=" + ids);
+        for (int i = 0; i < liste.size(); i++) {
+           cptt6=cptt6+1;
+         
+        }
+       }
+       
+        System.out.println(cptt);
+       DefaultCategoryDataset heureparSemaine = new DefaultCategoryDataset();
+         heureparSemaine.addValue(cptt, "Heure", "Lundi");
+         heureparSemaine.addValue(cptt+cptt2, "Heure", "Mardi");
+         heureparSemaine.addValue(cptt+cptt2+cptt3, "Heure", "Mercredi");
+         heureparSemaine.addValue(cptt+cptt2+cptt3+cptt4, "Heure", "Jeudi");
+         heureparSemaine.addValue(cptt+cptt2+cptt3+cptt4+cptt5, "Heure", "Vendredi");
+         heureparSemaine.addValue(cptt+cptt2+cptt3+cptt4+cptt5+cptt6, "Heure", "Samedi");
          JFreeChart lineChart = ChartFactory.createLineChart("Nombre d'heure de l'étudiant au cours de la semaine","Jours","compteur d'heure",heureparSemaine,PlotOrientation.VERTICAL,false,true,false);
          ChartPanel LPanel = new ChartPanel (lineChart);
          
@@ -1336,9 +1567,8 @@ private  ArrayList<String> liste3;
          FinalContent.setBounds(0, 0,1500, 800);
          FenetreReporting.add(FinalContent);
      }
-    
-    
 
+    
     private class Filtre implements ActionListener
     {
         public void actionPerformed(ActionEvent e)
@@ -1377,6 +1607,7 @@ private  ArrayList<String> liste3;
         }
        }
     }
+
 
     
     public void hideCal()

@@ -97,12 +97,12 @@ public class DAOSeance extends DAO<Seance>{
     public void delete(Seance obj) {
         try {
             Statement stmt = connexion.createStatement();
-            //Supprimer l'etudiant de la table utilisateur
-            ResultSet rs=stmt.executeQuery("DELETE from seance WHERE ID="+obj.getId());
-            //Supprimer l'etudiant de la table etudaint
-            ResultSet res=stmt.executeQuery("DELETE from seance_salle WHERE id_seance="+obj.getId());
-            ResultSet res2=stmt.executeQuery("DELETE from seance_groupe WHERE id_seance="+obj.getId());
-            ResultSet res3=stmt.executeQuery("DELETE from seance_enseignant WHERE id_seance="+obj.getId());
+            //Supprimer la seance de la table seance
+            stmt.executeUpdate("DELETE from seance WHERE ID="+obj.getId());
+            //Supprimer a seance des autres tables
+            stmt.executeUpdate("DELETE from seance_salle WHERE id_seance="+obj.getId());
+            stmt.executeUpdate("DELETE from seance_groupe WHERE id_seance="+obj.getId());
+            stmt.executeUpdate("DELETE from seance_enseignant WHERE id_seance="+obj.getId());
             System.out.println("La séance a été supprimée");
         }
         catch (SQLException ex) {
