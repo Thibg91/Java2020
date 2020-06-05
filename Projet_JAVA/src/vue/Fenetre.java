@@ -146,7 +146,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         boutonRep.addActionListener(this);
         ValiderModif.addActionListener(this);
         bouton5.addActionListener(new Filtre());
-        
         this.user = user;
         if (user.getDroit() == 4) {
             this.student = (Etudiant) user;
@@ -188,7 +187,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         changePage.add(bouton2);
         changePage.add(bouton3);
         changePage.add(bouton4);
-
+        ArrayList<String> listes = null;
         //test de case avec des données
         this.initCalendrier();
 
@@ -198,14 +197,12 @@ public final class Fenetre extends JFrame implements ActionListener {
         JPanel coursPanel = new JPanel();
         JComboBox cours = new JComboBox();
         //coursPanel.setBackground(Color.lightGray);
-        liste = connliste.Affich("Select Nom from cours ");
+        Statement sstm = conn.createStatement();
+        ResultSet rres = sstm.executeQuery("Select Nom from cours");
         cours.removeAllItems();
         cours.addItem("");
-        for (int i = 0; i < 1; i++) {
-            cours.addItem(liste.get(i));
-            cours.addItem(liste.get(i + 1));
-            cours.addItem(liste.get(i + 2));
-            cours.addItem(liste.get(i + 3));
+        while (rres.next()){
+            cours.addItem(rres.getString("Nom"));
         }
         JLabel coursLabel = new JLabel("Cours : ");
         coursPanel.add(coursLabel);
@@ -215,9 +212,9 @@ public final class Fenetre extends JFrame implements ActionListener {
         JComboBox professeur = new JComboBox();
         professeur.removeAllItems();
         professeur.addItem("");
-        liste = connliste.Affich("Select Nom from utilisateurs where Droit = 3");
-        for (int i = 0; i < liste.size(); i++) {
-            professeur.addItem(liste.get(i));
+        rres = sstm.executeQuery("Select Nom from utilisateurs where Droit = 3");
+        while (rres.next()){
+            professeur.addItem(rres.getString("Nom"));
 
         }
 
@@ -232,26 +229,14 @@ public final class Fenetre extends JFrame implements ActionListener {
         JComboBox sallefiltre = new JComboBox();
         sallefiltre.removeAllItems();
         sallefiltre.addItem("");
-        liste = connliste.Affich("Select Nom from salle ");
-        for (int i = 0; i < liste.size(); i++) {
-            sallefiltre.addItem(liste.get(i));
-
+        rres = sstm.executeQuery("Select Nom from salle");
+        while (rres.next()) {
+            sallefiltre.addItem(rres.getString("Nom"));
         }
 
         rightLayout.add(coursPanel);
         rightLayout.add(profPanel);
 
-        bouton1.addActionListener(this);
-        bouton2.addActionListener(this);
-        bouton3.addActionListener(this);
-        bouton4.addActionListener(this);
-        boutonCal.addActionListener(this);
-        boutonRec.addActionListener(this);
-        boutonMaj.addActionListener(this);
-        boutonAjout.addActionListener(this);
-        boutonRep.addActionListener(this);
-        ValiderModif.addActionListener(this);
-        bouton5.addActionListener(new Filtre());
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
         int cpt = 0;
@@ -924,9 +909,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
         int idseance = 0;
         Seance amphi = null;
-        ArrayList<Integer> arraylistProf = new ArrayList<Integer>();
-        ArrayList<Integer> arraylistMatiere = new ArrayList<Integer>();
-        ArrayList<Integer> arraylistSalle = new ArrayList<Integer>();
         int id = 0, semaine = 0, id_cours = 0, id_type = 0, id_promo = 0, id_groupe = 0, id_salle = 0, id_prof = 0, i = 0;
         Time debut = null, fin = null;
         Date date = null;
@@ -944,6 +926,9 @@ public final class Fenetre extends JFrame implements ActionListener {
             boolean okProf = false;
             boolean okMatiere = false;
             boolean okSalle = false;
+            ArrayList<Integer> arraylistProf = new ArrayList<Integer>();
+            ArrayList<Integer> arraylistMatiere = new ArrayList<Integer>();
+            ArrayList<Integer> arraylistSalle = new ArrayList<Integer>();
             idseance = r.getInt("id_seance");
             Statement stmt = conn.createStatement();
             if (!prof.equals("")) {
