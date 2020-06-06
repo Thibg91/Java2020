@@ -230,6 +230,7 @@ public final class Fenetre extends JFrame implements ActionListener {
 
         rightLayout.add(coursPanel);
         coursPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        sallePanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         rightLayout.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
 
