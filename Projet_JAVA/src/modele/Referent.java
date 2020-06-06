@@ -11,6 +11,14 @@ package modele;
  */
 public class Referent extends Utilisateur {
     
+    /**
+     *
+     * @param id
+     * @param email
+     * @param nom
+     * @param prenom
+     * @param droit
+     */
     public Referent(int id, String email, String nom, String prenom, int droit) {
         super(id, email, nom, prenom, droit);
     }

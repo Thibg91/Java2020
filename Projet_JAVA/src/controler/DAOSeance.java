@@ -21,10 +21,19 @@ import modele.Seance;
  */
 public class DAOSeance extends DAO<Seance> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOSeance(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param id_seance
+     * @return
+     */
     @Override
     public Seance find(int id_seance) {
         Seance amphi = null;
@@ -56,6 +65,11 @@ public class DAOSeance extends DAO<Seance> {
         return amphi;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Seance create(Seance obj) {
         int id = 0;
@@ -74,6 +88,11 @@ public class DAOSeance extends DAO<Seance> {
         return obj;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Seance update(Seance obj) {
         try {
@@ -86,6 +105,10 @@ public class DAOSeance extends DAO<Seance> {
         return obj;
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void delete(Seance obj) {
         try {

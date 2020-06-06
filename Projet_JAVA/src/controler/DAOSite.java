@@ -19,10 +19,19 @@ import modele.Site;
  */
 public class DAOSite extends DAO<Site> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOSite(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param id_site
+     * @return
+     */
     @Override
     public Site find(int id_site) {
         Site bat = null;
@@ -46,16 +55,30 @@ public class DAOSite extends DAO<Site> {
         return bat;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Site create(Site obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Site update(Site obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void delete(Site obj) {
         try {

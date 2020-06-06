@@ -19,10 +19,19 @@ import modele.Enseignant;
  */
 public class DAOEnseignant extends DAO<Enseignant> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOEnseignant(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param id_prof
+     * @return
+     */
     @Override
     public Enseignant find(int id_prof) {
         Enseignant prof = null;
@@ -49,16 +58,30 @@ public class DAOEnseignant extends DAO<Enseignant> {
         return prof;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Enseignant create(Enseignant obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Enseignant update(Enseignant obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void delete(Enseignant obj) {
         try {

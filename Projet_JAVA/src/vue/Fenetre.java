@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.border.Border;
 import javax.swing.text.DateFormatter;
 import modele.Enseignant;
 import modele.Etudiant;
@@ -68,8 +69,11 @@ public final class Fenetre extends JFrame implements ActionListener {
     private BoutonInt boutonAjout = new BoutonInt("Ajouter");
     private BoutonInt ValiderModif = new BoutonInt("Valider");
     private JComboBox sallefiltre = new JComboBox();
+    private JComboBox sallesfiltre = new JComboBox();
     private JComboBox professeur = new JComboBox();
+    private JComboBox professeurs = new JComboBox();
     private JComboBox cours = new JComboBox();
+    private JComboBox Cours = new JComboBox();
     private JComboBox debut_heure = new JComboBox();
     private JComboBox debut_fin = new JComboBox();
     private JComboBox jour = new JComboBox();
@@ -98,6 +102,15 @@ public final class Fenetre extends JFrame implements ActionListener {
     private ArrayList<String> liste3;
 
     //constructeur de la classe
+
+    /**
+     *
+     * @param conn
+     * @param user
+     * @param week
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public Fenetre(Connection conn, Utilisateur user, int week) throws ClassNotFoundException, SQLException {
         this.conn = conn;
         // déclaration de la fenetre
@@ -114,7 +127,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         FenetreCalendrier.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         FenetreRecap .setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         FenetreMaj.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        //FenetreReporting.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        FenetreReporting.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
         //Test pour remplir une des cases du tableau, "recap" est le string dans lequel on écrit les informations qu'on souhaite afficher
         //String matiere = "VHDL";
@@ -176,6 +189,15 @@ public final class Fenetre extends JFrame implements ActionListener {
 
     }
 
+    /**
+     *
+     * @param prof
+     * @param week
+     * @param nom_matiere
+     * @param nom_Salle
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public void afficheCalendrierProf(Enseignant prof, int week, String nom_matiere, String nom_Salle) throws SQLException, ClassNotFoundException {
         this.week = week;
         JPanel firstColumnPane = new JPanel();
@@ -203,30 +225,30 @@ public final class Fenetre extends JFrame implements ActionListener {
 
         //Partie filtre : c'est la partie sur la droite de la page qui va contenir tout les filtres utiles sur notre tableau
         JPanel rightLayout = new JPanel();
-        rightLayout.setLayout(new GridLayout(7, 1));
+        rightLayout.setLayout(new GridLayout(16, 1));
         JPanel coursPanel = new JPanel();
         //coursPanel.setBackground(Color.lightGray);
         Statement sstm = conn.createStatement();
         ResultSet rres = sstm.executeQuery("Select Nom from cours");
-        cours.removeAllItems();
-        cours.addItem("");
+        Cours.removeAllItems();
+        Cours.addItem("");
         while (rres.next()) {
-            cours.addItem(rres.getString("Nom"));
+            Cours.addItem(rres.getString("Nom"));
         }
         JLabel coursLabel = new JLabel("Cours : ");
         coursPanel.add(coursLabel);
-        coursPanel.add(cours);
+        coursPanel.add(Cours);
 
-        sallefiltre.removeAllItems();
-        sallefiltre.addItem("");
+        sallesfiltre.removeAllItems();
+        sallesfiltre.addItem("");
         rres = sstm.executeQuery("Select Nom from salle");
         while (rres.next()) {
-            sallefiltre.addItem(rres.getString("Nom"));
+            sallesfiltre.addItem(rres.getString("Nom"));
         }
         JPanel sallePanel = new JPanel();
         JLabel salleLabel = new JLabel("Salle: ");
         coursPanel.add(salleLabel);
-        coursPanel.add(sallefiltre);
+        coursPanel.add(sallesfiltre);
 
         rightLayout.add(coursPanel);
         coursPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
@@ -234,8 +256,14 @@ public final class Fenetre extends JFrame implements ActionListener {
         rightLayout.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
 
+        
         rightLayout.add(sallePanel);
-        rightLayout.add(filtre_cal);
+        JPanel tempanel = new JPanel();
+        tempanel.setPreferredSize(new Dimension(50,40));
+        tempanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        filtre_cal.setPreferredSize(new Dimension(100,40));
+        tempanel.add(filtre_cal);
+        rightLayout.add(tempanel);
 
 
         Statement stmt = conn.createStatement();
@@ -399,6 +427,15 @@ public final class Fenetre extends JFrame implements ActionListener {
         FenetreCalendrier.add(rightLayout, BorderLayout.EAST);
     }
 
+    /**
+     *
+     * @param student
+     * @param week
+     * @param nom_matiere
+     * @param nom_prof
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public void afficheCalendrier(Etudiant student, int week, String nom_matiere, String nom_prof) throws SQLException, ClassNotFoundException {
         this.week = week;
         JPanel firstColumnPane = new JPanel();
@@ -426,34 +463,34 @@ public final class Fenetre extends JFrame implements ActionListener {
 
         //Partie filtre : c'est la partie sur la droite de la page qui va contenir tout les filtres utiles sur notre tableau
         JPanel rightLayout = new JPanel();
-        rightLayout.setLayout(new GridLayout(7, 1));
+        rightLayout.setLayout(new GridLayout(16, 1));
         rightLayout.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         JPanel coursPanel = new JPanel();
         //coursPanel.setBackground(Color.lightGray);
-        cours.removeAllItems();
+        Cours.removeAllItems();
         liste = connliste.Affich("Select Nom from cours ");
-        cours.addItem("");
+        Cours.addItem("");
         for (int i = 0; i < 1; i++) {
-            cours.addItem(liste.get(i));
-            cours.addItem(liste.get(i + 1));
-            cours.addItem(liste.get(i + 2));
-            cours.addItem(liste.get(i + 3));
+            Cours.addItem(liste.get(i));
+            Cours.addItem(liste.get(i + 1));
+            Cours.addItem(liste.get(i + 2));
+            Cours.addItem(liste.get(i + 3));
         }
         JLabel coursLabel = new JLabel("Cours : ");
         coursPanel.add(coursLabel);
-        coursPanel.add(cours);
+        coursPanel.add(Cours);
         //juste un test 
         liste = connliste.Affich("Select Nom from utilisateurs where Droit = 3");
-        professeur.removeAllItems();
-        professeur.addItem("");
+        professeurs.removeAllItems();
+        professeurs.addItem("");
         for (int i = 0; i < liste.size(); i++) {
-            professeur.addItem(liste.get(i));
+            professeurs.addItem(liste.get(i));
         }
 
         JLabel profLabel = new JLabel("Professeur : ");
         JPanel profPanel = new JPanel();
         profPanel.add(profLabel);
-        profPanel.add(professeur);
+        profPanel.add(professeurs);
 
         JLabel salleLabel = new JLabel("Salle: ");
 
@@ -470,8 +507,14 @@ public final class Fenetre extends JFrame implements ActionListener {
 
         coursPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         profPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        filtre_cal.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        rightLayout.add(filtre_cal);
+  
+        JPanel tempanel = new JPanel();
+        tempanel.setPreferredSize(new Dimension(50,40));
+        tempanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        filtre_cal.setPreferredSize(new Dimension(100,40));
+        tempanel.add(filtre_cal);
+        rightLayout.add(tempanel);
+        
 
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
@@ -622,6 +665,11 @@ public final class Fenetre extends JFrame implements ActionListener {
     }
 
     // nécessite des modifs mais permet d' 
+
+    /**
+     *
+     * @param arg0
+     */
     public void actionPerformed(ActionEvent arg0) {
         if (arg0.getSource() == bouton1) {
             resize();
@@ -693,14 +741,14 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
         if (arg0.getSource() == filtre_cal) {
             String prof = null;
-            String mat = cours.getSelectedItem().toString();
+            String mat = Cours.getSelectedItem().toString();
             mat = mat.replaceAll("[\n]+", "");
             if (user.getDroit() == 4) {
-                prof = professeur.getSelectedItem().toString();
+                prof = professeurs.getSelectedItem().toString();
                 prof = prof.replaceAll("[\n]+", "");
             }
             if (user.getDroit() == 3) {
-                prof = sallefiltre.getSelectedItem().toString();
+                prof = sallesfiltre.getSelectedItem().toString();
                 prof = prof.replaceAll("[\n]+", "");
             }
             resize();
@@ -1002,6 +1050,10 @@ public final class Fenetre extends JFrame implements ActionListener {
     }
 
 //initialise un calendrier
+
+    /**
+     *
+     */
     public void initCalendrier() {
         //ici on déclare le meme type de composant mais il est vide, on va initialiser le tableau en le remplissant de Voidcontenu
         JTextPane Voidcontenu = new JTextPane();
@@ -1033,6 +1085,17 @@ public final class Fenetre extends JFrame implements ActionListener {
     }
 
 //initialise le tableau de récap
+
+    /**
+     *
+     * @param salle2
+     * @param Mat
+     * @param prof
+     * @param pro
+     * @param grp
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public void initRecap(String salle2, String Mat, String prof, String pro, String grp) throws SQLException, ClassNotFoundException {
         int idgrp = 0;
         if (user.getDroit() == 4) {
@@ -1192,6 +1255,11 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public void defineRecap() throws ClassNotFoundException, SQLException {
 
         JPanel FiltreRecap = new JPanel();
@@ -1250,15 +1318,26 @@ public final class Fenetre extends JFrame implements ActionListener {
         FiltreRecap.setBackground(new Color((float)0.3,(float)0.3,(float)0.3));
         monRecap.setRowHeight(40);
         monRecap.setPreferredSize(new Dimension(1200,600));
+        monRecap.setEnabled(false);
         JScrollPane conteneurRec = new JScrollPane(monRecap);
+        conteneurRec.setPreferredSize(new Dimension(1450,600));
+        JPanel contentScroll = new JPanel();
+        contentScroll.add(conteneurRec);
+        contentScroll.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        
 
         FenetreRecap.setLayout(new BorderLayout());
         //Contenu du haut
         FenetreRecap.add(FiltreRecap, BorderLayout.NORTH);
         //Contenu du centre
-        FenetreRecap.add(conteneurRec, BorderLayout.CENTER);
+        FenetreRecap.add(contentScroll, BorderLayout.CENTER);
     }
 
+    /**
+     *
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public void defineMaj() throws SQLException, ClassNotFoundException {
         Font font1 = new Font("Arial", Font.BOLD, 32);
         Font font2 = new Font("Arial", Font.BOLD, 18);
@@ -1267,10 +1346,10 @@ public final class Fenetre extends JFrame implements ActionListener {
         JPanel coursActif = new JPanel();
         coursActif.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         ModifCours.setVisible(false);
-        ModifCours.setBackground(Color.white);
+        ModifCours.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         ModifCours.setLayout(new GridLayout(4, 6));
         JPanel AjouterCours = new JPanel();
-        AjouterCours.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        AjouterCours.setBackground(new Color((float)0.3,(float)0.3,(float)0.3));
         AjouterCours.setLayout(new GridLayout(6, 4));
 
         Seance amphi = null;
@@ -1398,26 +1477,37 @@ public final class Fenetre extends JFrame implements ActionListener {
 
         JLabel LabelAjout = new JLabel("Ajouter un cours");
         LabelAjout.setFont(font1);
+        LabelAjout.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelMatiere = new JLabel("Matière :");
         labelMatiere.setFont(font2);
+        labelMatiere.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelDate = new JLabel("Date :");
         labelDate.setFont(font2);
+        labelDate.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelHeureD = new JLabel("Heure de début :");
         labelHeureD.setFont(font2);
+        labelHeureD.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelHeureF = new JLabel("Heure de fin :");
         labelHeureF.setFont(font2);
+        labelHeureF.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelEtat = new JLabel("Etat :");
         labelEtat.setFont(font2);
+        labelEtat.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelType = new JLabel("Type :");
         labelType.setFont(font2);
+        labelType.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelSalle = new JLabel("Salle :");
         labelSalle.setFont(font2);
+        labelSalle.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelProf = new JLabel("Professeur :");
         labelProf.setFont(font2);
+        labelProf.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelPromo = new JLabel("Promo :");
         labelPromo.setFont(font2);
+        labelPromo.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         JLabel labelGroupe = new JLabel("Groupe :");
         labelGroupe.setFont(font2);
+        labelGroupe.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
 
         liste = connliste.Affich("Select Nom from cours ");
         cours.removeAllItems();
@@ -1520,6 +1610,8 @@ public final class Fenetre extends JFrame implements ActionListener {
         AjouterCours.add(new JLabel(""));
         AjouterCours.add(boutonAjout);
 
+          ModifCours.setBorder(BorderFactory.createEmptyBorder(50,50,50,50));
+        
         FenetreMaj.setLayout(new GridLayout(3, 1));
         FenetreMaj.add(coursActif);
         FenetreMaj.add(ModifCours);
@@ -1527,12 +1619,22 @@ public final class Fenetre extends JFrame implements ActionListener {
 
     }
 
+    /**
+     *
+     */
     public class ButtonTableauSuppr extends DefaultCellEditor {
 
+        /**
+         *
+         */
         protected JButton button;
         private boolean isPushed;
         private ButtonListener boutList = new ButtonListener();
 
+        /**
+         *
+         * @param checkBox
+         */
         public ButtonTableauSuppr(JCheckBox checkBox) {
             super(checkBox);
             button = new JButton();
@@ -1540,6 +1642,15 @@ public final class Fenetre extends JFrame implements ActionListener {
             button.addActionListener(boutList);
         }
 
+        /**
+         *
+         * @param table
+         * @param value
+         * @param isSelected
+         * @param row
+         * @param col
+         * @return
+         */
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
             boutList.setRow(row);
             boutList.setColumn(col);
@@ -1602,12 +1713,22 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     *
+     */
     public class ButtonTableauInt extends DefaultCellEditor {
 
+        /**
+         *
+         */
         protected JButton button;
         private boolean isPushed;
         private ButtonListener boutList = new ButtonListener();
 
+        /**
+         *
+         * @param checkBox
+         */
         public ButtonTableauInt(JCheckBox checkBox) {
             super(checkBox);
             button = new JButton();
@@ -1615,6 +1736,15 @@ public final class Fenetre extends JFrame implements ActionListener {
             button.addActionListener(boutList);
         }
 
+        /**
+         *
+         * @param table
+         * @param value
+         * @param isSelected
+         * @param row
+         * @param col
+         * @return
+         */
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
             boutList.setRow(row);
             boutList.setColumn(col);
@@ -1658,6 +1788,20 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     *
+     * @param Id
+     * @param matiere
+     * @param Date
+     * @param HeureD
+     * @param HeureF
+     * @param Etat
+     * @param Type
+     * @param Salle
+     * @param Prof
+     * @param Promo
+     * @param Groupe
+     */
     public void setModifPane(Object Id, Object matiere, Object Date, Object HeureD, Object HeureF, Object Etat, Object Type, Object Salle, Object Prof, Object Promo, Object Groupe) {
         ModifCours.removeAll();
         Font font2 = new Font("Arial", Font.BOLD, 18);
@@ -1738,6 +1882,11 @@ public final class Fenetre extends JFrame implements ActionListener {
         this.setSize(1500, 1000);
     }
 
+    /**
+     *
+     * @param maSeance
+     * @return
+     */
     public String insererSeance(Seance maSeance) {
         String Nrow = "";
         String Ncol = "";
@@ -1800,6 +1949,9 @@ public final class Fenetre extends JFrame implements ActionListener {
 
     }
 
+    /**
+     *
+     */
     public void resize() {
         this.setSize(1499, 1000);
         this.setSize(1500, 1000);
@@ -1821,8 +1973,10 @@ public final class Fenetre extends JFrame implements ActionListener {
             if (user.getDroit() == 2) {
                 String pro = promo_groupe.getSelectedItem().toString();
                 pro = pro.replaceAll("[\n]+", "");
-                prm = pro.substring(0, 4);
+                if(!pro.equals(""))
+                { prm = pro.substring(0, 4);
                 grpe = pro.substring(7);
+                }
             }
             resize();
             FenetreRecap.removeAll();
@@ -1837,6 +1991,11 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     *
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public void defineReporting() throws SQLException, ClassNotFoundException {
         JPanel Ligne1 = new JPanel();
         JPanel Ligne2 = new JPanel();
@@ -2039,19 +2198,25 @@ public final class Fenetre extends JFrame implements ActionListener {
         labelVide.setFont(fonte2);
 
         Ligne1.add(cPanel);
+        Ligne1.setBorder(BorderFactory.createEmptyBorder(0,300,0,300));
+        Ligne1.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         Ligne2.add(BPanel);
         Ligne2.add(LPanel);
         LigneTitre.add(labelTitre);
+        LigneTitre.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         Ligne3.add(labelMaths);
         Ligne3.add(BarMaths);
         Ligne3.add(labelProba);
         Ligne3.add(BarProba);
+        Ligne3.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         LigneVide.add(labelVide);
+        LigneVide.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         Ligne4.add(labelElec);
         Ligne4.add(BarElec);
         Ligne4.add(labelPhy);
         Ligne4.add(BarPhy);
-        
+        Ligne4.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        FinalContent.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
         FinalContent.add(Ligne1);
         FinalContent.add(Ligne2);
@@ -2064,42 +2229,72 @@ public final class Fenetre extends JFrame implements ActionListener {
         FenetreReporting.add(FinalContent);
     }
 
+    /**
+     *
+     */
     public void hideCal() {
         this.boutonCal.setVisible(false);
     }
 
+    /**
+     *
+     */
     public void hideRec() {
         this.boutonRec.setVisible(false);
     }
 
+    /**
+     *
+     */
     public void hideMaj() {
         this.boutonMaj.setVisible(false);
     }
 
+    /**
+     *
+     */
     public void hideRep() {
         this.boutonRep.setVisible(false);
     }
 
+    /**
+     *
+     */
     public void showCal() {
         this.boutonCal.setVisible(true);
     }
 
+    /**
+     *
+     */
     public void showRec() {
         this.boutonRec.setVisible(true);
     }
 
+    /**
+     *
+     */
     public void showMaj() {
         this.boutonMaj.setVisible(true);
     }
 
+    /**
+     *
+     */
     public void showRep() {
         this.boutonRep.setVisible(true);
     }
 
+    /**
+     *
+     */
     public void setContentMaj() {
         this.setContentPane(FenetreMaj);
     }
 
+    /**
+     *
+     */
     public void setContentRec() {
         this.setContentPane(FenetreRecap);
     }
