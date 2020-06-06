@@ -103,6 +103,10 @@ public final class Fenetre extends JFrame implements ActionListener {
         this.setTitle("Mon Calendrier");
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        FenetreCalendrier.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        FenetreRecap .setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        FenetreMaj.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        FenetreReporting.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
         //Test pour remplir une des cases du tableau, "recap" est le string dans lequel on écrit les informations qu'on souhaite afficher
         //String matiere = "VHDL";
@@ -1781,6 +1785,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         heureparSemaine.addValue(cptt + cptt2 + cptt3 + cptt4 + cptt5 + cptt6, "Heure", "Samedi");
         JFreeChart lineChart = ChartFactory.createLineChart("Nombre d'heure de l'étudiant au cours de la semaine", "Jours", "compteur d'heure", heureparSemaine, PlotOrientation.VERTICAL, false, true, false);
         ChartPanel LPanel = new ChartPanel(lineChart);
+        LPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
         // la c'est pareil que le 1er mais dans l'autre sens vu que c'est les heures deja faites donc pas de nouvelles données a récuperer
         JProgressBar BarMaths = new JProgressBar();
@@ -1824,6 +1829,13 @@ public final class Fenetre extends JFrame implements ActionListener {
         Ligne4.add(BarElec);
         Ligne4.add(labelPhy);
         Ligne4.add(BarPhy);
+        Ligne1.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        Ligne2.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        Ligne3.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        Ligne4.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        FinalContent.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        LigneTitre.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        LigneVide.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
         FinalContent.add(Ligne1);
         FinalContent.add(Ligne2);

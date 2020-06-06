@@ -32,6 +32,7 @@ public class Testsql {
         //La première semaine de l'année est celle contenant au moins 4 jours
         cal.setMinimalDaysInFirstWeek(4);
         int week = cal.get(Calendar.WEEK_OF_YEAR);
+        System.out.println(week);
         Login monLogin = new Login();
         do {
             System.out.print("");
@@ -64,8 +65,8 @@ public class Testsql {
             Enseignant student = (Enseignant) personne;
             Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), student, week);
             myWindow.showCal();
-            myWindow.showRec();
-            myWindow.hideRep();
+            myWindow.hideRec();
+            myWindow.showRep();
             myWindow.hideMaj();
         }
         if (personne.getDroit() == 4) {
