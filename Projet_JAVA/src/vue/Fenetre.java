@@ -5,10 +5,8 @@
  */
 package vue;
 
-import static com.sun.corba.se.spi.presentation.rmi.StubAdapter.request;
 import controler.Connexion_sql;
 import controler.DAO;
-import controler.DAOEtudiant;
 import controler.DAOSeance;
 import java.awt.*;
 import java.awt.event.*;
@@ -19,28 +17,24 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.*;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.text.DateFormatter;
 import modele.Enseignant;
 import modele.Etudiant;
 import modele.Seance;
 import modele.Utilisateur;
 import org.jfree.chart.*;
 import org.jfree.chart.plot.*;
-import org.jfree.data.*;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
@@ -75,6 +69,13 @@ public final class Fenetre extends JFrame implements ActionListener {
     private JComboBox sallefiltre = new JComboBox();
     private JComboBox professeur = new JComboBox();
     private JComboBox cours = new JComboBox();
+    private JComboBox debut_heure = new JComboBox();
+    private JComboBox debut_fin = new JComboBox();
+    private JComboBox jour = new JComboBox();
+    private JComboBox etat_cours = new JComboBox();
+    private JComboBox promo = new JComboBox();
+    private JComboBox type_cours = new JComboBox();
+    private JComboBox groupes = new JComboBox();
     private JPanel FenetreCalendrier = new JPanel();
     private JPanel FenetreRecap = new JPanel();
     private JPanel FenetreMaj = new JPanel();
@@ -82,6 +83,9 @@ public final class Fenetre extends JFrame implements ActionListener {
     private Etudiant student = null;
     private Enseignant prof = null;
     private Utilisateur user;
+    private JSpinner spinner_date;
+    private JSpinner spinner_fin;
+    private JSpinner spinner_time;
 
     private JPanel ModifCours = new JPanel();
     private Object[] objetAjout = null;
@@ -146,11 +150,11 @@ public final class Fenetre extends JFrame implements ActionListener {
         boutonRep.addActionListener(this);
         ValiderModif.addActionListener(this);
         bouton5.addActionListener(new Filtre());
-
         this.user = user;
         if (user.getDroit() == 4) {
             this.student = (Etudiant) user;
             afficheCalendrier(student, week);
+            defineReporting();
         }
 
         if (user.getDroit() == 3) {
@@ -160,7 +164,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         if (user.getDroit() != 1 && user.getDroit() != 2) {
             this.initRecap("", "", "");
             defineRecap();
-            defineReporting();
         }
         this.setContentPane(FenetreCalendrier);
         //Cacher la fenetre ou pas : bool 
@@ -188,7 +191,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         changePage.add(bouton2);
         changePage.add(bouton3);
         changePage.add(bouton4);
-
+        ArrayList<String> listes = null;
         //test de case avec des données
         this.initCalendrier();
 
@@ -198,12 +201,12 @@ public final class Fenetre extends JFrame implements ActionListener {
         JPanel coursPanel = new JPanel();
         JComboBox cours = new JComboBox();
         //coursPanel.setBackground(Color.lightGray);
-        liste = connliste.Affich("Select Nom from cours ");
-        for (int i = 0; i < 1; i++) {
-            cours.addItem(liste.get(i));
-            cours.addItem(liste.get(i + 1));
-            cours.addItem(liste.get(i + 2));
-            cours.addItem(liste.get(i + 3));
+        Statement sstm = conn.createStatement();
+        ResultSet rres = sstm.executeQuery("Select Nom from cours");
+        cours.removeAllItems();
+        cours.addItem("");
+        while (rres.next()){
+            cours.addItem(rres.getString("Nom"));
         }
         JLabel coursLabel = new JLabel("Cours : ");
         coursPanel.add(coursLabel);
@@ -211,9 +214,11 @@ public final class Fenetre extends JFrame implements ActionListener {
 
         //juste un test 
         JComboBox professeur = new JComboBox();
-        liste = connliste.Affich("Select Nom from utilisateurs where Droit = 3");
-        for (int i = 0; i < liste.size(); i++) {
-            professeur.addItem(liste.get(i));
+        professeur.removeAllItems();
+        professeur.addItem("");
+        rres = sstm.executeQuery("Select Nom from utilisateurs where Droit = 3");
+        while (rres.next()){
+            professeur.addItem(rres.getString("Nom"));
 
         }
 
@@ -226,29 +231,16 @@ public final class Fenetre extends JFrame implements ActionListener {
 
 //juste un test 
         JComboBox sallefiltre = new JComboBox();
-
-        liste = connliste.Affich("Select Nom from salle ");
-        for (int i = 0; i < liste.size(); i++) {
-            sallefiltre.addItem(liste.get(i));
-
+        sallefiltre.removeAllItems();
+        sallefiltre.addItem("");
+        rres = sstm.executeQuery("Select Nom from salle");
+        while (rres.next()) {
+            sallefiltre.addItem(rres.getString("Nom"));
         }
 
         rightLayout.add(coursPanel);
         rightLayout.add(profPanel);
 
-        defineMaj();
-
-        bouton1.addActionListener(this);
-        bouton2.addActionListener(this);
-        bouton3.addActionListener(this);
-        bouton4.addActionListener(this);
-        boutonCal.addActionListener(this);
-        boutonRec.addActionListener(this);
-        boutonMaj.addActionListener(this);
-        boutonAjout.addActionListener(this);
-        boutonRep.addActionListener(this);
-        ValiderModif.addActionListener(this);
-        bouton5.addActionListener(new Filtre());
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
         int cpt = 0;
@@ -395,7 +387,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         liste = connliste.Affich("Select Nom from utilisateurs where Droit = 3");
         for (int i = 0; i < liste.size(); i++) {
             professeur.addItem(liste.get(i));
-
         }
 
         JLabel profLabel = new JLabel("Professeur : ");
@@ -537,7 +528,6 @@ public final class Fenetre extends JFrame implements ActionListener {
     // nécessite des modifs mais permet d' 
     public void actionPerformed(ActionEvent arg0) {
         if (arg0.getSource() == bouton1) {
-            System.out.println("test");
             resize();
             FenetreCalendrier.removeAll();
             try {
@@ -554,7 +544,6 @@ public final class Fenetre extends JFrame implements ActionListener {
             }
         }
         if (arg0.getSource() == bouton2) {
-            System.out.println("test");
             resize();
             FenetreCalendrier.removeAll();
             try {
@@ -625,29 +614,40 @@ public final class Fenetre extends JFrame implements ActionListener {
         /// Ajouter un cours
         if (arg0.getSource() == boutonAjout) {
             JPanel tempPanel = (JPanel) boutonAjout.getParent();
-            JTextField matiere = (JTextField) tempPanel.getComponent(3);
-            JTextField date = (JTextField) tempPanel.getComponent(5);
-            JTextField debut = (JTextField) tempPanel.getComponent(7);
-            JTextField fin = (JTextField) tempPanel.getComponent(9);
-            JTextField etat = (JTextField) tempPanel.getComponent(11);
-            JTextField type = (JTextField) tempPanel.getComponent(13);
-            JTextField salle = (JTextField) tempPanel.getComponent(15);
-            JTextField prof = (JTextField) tempPanel.getComponent(17);
-            JTextField promo = (JTextField) tempPanel.getComponent(19);
-            JTextField groupe = (JTextField) tempPanel.getComponent(21);
-            Date jour = Date.valueOf((String) date.getText());
+            String matiere = cours.getSelectedItem().toString();
+            matiere = matiere.replaceAll("[\n]+", "");
+            String etat = etat_cours.getSelectedItem().toString();
+            etat = etat.replaceAll("[\n]+", "");
+            String type = type_cours.getSelectedItem().toString();
+            type = type.replaceAll("[\n]+", "");
+            String salle = sallefiltre.getSelectedItem().toString();
+            salle = salle.replaceAll("[\n]+", "");
+            String prof = professeur.getSelectedItem().toString();
+            prof = prof.replaceAll("[\n]+", "");
+            String prom = promo.getSelectedItem().toString();
+            prom = prom.replaceAll("[\n]+", "");
+            String groupe = groupes.getSelectedItem().toString();
+            groupe = groupe.replaceAll("[\n]+", "");
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(spinner_date.getValue());
+            System.out.println(date);
+            String debut = new SimpleDateFormat("HH:mm:ss").format(spinner_time.getValue());
+            System.out.println(debut);
+            String fin = new SimpleDateFormat("HH:mm:ss").format(spinner_fin.getValue());
+            System.out.println(fin);
+
+            Date jour = Date.valueOf(date);
             Calendar cal = Calendar.getInstance();
             //La première semaine de l'année est celle contenant au moins 4 jours
             cal.setMinimalDaysInFirstWeek(4);
             cal.setTime(jour);
             int week = cal.get(Calendar.WEEK_OF_YEAR);
-            int types = Integer.parseInt((String) type.getText());
-            String mat = (String) matiere.getText();
-            String room = (String) salle.getText();
-            String groupes = (String) groupe.getText();
-            String promos = (String) promo.getText();
-            Time Debut = Time.valueOf((String) debut.getText());
-            Time Fin = Time.valueOf((String) fin.getText());
+            //int types = Integer.parseInt((String) type.getText());
+            String mat = matiere;
+            String room = salle;
+            String groupes = groupe;
+            String promos = prom;
+            Time Debut = Time.valueOf(debut);
+            Time Fin = Time.valueOf(fin);
 
             Statement stmt = null;
             int id_salle = 0;
@@ -655,6 +655,7 @@ public final class Fenetre extends JFrame implements ActionListener {
             int id_promo = 0;
             int id_prof = 0;
             int id_matiere = 0;
+            int id_type = 0;
             /// Recherche id de la matiere
             try {
                 stmt = conn.createStatement();
@@ -665,8 +666,16 @@ public final class Fenetre extends JFrame implements ActionListener {
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
-
-            Seance seance = new Seance(0, week, jour, Debut, Fin, (String) etat.getText(), id_matiere, types);
+            try {
+                stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from type_cours WHERE Nom='" + type + "'");
+                while (rs.next()) {
+                    id_type = rs.getInt("ID");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Seance seance = new Seance(0, week, jour, Debut, Fin, etat, id_matiere, id_type);
             DAO<Seance> amphi = new DAOSeance(this.conn);
             seance = amphi.create(seance);
 
@@ -689,7 +698,7 @@ public final class Fenetre extends JFrame implements ActionListener {
             /// Creation dans la table seance_enseignant
             try {
                 stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("Select * from utilisateurs WHERE Nom='" + (String) prof.getText() + "'");
+                ResultSet rs = stmt.executeQuery("Select * from utilisateurs WHERE Nom='" + prof + "'");
                 while (rs.next()) {
                     id_prof = rs.getInt("ID");
                 }
@@ -727,7 +736,15 @@ public final class Fenetre extends JFrame implements ActionListener {
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
-            System.out.println("Ma seance est:" + seance.getId());
+            resize();
+            FenetreMaj.removeAll();
+            try {
+                defineMaj();
+            } catch (SQLException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         /// Modifier un cours
         if (arg0.getSource() == ValiderModif) {
@@ -850,6 +867,8 @@ public final class Fenetre extends JFrame implements ActionListener {
                 defineMaj();
             } catch (SQLException ex) {
                 Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(Fenetre.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
@@ -894,9 +913,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
         int idseance = 0;
         Seance amphi = null;
-        ArrayList<Integer> arraylistProf = new ArrayList<Integer>();
-        ArrayList<Integer> arraylistMatiere = new ArrayList<Integer>();
-        ArrayList<Integer> arraylistSalle = new ArrayList<Integer>();
         int id = 0, semaine = 0, id_cours = 0, id_type = 0, id_promo = 0, id_groupe = 0, id_salle = 0, id_prof = 0, i = 0;
         Time debut = null, fin = null;
         Date date = null;
@@ -914,6 +930,9 @@ public final class Fenetre extends JFrame implements ActionListener {
             boolean okProf = false;
             boolean okMatiere = false;
             boolean okSalle = false;
+            ArrayList<Integer> arraylistProf = new ArrayList<Integer>();
+            ArrayList<Integer> arraylistMatiere = new ArrayList<Integer>();
+            ArrayList<Integer> arraylistSalle = new ArrayList<Integer>();
             idseance = r.getInt("id_seance");
             Statement stmt = conn.createStatement();
             if (!prof.equals("")) {
@@ -1065,7 +1084,6 @@ public final class Fenetre extends JFrame implements ActionListener {
         professeur.addItem("");
         for (int i = 0; i < liste.size(); i++) {
             professeur.addItem(liste.get(i));
-
         }
 
         JPanel profPanel = new JPanel();
@@ -1099,7 +1117,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         FenetreRecap.add(conteneurRec, BorderLayout.CENTER);
     }
 
-    public void defineMaj() throws SQLException {
+    public void defineMaj() throws SQLException, ClassNotFoundException {
         Font font1 = new Font("Arial", Font.BOLD, 32);
         Font font2 = new Font("Arial", Font.BOLD, 18);
         JPanel filtreCours = new JPanel();
@@ -1259,49 +1277,103 @@ public final class Fenetre extends JFrame implements ActionListener {
         JLabel labelGroupe = new JLabel("Groupe :");
         labelGroupe.setFont(font2);
 
-        JTextField TFMatiere = new JTextField("Mathematiques");
-        JTextField TFDate = new JTextField("2020-06-04");
-        JTextField TFHeureD = new JTextField("10:00:00");
-        JTextField TFHeureF = new JTextField("11:30:00");
-        JTextField TFEtat = new JTextField("validée");
-        JTextField TFType = new JTextField("2");
-        JTextField TFSalle = new JTextField("P330");
-        JTextField TFProf = new JTextField("Segado");
-        JTextField TFPromo = new JTextField("Ing2");
-        JTextField TFGroupe = new JTextField("Gr1");
+        liste = connliste.Affich("Select Nom from cours ");
+        cours.removeAllItems();
+        for (i = 0; i < liste.size(); i++) {
+            cours.addItem(liste.get(i));
+
+        }
+
+        liste = connliste.Affich("Select Nom from utilisateurs where Droit=3 ");
+        professeur.removeAllItems();
+        for (i = 0; i < liste.size(); i++) {
+            professeur.addItem(liste.get(i));
+        }
+
+        liste = connliste.Affich("Select Nom from salle ");
+        sallefiltre.removeAllItems();
+        for (i = 0; i < liste.size(); i++) {
+            sallefiltre.addItem(liste.get(i));
+
+        }
+
+        liste = connliste.Affich("Select Nom from type_cours ");
+        type_cours.removeAllItems();
+        for (i = 0; i < liste.size(); i++) {
+            type_cours.addItem(liste.get(i));
+
+        }
+        liste = connliste.Affich("Select Distinct(Etat) from seance ");
+        etat_cours.removeAllItems();
+        for (i = 0; i < liste.size(); i++) {
+            etat_cours.addItem(liste.get(i));
+
+        }
+        liste = connliste.Affich("Select Nom from promotion ");
+        promo.removeAllItems();
+        for (i = 0; i < liste.size(); i++) {
+            promo.addItem(liste.get(i));
+
+        }
+        liste = connliste.Affich("Select Distinct(Nom) from groupe");
+        groupes.removeAllItems();
+        for (i = 0; i < liste.size(); i++) {
+            groupes.addItem(liste.get(i));
+
+        }
+        
+        SpinnerDateModel model = new SpinnerDateModel();
+        model.setCalendarField(Calendar.DATE);
+        spinner_date = new JSpinner(model);
+        spinner_date = new JSpinner();
+        spinner_date.setModel(model);
+        spinner_date.setEditor(new JSpinner.DateEditor(spinner_date, "yyyy-MM-dd"));
+        
+        SpinnerDateModel model_time = new SpinnerDateModel();
+        model_time.setCalendarField(Calendar.SECOND);
+        SpinnerDateModel model_fin = new SpinnerDateModel();
+        model_fin.setCalendarField(Calendar.SECOND);
+        this.spinner_time = new JSpinner(model_time);
+        this.spinner_fin = new JSpinner(model_fin);
+        spinner_fin = new JSpinner();
+        spinner_fin.setModel(model_fin);
+        spinner_fin.setEditor(new JSpinner.DateEditor(spinner_fin, "HH:mm:ss"));
+        spinner_time = new JSpinner();
+        spinner_time.setModel(model_time);
+        spinner_time.setEditor(new JSpinner.DateEditor(spinner_time, "HH:mm:ss"));
 
         AjouterCours.add(LabelAjout);
         AjouterCours.add(new JLabel(""));
 
         AjouterCours.add(labelMatiere);
-        AjouterCours.add(TFMatiere);
+        AjouterCours.add(cours);
 
         AjouterCours.add(labelDate);
-        AjouterCours.add(TFDate);
+        AjouterCours.add(spinner_date);
 
         AjouterCours.add(labelHeureD);
-        AjouterCours.add(TFHeureD);
+        AjouterCours.add(this.spinner_time);
 
         AjouterCours.add(labelHeureF);
-        AjouterCours.add(TFHeureF);
+        AjouterCours.add(this.spinner_fin);
 
         AjouterCours.add(labelEtat);
-        AjouterCours.add(TFEtat);
+        AjouterCours.add(etat_cours);
 
         AjouterCours.add(labelType);
-        AjouterCours.add(TFType);
+        AjouterCours.add(type_cours);
 
         AjouterCours.add(labelSalle);
-        AjouterCours.add(TFSalle);
+        AjouterCours.add(sallefiltre);
 
         AjouterCours.add(labelProf);
-        AjouterCours.add(TFProf);
+        AjouterCours.add(professeur);
 
         AjouterCours.add(labelPromo);
-        AjouterCours.add(TFPromo);
+        AjouterCours.add(promo);
 
         AjouterCours.add(labelGroupe);
-        AjouterCours.add(TFGroupe);
+        AjouterCours.add(groupes);
 
         AjouterCours.add(new JLabel(""));
         AjouterCours.add(boutonAjout);

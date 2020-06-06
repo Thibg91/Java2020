@@ -26,8 +26,8 @@ import modele.Utilisateur;
 public class Login extends JFrame implements ActionListener{
     // Y a  deux champs de texte et un bouton pour submit
     private final JPanel chp_co = new JPanel();
-    private final JTextField chp_login = new JTextField("Papier@edu.ece.fr");
-    private final JTextField chp_mdp = new JTextField("Papier123");
+    private final JTextField chp_login = new JTextField("Segado@edu.ece.fr");
+    private final JTextField chp_mdp = new JTextField("Segado123");
     private final BoutonInt valider = new BoutonInt("Valider");
     private final Connection connexion = null;
     private final JTextArea ID = new JTextArea("Identifiant : ");
