@@ -114,7 +114,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         FenetreCalendrier.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         FenetreRecap .setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         FenetreMaj.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        FenetreReporting.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        //FenetreReporting.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
         //Test pour remplir une des cases du tableau, "recap" est le string dans lequel on écrit les informations qu'on souhaite afficher
         //String matiere = "VHDL";
@@ -180,7 +180,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         this.week = week;
         JPanel firstColumnPane = new JPanel();
         JTextPane firstColumn = new JTextPane();
-        firstColumn.setBackground(Color.lightGray);
+        firstColumn.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         firstColumn.setEditable(false);
 
         firstColumn.setText("\r\n \r\n \r\n \r\n" + "8h30-10h00" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "10h15-11h45" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "12h00-13h30" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "13h45-15h15" + "\r\n \r\n \r\n \r\n \r\n \r\n \r\n" + "15h30-17h00" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "17h15-18h45" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "19h00-20h30");
@@ -229,8 +229,15 @@ public final class Fenetre extends JFrame implements ActionListener {
         coursPanel.add(sallefiltre);
 
         rightLayout.add(coursPanel);
+        rightLayout.add(profPanel);
+        coursPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        profPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        rightLayout.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+
+
         rightLayout.add(sallePanel);
         rightLayout.add(filtre_cal);
+
 
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
@@ -340,8 +347,35 @@ public final class Fenetre extends JFrame implements ActionListener {
                 }
                 contenue.setEditable(false);
             }
+
+            DAO<Seance> amphi = new DAOSeance(conn);
+            Seance seance = amphi.find(idseance);
+            String row_col = "";
+            row_col = insererSeance(seance);
+            String recap = "";
+            recap = nom_cours + "\n" + nomprof + "\n" + "\n" + nom_promo + "\n" + nom_salle + "\r\n";
+            JTextPane contenue = new JTextPane();
+            contenue.setText(recap);
+            //System.out.println((String)contenue.getText());
+            monTableau.ajouterCours(contenue, Integer.parseInt(row_col.substring(0, 1)), Integer.parseInt(row_col.substring(1, 2)));
+            if (nom_cours.equals("Mathematiques")) {
+                contenue.setBackground(Color.magenta);  //creation case
+            }
+            if (nom_cours.equals("Electronique")) {
+                contenue.setBackground(Color.YELLOW);
+            }
+            if (nom_cours.equals("Physique")) {
+                contenue.setBackground(Color.RED);
+            }
+            if (nom_cours.equals("Probabilités")) {
+                contenue.setBackground(Color.CYAN);
+            }
+            contenue.setEditable(false);
+
         }
         JScrollPane conteneurCal = new JScrollPane(monTableau);
+        conteneurCal.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        monTableau.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
         //Login monLogin = new Login();
         // monLogin.setVisible(true);
@@ -351,6 +385,8 @@ public final class Fenetre extends JFrame implements ActionListener {
         this.Navigation.add(boutonMaj);
         this.Navigation.add(boutonRep);
         this.setJMenuBar(Navigation);
+        
+        changePage.setBackground(new Color((float)0.3,(float)0.3,(float)0.3));
 
         //partie Layout du calendrier
         FenetreCalendrier.setLayout(new BorderLayout());
@@ -368,7 +404,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         this.week = week;
         JPanel firstColumnPane = new JPanel();
         JTextPane firstColumn = new JTextPane();
-        firstColumn.setBackground(Color.lightGray);
+        firstColumn.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         firstColumn.setEditable(false);
 
         firstColumn.setText("\r\n \r\n \r\n \r\n" + "8h30-10h00" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "10h15-11h45" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "12h00-13h30" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "13h45-15h15" + "\r\n \r\n \r\n \r\n \r\n \r\n \r\n" + "15h30-17h00" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "17h15-18h45" + "\r\n \r\n \r\n \r\n \r\n \r\n" + "19h00-20h30");
@@ -380,7 +416,7 @@ public final class Fenetre extends JFrame implements ActionListener {
 
         // Ici on a les boutons de bas de page qui vont permettre de passer d'une semaine a une autre
         JPanel changePage = new JPanel();
-        changePage.setBackground(Color.lightGray);
+        changePage.setBackground(new Color((float)0.3,(float)0.3,(float)0.3));
         changePage.add(bouton1);
         changePage.add(bouton2);
         changePage.add(bouton3);
@@ -392,6 +428,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         //Partie filtre : c'est la partie sur la droite de la page qui va contenir tout les filtres utiles sur notre tableau
         JPanel rightLayout = new JPanel();
         rightLayout.setLayout(new GridLayout(7, 1));
+        rightLayout.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         JPanel coursPanel = new JPanel();
         //coursPanel.setBackground(Color.lightGray);
         cours.removeAllItems();
@@ -431,7 +468,12 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
         rightLayout.add(coursPanel);
         rightLayout.add(profPanel);
+
+        coursPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        profPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        filtre_cal.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         rightLayout.add(filtre_cal);
+
         Statement stmt = conn.createStatement();
         Statement stt = conn.createStatement();
         int cpt = 0;
@@ -554,6 +596,8 @@ public final class Fenetre extends JFrame implements ActionListener {
             }
         }
         JScrollPane conteneurCal = new JScrollPane(monTableau);
+        conteneurCal.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        monTableau.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
         //partie barre de navigation
         this.Navigation.add(boutonCal);
@@ -1195,12 +1239,18 @@ public final class Fenetre extends JFrame implements ActionListener {
         }
 
         FiltreRecap.add(salleLabel);
+        salleLabel.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         FiltreRecap.add(sallefiltre);
         FiltreRecap.add(coursLabel);
+        coursLabel.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         FiltreRecap.add(cours);
         FiltreRecap.add(profLabel);
+        profLabel.setForeground(new Color((float)0.99,(float)0.99,(float)0.99));
         FiltreRecap.add(professeur);
         FiltreRecap.add(bouton5);
+        FiltreRecap.setBackground(new Color((float)0.3,(float)0.3,(float)0.3));
+        monRecap.setRowHeight(40);
+        monRecap.setPreferredSize(new Dimension(1200,600));
         JScrollPane conteneurRec = new JScrollPane(monRecap);
 
         FenetreRecap.setLayout(new BorderLayout());
@@ -1214,14 +1264,14 @@ public final class Fenetre extends JFrame implements ActionListener {
         Font font1 = new Font("Arial", Font.BOLD, 32);
         Font font2 = new Font("Arial", Font.BOLD, 18);
         JPanel filtreCours = new JPanel();
-        filtreCours.setBackground(Color.white);
+        filtreCours.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         JPanel coursActif = new JPanel();
-        coursActif.setBackground(Color.LIGHT_GRAY);
+        coursActif.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         ModifCours.setVisible(false);
         ModifCours.setBackground(Color.white);
         ModifCours.setLayout(new GridLayout(4, 6));
         JPanel AjouterCours = new JPanel();
-        AjouterCours.setBackground(Color.LIGHT_GRAY);
+        AjouterCours.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         AjouterCours.setLayout(new GridLayout(6, 4));
 
         Seance amphi = null;
@@ -2002,13 +2052,7 @@ public final class Fenetre extends JFrame implements ActionListener {
         Ligne4.add(BarElec);
         Ligne4.add(labelPhy);
         Ligne4.add(BarPhy);
-        Ligne1.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        Ligne2.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        Ligne3.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        Ligne4.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        FinalContent.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        LigneTitre.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
-        LigneVide.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        
 
         FinalContent.add(Ligne1);
         FinalContent.add(Ligne2);
