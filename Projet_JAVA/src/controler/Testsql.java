@@ -65,8 +65,8 @@ public class Testsql {
             Enseignant student = (Enseignant) personne;
             Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), student, week);
             myWindow.showCal();
-            myWindow.hideRec();
-            myWindow.showRep();
+            myWindow.hideRep();
+            myWindow.showRec();
             myWindow.hideMaj();
         }
         if (personne.getDroit() == 4) {

@@ -26,6 +26,7 @@ import modele.Utilisateur;
 public class Login extends JFrame implements ActionListener{
     // Y a  deux champs de texte et un bouton pour submit
     private final JPanel chp_co = new JPanel();
+   
     private final JTextField chp_login = new JTextField("Segado@edu.ece.fr");
     private final JTextField chp_mdp = new JTextField("Segado123");
     private final BoutonInt valider = new BoutonInt("Valider");
@@ -40,6 +41,7 @@ public class Login extends JFrame implements ActionListener{
 
     //Constructeur basique
     public Login() throws ClassNotFoundException, SQLException{
+        
         this.setTitle(" Connexion");
         this.setSize(350,250);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -54,6 +56,10 @@ public class Login extends JFrame implements ActionListener{
         JPanel ContenuID = new JPanel();
         JPanel ContenuMDP = new JPanel();
         JPanel ContenuB = new JPanel();
+        ContenuID.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        ContenuMDP.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+        ContenuB.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+         chp_co.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
          
         ContenuB.setBounds(50, 50, 0, 0);
         chp_login.setPreferredSize(new Dimension(160, 35));
