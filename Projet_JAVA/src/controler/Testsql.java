@@ -55,7 +55,7 @@ public class Testsql {
            Fenetre myWindow = new Fenetre(Connexion_sql.getInstance(), student, week);
             myWindow.hideCal();
             myWindow.showRec();
-            myWindow.showRep();
+            myWindow.hideRep();
             myWindow.hideMaj();
             myWindow.setContentRec();
             
