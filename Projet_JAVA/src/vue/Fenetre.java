@@ -2010,26 +2010,119 @@ public final class Fenetre extends JFrame implements ActionListener {
         LPanel.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
 
         // la c'est pareil que le 1er mais dans l'autre sens vu que c'est les heures deja faites donc pas de nouvelles données a récuperer
+      DateFormat format= new SimpleDateFormat("yyyy/MM/dd");
+Calendar calendar=Calendar.getInstance();
+int IDseance=0;
+double ccpt=0;
+double coursm=0;
+rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+String date= format.format(calendar.getTime());
+while(rs.next())
+{
+    IDseance=rs.getInt("id_seance");
+    liste2=connliste.Affich("select ID from seance where Id_cours=1 and ID=" + IDseance);
+    liste=connliste.Affich("select ID from seance where ID= "+ IDseance + " and Id_cours=1 and Date<= '" +date + "'");
+    for(int i =0;i<liste.size();i++)
+    {
+        ccpt++;
+    }
+    for(int i=0;i<liste2.size();i++)
+    {
+        coursm=coursm+1;
+    }
+}
+int ccpt2=0;
+double course=0;
+rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+while(rs.next())
+{
+    IDseance=rs.getInt("id_seance");
+    liste2=connliste.Affich("select ID from seance where Id_cours=2 and ID=" + IDseance);
+    liste=connliste.Affich("select ID from seance where ID= "+ IDseance + " and Id_cours=2 and Date<= '" +date + "'");
+    for(int i =0;i<liste.size();i++)
+    {
+        ccpt2++;
+    }
+    for(int i=0;i<liste2.size();i++)
+    {
+        course=coursm+1;
+    }
+}
+double ccpt3=0;
+double coursph=0;
+
+rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+while(rs.next())
+{
+    IDseance=rs.getInt("id_seance");
+    liste2=connliste.Affich("select ID from seance where Id_cours=3 and ID=" + IDseance);
+    liste=connliste.Affich("select ID from seance where ID= "+ IDseance + " and Id_cours=3 and Date<= '" +date + "'");
+    for(int i =0;i<liste.size();i++)
+    {
+        ccpt3++;
+    }
+    for(int i=0;i<liste2.size();i++)
+    {
+        coursph=coursm+1;
+    }
+}
+double probasp=0;
+double ccpt4=0;
+double courspro=0;
+rs = stmt.executeQuery("select id_seance from seance_groupe where id_groupe=" + idgrp);
+while(rs.next())
+{
+    IDseance=rs.getInt("id_seance");
+    liste2=connliste.Affich("select ID from seance where Id_cours=4 and ID=" + IDseance);
+    liste=connliste.Affich("select ID from seance where ID= "+ IDseance + " and Id_cours=4 and Date<= '" +date + "'");
+    for(int i =0;i<liste.size();i++)
+    {
+        ccpt4++;
+    }
+    for(int i=0;i<liste2.size();i++)
+    {
+        courspro=courspro+1;
+    }
+}
+
+
+
+double mathsp= ccpt/coursm;
+mathsp=mathsp*100;
+int mathspi=(int)mathsp;
+
+double elecsp= ccpt2/course;
+elecsp=elecsp*100;
+int elecspi=(int) elecsp;
+
+double physp=ccpt3/coursph;
+physp=physp*100;
+int physpi=(int)physp;
+
+double probsp=ccpt4/courspro;
+probsp=probsp*100;
+int probspi=(int)probsp;
         JProgressBar BarMaths = new JProgressBar();
-        BarMaths.setValue(70);
+        BarMaths.setValue(mathspi);
         BarMaths.setMaximumSize(new Dimension(500, 500));
         JProgressBar BarElec = new JProgressBar();
-        BarElec.setValue(70);
+        BarElec.setValue(elecspi);
         BarElec.setMaximumSize(new Dimension(500, 500));
         JProgressBar BarPhy = new JProgressBar();
-        BarPhy.setValue(70);
+        BarPhy.setValue(physpi);
         BarPhy.setMaximumSize(new Dimension(500, 500));
         JProgressBar BarProba = new JProgressBar();
-        BarProba.setValue(70);
+        BarProba.setValue(probspi);
         BarProba.setMaximumSize(new Dimension(500, 500));
 
-        Font fonte = new Font(" TimesRoman ", Font.BOLD, 24);
+        
+        Font fonte = new Font(" TimesRoman ", Font.BOLD, 27);
         Font fonte2 = new Font(" TimesRoman ", Font.BOLD, 42);
         JLabel labelMaths = new JLabel("Mathématiques :");
         labelMaths.setFont(fonte);
-        JLabel labelProba = new JLabel("     Electronique :");
+        JLabel labelProba = new JLabel(" Electronique :");
         labelProba.setFont(fonte);
-        JLabel labelPhy = new JLabel("     Physique :");
+        JLabel labelPhy = new JLabel(" Physique :");
         labelPhy.setFont(fonte);
         JLabel labelElec = new JLabel("Probabilités :");
         labelElec.setFont(fonte);

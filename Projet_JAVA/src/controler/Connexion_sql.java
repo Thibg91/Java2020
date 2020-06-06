@@ -73,7 +73,7 @@ public class Connexion_sql {
             // ajouter les champs de la ligne dans l'ArrayList
             liste.add(champs);
         }
-
+        connect.close();
         return liste;
     }
 
