@@ -40,6 +40,12 @@ public class Login extends JFrame implements ActionListener{
     private String email = "";
 
     //Constructeur basique
+
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public Login() throws ClassNotFoundException, SQLException{
         
         this.setTitle(" Connexion");
@@ -60,6 +66,8 @@ public class Login extends JFrame implements ActionListener{
         ContenuMDP.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         ContenuB.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
          chp_co.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+         ID.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+         MDP.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
          
         ContenuB.setBounds(50, 50, 0, 0);
         chp_login.setPreferredSize(new Dimension(160, 35));
@@ -86,6 +94,10 @@ public class Login extends JFrame implements ActionListener{
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     
+    /**
+     *
+     * @param arg0
+     */
     @Override
     public void actionPerformed(ActionEvent arg0){
         reche=new Recherchelog(connexion);
@@ -103,10 +115,18 @@ public class Login extends JFrame implements ActionListener{
         } 
     }
 
+    /**
+     *
+     * @return
+     */
     public String getEmail() {
         return this.email;
     }
 
+    /**
+     *
+     * @param mail
+     */
     public void setEmail(String mail) {
         this.email = mail;
     }

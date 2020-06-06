@@ -19,10 +19,19 @@ import modele.Referent;
  */
 public class DAOReferent extends DAO<Referent> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOReferent(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param id_ref
+     * @return
+     */
     @Override
     public Referent find(int id_ref) {
         Referent ref = null;
@@ -49,16 +58,30 @@ public class DAOReferent extends DAO<Referent> {
         return ref;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Referent create(Referent obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Referent update(Referent obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void delete(Referent obj) {
         try {

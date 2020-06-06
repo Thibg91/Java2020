@@ -19,10 +19,19 @@ import modele.Promotion;
  */
 public class DAOPromotion extends DAO<Promotion> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOPromotion(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param id_promo
+     * @return
+     */
     @Override
     public Promotion find(int id_promo) {
         Promotion promo = null;
@@ -46,16 +55,30 @@ public class DAOPromotion extends DAO<Promotion> {
         return promo;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Promotion create(Promotion obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Promotion update(Promotion obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void delete(Promotion obj) {
         try {

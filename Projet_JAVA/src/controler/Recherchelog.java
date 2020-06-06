@@ -19,10 +19,23 @@ public class Recherchelog {
 
     private Connection connexion = null;
 
+    /**
+     *
+     * @param conn
+     */
     public Recherchelog(Connection conn) {
         this.connexion = conn;
     }
 
+    /**
+     *
+     * @param email
+     * @param mdpp
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     * @throws ConnexionException
+     */
     public Utilisateur Recherche(String email, String mdpp) throws ClassNotFoundException, SQLException, ConnexionException {
         //System.out.println(email);
         //System.out.println(mdpp);

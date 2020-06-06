@@ -11,6 +11,14 @@ package modele;
  */
 public class Admin extends Utilisateur{
     
+    /**
+     *
+     * @param id
+     * @param email
+     * @param nom
+     * @param prenom
+     * @param droit
+     */
     public Admin(int id, String email, String nom, String prenom, int droit) {
         super(id, email, nom, prenom, droit);
     }

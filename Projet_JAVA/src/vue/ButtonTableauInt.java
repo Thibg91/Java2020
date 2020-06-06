@@ -18,10 +18,18 @@ import javax.swing.JTable;
  * @author titig
  */
 public class ButtonTableauInt extends DefaultCellEditor {
+
+    /**
+     *
+     */
     protected JButton button;
     private boolean isPushed;
     private final ButtonListener boutList = new ButtonListener();
     
+    /**
+     *
+     * @param checkBox
+     */
     public ButtonTableauInt(JCheckBox checkBox){
         super(checkBox);
         button = new JButton();
@@ -29,6 +37,15 @@ public class ButtonTableauInt extends DefaultCellEditor {
         button.addActionListener(boutList);
     }
     
+    /**
+     *
+     * @param table
+     * @param value
+     * @param isSelected
+     * @param row
+     * @param col
+     * @return
+     */
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col){
         boutList.setRow(row);

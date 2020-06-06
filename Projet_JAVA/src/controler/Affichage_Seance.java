@@ -20,10 +20,18 @@ public class Affichage_Seance {
 
     private Connection connexion = null;
 
+    /**
+     *
+     * @param conn
+     */
     public Affichage_Seance(Connection conn) {
         this.connexion = conn;
     }
 
+    /**
+     *
+     * @param id_groupe
+     */
     public void affiche(int id_groupe) {
         try {
             int id_seance = 0, semaine = 0, id_cours = 0;

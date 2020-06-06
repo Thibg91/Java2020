@@ -19,10 +19,19 @@ import modele.Admin;
  */
 public class DAOAdmin extends DAO<Admin> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOAdmin(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param id_admin
+     * @return
+     */
     @Override
     public Admin find(int id_admin) {
         Admin boss = null;
@@ -49,16 +58,30 @@ public class DAOAdmin extends DAO<Admin> {
         return boss;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Admin create(Admin obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Admin update(Admin obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void delete(Admin obj) {
         try {

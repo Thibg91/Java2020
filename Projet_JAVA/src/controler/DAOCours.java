@@ -19,10 +19,19 @@ import modele.Cours;
  */
 public class DAOCours extends DAO<Cours> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOCours(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param id_cours
+     * @return
+     */
     @Override
     public Cours find(int id_cours) {
         Cours matiere = null;
@@ -46,16 +55,30 @@ public class DAOCours extends DAO<Cours> {
         return matiere;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Cours create(Cours obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Cours update(Cours obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void delete(Cours obj) {
         try {

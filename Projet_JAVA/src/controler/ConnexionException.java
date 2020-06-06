@@ -11,6 +11,9 @@ package controler;
  */
 public class ConnexionException extends Exception {
 
+    /**
+     *
+     */
     public ConnexionException() {
         super("Erreur d'email et de mot de passe");
     }

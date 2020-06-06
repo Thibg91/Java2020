@@ -19,10 +19,19 @@ import modele.Type_Cours;
  */
 public class DAOType extends DAO<Type_Cours> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOType(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param id_type
+     * @return
+     */
     @Override
     public Type_Cours find(int id_type) {
         Type_Cours type = null;
@@ -46,16 +55,30 @@ public class DAOType extends DAO<Type_Cours> {
         return type;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Type_Cours create(Type_Cours obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Type_Cours update(Type_Cours obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void delete(Type_Cours obj) {
         try {
