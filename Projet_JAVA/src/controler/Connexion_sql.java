@@ -27,6 +27,12 @@ public class Connexion_sql {
     private ResultSet rset;
     private ResultSetMetaData rsetMeta;
 
+    /**
+     *
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
     public static Connection getInstance() throws SQLException, ClassNotFoundException {
         // chargement driver "com.mysql.jdbc.Driver"
 
@@ -40,6 +46,13 @@ public class Connexion_sql {
         return connect;
     }
 
+    /**
+     *
+     * @param requete
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public ArrayList Affich(String requete) throws ClassNotFoundException, SQLException {
         connect = getInstance();
         stmt = connect.createStatement();
@@ -73,7 +86,7 @@ public class Connexion_sql {
             // ajouter les champs de la ligne dans l'ArrayList
             liste.add(champs);
         }
-
+        connect.close();
         return liste;
     }
 

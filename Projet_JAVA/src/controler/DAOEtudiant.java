@@ -19,10 +19,19 @@ import modele.Etudiant;
  */
 public class DAOEtudiant extends DAO<Etudiant> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOEtudiant(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param student
+     * @return
+     */
     @Override
     public Etudiant create(Etudiant student) {
         //appele le formulaire d'ajout d'etudiant
@@ -32,6 +41,11 @@ public class DAOEtudiant extends DAO<Etudiant> {
         return student;
     }
 
+    /**
+     *
+     * @param id_student
+     * @return
+     */
     @Override
     public Etudiant find(int id_student) {
         Etudiant student = null;
@@ -63,6 +77,11 @@ public class DAOEtudiant extends DAO<Etudiant> {
         return student;
     }
 
+    /**
+     *
+     * @param student
+     * @return
+     */
     @Override
     public Etudiant update(Etudiant student) {
         //se connecter a la base sql
@@ -72,6 +91,10 @@ public class DAOEtudiant extends DAO<Etudiant> {
         return student;
     }
 
+    /**
+     *
+     * @param student
+     */
     @Override
     public void delete(Etudiant student) {
         //se connecter a la base sql

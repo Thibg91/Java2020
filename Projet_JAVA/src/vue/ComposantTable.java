@@ -18,6 +18,16 @@ import javax.swing.table.DefaultTableCellRenderer;
 //classe qui rédéfini le contenu d'une case de tableau, sans cette classe, on ne peut pas afficher de JTextPane dans une case
 public class ComposantTable extends DefaultTableCellRenderer {
 
+    /**
+     *
+     * @param monTableau
+     * @param value
+     * @param isSelected
+     * @param hasFocus
+     * @param row
+     * @param col
+     * @return
+     */
     @Override
     public Component getTableCellRendererComponent(JTable monTableau, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         if (value instanceof JTextPane) {

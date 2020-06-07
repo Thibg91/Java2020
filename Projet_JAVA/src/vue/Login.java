@@ -27,8 +27,8 @@ public class Login extends JFrame implements ActionListener{
     // Y a  deux champs de texte et un bouton pour submit
     private final JPanel chp_co = new JPanel();
    
-    private final JTextField chp_login = new JTextField("Segado@edu.ece.fr");
-    private final JTextField chp_mdp = new JTextField("Segado123");
+    private final JTextField chp_login = new JTextField("Papier@edu.ece.fr");
+    private final JTextField chp_mdp = new JTextField("Papier123");
     private final BoutonInt valider = new BoutonInt("Valider");
     private final Connection connexion = null;
     private final JTextArea ID = new JTextArea("Identifiant : ");
@@ -40,6 +40,12 @@ public class Login extends JFrame implements ActionListener{
     private String email = "";
 
     //Constructeur basique
+
+    /**
+     *
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public Login() throws ClassNotFoundException, SQLException{
         
         this.setTitle(" Connexion");
@@ -60,6 +66,8 @@ public class Login extends JFrame implements ActionListener{
         ContenuMDP.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
         ContenuB.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
          chp_co.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+         ID.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
+         MDP.setBackground(new Color((float)0.27,(float)0.83,(float)0.4));
          
         ContenuB.setBounds(50, 50, 0, 0);
         chp_login.setPreferredSize(new Dimension(160, 35));
@@ -86,6 +94,10 @@ public class Login extends JFrame implements ActionListener{
     }
     //on ferme la fenetre quand on clique sur submit (mais ca ca va changer)
     
+    /**
+     *
+     * @param arg0
+     */
     @Override
     public void actionPerformed(ActionEvent arg0){
         reche=new Recherchelog(connexion);
@@ -103,10 +115,18 @@ public class Login extends JFrame implements ActionListener{
         } 
     }
 
+    /**
+     *
+     * @return
+     */
     public String getEmail() {
         return this.email;
     }
 
+    /**
+     *
+     * @param mail
+     */
     public void setEmail(String mail) {
         this.email = mail;
     }

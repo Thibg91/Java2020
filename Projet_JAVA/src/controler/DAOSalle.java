@@ -19,10 +19,19 @@ import modele.Salle;
  */
 public class DAOSalle extends DAO<Salle> {
 
+    /**
+     *
+     * @param conn
+     */
     public DAOSalle(Connection conn) {
         super(conn);
     }
 
+    /**
+     *
+     * @param id_salle
+     * @return
+     */
     @Override
     public Salle find(int id_salle) {
         Salle room = null;
@@ -48,16 +57,30 @@ public class DAOSalle extends DAO<Salle> {
         return room;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Salle create(Salle obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public Salle update(Salle obj) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     *
+     * @param obj
+     */
     @Override
     public void delete(Salle obj) {
         try {

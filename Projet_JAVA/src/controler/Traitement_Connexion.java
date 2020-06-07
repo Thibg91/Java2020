@@ -25,10 +25,20 @@ public class Traitement_Connexion {
 
     private Connection connexion = null;
 
+    /**
+     *
+     * @param conn
+     */
     public Traitement_Connexion(Connection conn) {
         this.connexion = conn;
     }
 
+    /**
+     *
+     * @param email
+     * @return
+     * @throws ClassNotFoundException
+     */
     public Utilisateur traitement_co(String email) throws ClassNotFoundException {
         Utilisateur user = null;
         int droit = 0, id = 0;
